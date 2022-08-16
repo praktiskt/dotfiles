@@ -1,0 +1,14 @@
+# Aliases from praktiskt/dotfiles
+alias vim="nvim"
+alias open="xdg-open"
+alias python="python3"
+alias copy="xclip -sel clip"
+alias translate="docker run soimort/translate-shell"
+alias calc="docker run -it praktiskt/insect"
+ffsub() {
+    fn=81e14463-6151-4e1e-8bfb-5cf4342b25fe
+    echo "🌟 Output file will be: "
+    ffmpeg -i  -c:v libx264 -preset veryfast -vf subtitles= .mp4
+    echo "🌟 Created /home/magnus/github/dotfiles/.mp4"
+}
+alias paste="xclip -selection clipboard -o"

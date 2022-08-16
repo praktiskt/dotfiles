@@ -32,7 +32,7 @@ ohmyzh() {
 
 aliases() {
     # Add these to your current shell.
-    cat <<-EOF > aliases
+    cat <<EOF > aliases
 # Aliases from praktiskt/dotfiles
 alias vim="nvim"
 alias open="xdg-open"
