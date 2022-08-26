@@ -48,3 +48,7 @@ On Ubuntu (21.10, 22.04), borders do not display on Nautilus. This can be fixed 
 ```sh
 for_window [class=.*] border pixel 2
 ```
+
+#### Screen tearing
+
+See https://regolith-desktop.com/docs/howtos/customize-compositor/
