@@ -38,3 +38,13 @@ Multi-touch gestures.
 Custom theme, modified from `gitster`.
 
 - [Link](https://ohmyz.sh/)
+
+### Other fixes
+
+#### i3 borders on Nautilus
+
+On Ubuntu (21.10, 22.04), borders do not display on Nautilus. This can be fixed by adding below to `/etc/regolith/i3/config`;
+
+```sh
+for_window [class=.*] border pixel 2
+```
