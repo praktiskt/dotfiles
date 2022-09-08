@@ -45,10 +45,10 @@ alias copy="xclip -sel clip"
 alias translate="docker run soimort/translate-shell"
 alias calc="docker run -it praktiskt/insect"
 ffsub() {
-    fn=$(uuidgen)
-    echo "🌟 Output file will be: $fn"
-    ffmpeg -i $1 -c:v libx264 -preset veryfast -vf subtitles=$2 $fn.mp4
-    echo "🌟 Created $(pwd)/$fn.mp4"
+    fn=\$(uuidgen)
+    echo "🌟 Output file will be: \$fn"
+    ffmpeg -i $1 -c:v libx264 -preset veryfast -vf subtitles=\$2 \$fn.mp4
+    echo "🌟 Created \$(pwd)/\$fn.mp4"
 }
 alias paste="xclip -selection clipboard -o"
 EOF
