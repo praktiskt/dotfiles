@@ -30,6 +30,10 @@ ohmyzh() {
     collector .oh-my-zsh/themes gitster.zsh-theme
 }
 
+nvim() {
+    collector .config/nvim init.vim
+}
+
 aliases() {
     # Add these to your current shell.
     cat <<EOF > aliases
@@ -51,6 +55,7 @@ EOF
 }
 
 main() {
+    nvim
     alacritty
     regolith
     fusuma
