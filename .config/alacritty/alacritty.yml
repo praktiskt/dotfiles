@@ -1,29 +1,22 @@
-# Colors (Tangoish)
-# Note: Orange is used in place of Cyan
 colors:
-  primary:
-    background: '#000000'
-    foreground: '#eeeeec'
-
-  # Normal colors
-  normal:
-     black:   '#2e3436'
-     red:     '#cc0000'
-     green:   '#73d216'
-     yellow:  '#edd400'
-     blue:    '#3465a4'
-     magenta: '#75507b'
-     cyan:    '#f57900'
-     white:   '#d3d7cf'
-
-  # Bright colors
-  bright:
-     black:   '#2e3436'
-     red:     '#ef2929'
-     green:   '#8ae234'
-     yellow:  '#fce94f'
-     blue:    '#729fcf'
-     magenta: '#ad7fa8'
-     cyan:    '#fcaf3e'
-     white:   '#eeeeec'
-
+    primary:
+      background: '0x282828'
+      foreground: '0xd4be98'
+    normal:
+      black:   '0x3c3836'
+      red:     '0xea6962'
+      green:   '0xa9b665'
+      yellow:  '0xd8a657'
+      blue:    '0x7daea3'
+      magenta: '0xd3869b'
+      cyan:    '0x89b482'
+      white:   '0xd4be98'
+    bright:
+      black:   '0x3c3836'
+      red:     '0xea6962'
+      green:   '0xa9b665'
+      yellow:  '0xd8a657'
+      blue:    '0x7daea3'
+      magenta: '0xd3869b'
+      cyan:    '0x89b482'
+      white:   '0xd4be98'
