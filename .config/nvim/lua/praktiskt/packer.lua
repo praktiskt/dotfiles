@@ -49,11 +49,6 @@ return require('packer').startup(function(use)
         config = function() require("nvim-autopairs").setup {} end
     }
 
-    -- Add snippets. FIXME: Configure properly.
-    use {
-        "rafamadriz/friendly-snippets",
-    }
-
     -- Fade window not in focus
     use 'TaDaa/vimade'
 
@@ -73,6 +68,8 @@ return require('packer').startup(function(use)
         end
     }
 
+    -- Add snippets
+    use { "rafamadriz/friendly-snippets" }
     use {
         'L3MON4D3/LuaSnip',
         dependencies = {
