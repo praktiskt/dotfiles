@@ -1,10 +1,19 @@
 local lsp = require('lsp-zero').preset({})
 
 local cmp = require('cmp')
+local cmp_action = require('lsp-zero').cmp_action()
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
+
+require('luasnip.loaders.from_vscode').lazy_load()
+
 cmp.setup({
+  sources = {
+      {name = 'nvim_lsp'},
+      {name = 'luasnip'}
+  },
   mapping = {
     ['<CR>'] = cmp.mapping.confirm({select = false}),
+    ['<Tab>'] = cmp.mapping.confirm({select = false}),
     ["<C-Space>"] = cmp.mapping.complete(),
   }
 })
