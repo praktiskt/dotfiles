@@ -32,9 +32,12 @@ ohmyzh() {
 }
 
 nvim() {
-    FILES=`find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g'`
+    LUAS=`find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs`
+    SNIPPETS=`find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs`
+    FILES=`echo "$LUAS $SNIPPETS"`
     mkdir -p .config/nvim/after/plugin
     mkdir -p .config/nvim/lua/praktiskt
+    mkdir -p .config/nvim/snippets
     for FILE in $FILES; do
         if [[ `echo $FILE | grep 'packer_compiled.lua'` ]]; then
             continue

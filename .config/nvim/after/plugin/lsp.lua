@@ -4,8 +4,6 @@ local cmp = require('cmp')
 local cmp_action = require('lsp-zero').cmp_action()
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 
-require('luasnip.loaders.from_vscode').lazy_load()
-
 cmp.setup({
   preselect = 'item',
   completion = {
@@ -35,5 +33,11 @@ lsp.setup_servers({'tsserver', 'eslint'})
 
 -- (Optional) Configure lua language server for neovim
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+
+-- Add VSCode snippets (from rafamadriz/friendly-snippets)
+require('luasnip.loaders.from_vscode').lazy_load()
+
+-- Load snippets from .config/nvim/snippets
+require("luasnip.loaders.from_snipmate").lazy_load()
 
 lsp.setup()
