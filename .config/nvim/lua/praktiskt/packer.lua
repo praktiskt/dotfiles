@@ -15,13 +15,16 @@ return require('packer').startup(function(use)
 	}
 
     -- Color schemes. See after/plugin/colors.lua
-	use({ 'rose-pine/neovim', as = 'rose-pine'})
-	--use {
-	--	"loctvl842/monokai-pro.nvim",
-	--	config = function()
-	--		require("monokai-pro").setup()
-	--	end
-	--}
+	use { 'rose-pine/neovim', as = 'rose-pine'}
+    use { "catppuccin/nvim", as = "catppuccin" }
+    use { "morhetz/gruvbox", as = "gruvbox" }
+    use { "loctvl842/monokai-pro.nvim", as = "monokai-pro" }
+
+    -- Statusline
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+    }
 
     -- Nice highlighting. See after/plugin/treesitter.lua
 	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
@@ -77,6 +80,5 @@ return require('packer').startup(function(use)
         }
     }
     use { 'saadparwaiz1/cmp_luasnip' }
-
 
 end)

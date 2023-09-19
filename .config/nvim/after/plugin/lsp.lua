@@ -7,7 +7,7 @@ local cmp_select = {behavior = cmp.SelectBehavior.Select}
 cmp.setup({
   preselect = 'item',
   completion = {
-      completeopt = 'menu,menuone,noinsert'
+      completeopt = 'menu,menuone,noinsert,preview'
   },
   sources = {
       {name = 'nvim_lsp'},
