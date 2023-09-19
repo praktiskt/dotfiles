@@ -1,5 +1,6 @@
 #!/usr/bin/env /bin/bash
-
+set -x
+set -e
 # Formatting:
 # * One function per application
 # * The function should copy all relevant files into this repo
@@ -31,7 +32,15 @@ ohmyzh() {
 }
 
 nvim() {
-    collector .config/nvim init.vim
+    FILES=`find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g'`
+    mkdir -p .config/nvim/after/plugin
+    mkdir -p .config/nvim/lua/praktiskt
+    for FILE in $FILES; do
+        if [[ `echo $FILE | grep 'packer_compiled.lua'` ]]; then
+            continue
+        fi
+        collector .config/nvim $FILE
+    done
 }
 
 aliases() {

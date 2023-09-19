@@ -3,7 +3,8 @@ i3-wm.binding.exit_app: q
 
 ! styling
 regolith.wallpaper.file: /home/magnus/Pictures/nature-forest.jpg
-regolith.wallpaper.options: scaled
+regolith.wallpaper.options: zoom 
+! regolith.wallpaper.options: scaled
 regolith.lockscreen.wallpaper.file: /home/magnus/Pictures/nature-blurred.png
 gnome.gtk.theme: Ayu-Mirage-Dark
 gtk.theme_name: Ayu-Mirage-Dark

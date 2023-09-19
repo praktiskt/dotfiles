@@ -20,3 +20,7 @@ colors:
       magenta: '0xd3869b'
       cyan:    '0x89b482'
       white:   '0xd4be98'
+font:
+  normal:
+    # family: DejaVu Sans Mono 
+    family: Monospace
