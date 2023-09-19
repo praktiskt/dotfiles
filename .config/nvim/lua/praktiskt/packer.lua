@@ -15,7 +15,7 @@ return require('packer').startup(function(use)
 	}
 
     -- Color schemes. See after/plugin/colors.lua
-	use({ 'rose-pine/neovim', as = 'rose-pine', config = function() vim.cmd('colorscheme rose-pine') end })
+	use({ 'rose-pine/neovim', as = 'rose-pine'})
 	--use {
 	--	"loctvl842/monokai-pro.nvim",
 	--	config = function()
