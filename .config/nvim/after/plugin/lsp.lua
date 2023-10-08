@@ -34,6 +34,15 @@ lsp.setup_servers({'tsserver', 'eslint'})
 -- (Optional) Configure lua language server for neovim
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 
+-- Configure golang language server
+require('lspconfig').gopls.setup({
+    settings = {
+        gopls = {
+            gofumpt = true
+        }
+    }
+})
+
 -- Add VSCode snippets (from rafamadriz/friendly-snippets)
 require('luasnip.loaders.from_vscode').lazy_load()
 
