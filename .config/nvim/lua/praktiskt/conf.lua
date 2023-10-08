@@ -12,8 +12,9 @@ set.smartindent = true
 set.smartcase = true
 set.cursorline = true
 set.termguicolors = true
+vim.wo.wrap = false
 
-set.clipboard = "unnamedplus" -- TODO: Should I really keep this?
+-- set.clipboard = "unnamedplus" -- TODO: Should I really keep this?
 
 set.hlsearch = false
 set.incsearch = true

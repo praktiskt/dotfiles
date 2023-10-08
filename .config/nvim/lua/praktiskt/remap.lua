@@ -11,6 +11,7 @@ vim.keymap.set("v", "<A-Down>", ":m '>+1<CR>gv=gv")
 -- Keep cursor in the middle
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "nzzzv")
+vim.keymap.set("n", "<leader><leader>", "zz")
 
 -- Replace currently marked selection with buffer
 vim.keymap.set("x", "<leader>p", "\"_dP")
@@ -23,5 +24,5 @@ vim.keymap.set("n", "<leader>Y", "\"+Y")
 -- In vertical edit mode, allow ctrl+c to paste
 vim.keymap.set("i", "<C-c>", "<Esc>")
 
--- Substitute the word we're on-macroA
+-- Substitute the word we're on-macro
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])

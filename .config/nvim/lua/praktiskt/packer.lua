@@ -80,5 +80,6 @@ return require('packer').startup(function(use)
         }
     }
     use { 'saadparwaiz1/cmp_luasnip' }
+    use { 'nvim-telescope/telescope-symbols.nvim' }
 
 end)
