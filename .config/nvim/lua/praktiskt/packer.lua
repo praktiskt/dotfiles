@@ -9,16 +9,22 @@ return require('packer').startup(function(use)
 
     -- File picker and fuzzy finder. See after/plugin/telescope.lua
 	use {
-		'nvim-telescope/telescope.nvim', tag = '0.1.3',
+		'nvim-telescope/telescope.nvim', tag = '0.1.5',
 		-- or                            , branch = '0.1.x',
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
 
+    use {
+        "nvim-telescope/telescope-file-browser.nvim",
+        requires = {
+            "nvim-telescope/telescope.nvim",
+            "nvim-lua/plenary.nvim",
+            "nvim-tree/nvim-web-devicons"
+        }
+    }
+
     -- Color schemes. See after/plugin/colors.lua
-	use { 'rose-pine/neovim', as = 'rose-pine'}
     use { "catppuccin/nvim", as = "catppuccin" }
-    use { "morhetz/gruvbox", as = "gruvbox" }
-    use { "loctvl842/monokai-pro.nvim", as = "monokai-pro" }
 
     -- Statusline
     use {
@@ -53,7 +59,7 @@ return require('packer').startup(function(use)
     }
 
     -- Fade window not in focus
-    use 'TaDaa/vimade'
+    -- use 'TaDaa/vimade'
 
     -- Highlight todo comments
     use {
@@ -82,4 +88,6 @@ return require('packer').startup(function(use)
     use { 'saadparwaiz1/cmp_luasnip' }
     use { 'nvim-telescope/telescope-symbols.nvim' }
 
+    -- Multi-cursor
+    use { "mg979/vim-visual-multi" }
 end)

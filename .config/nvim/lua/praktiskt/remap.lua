@@ -26,3 +26,26 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 
 -- Substitute the word we're on-macro
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
+-- Multi-select
+---- Rebind C-n to C-d
+local binds = {}
+binds["Find Under"] = "<C-d>"
+binds["Find Subword Under"] = "<C-d>"
+vim.g.VM_maps = binds
+
+-- Telescope file browser
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>b",
+  ":Telescope file_browser<CR>",
+  { noremap = true }
+)
+-- open file_browser with the path of the current buffer
+vim.api.nvim_set_keymap(
+  "n",
+  "<space>b",
+  ":Telescope file_browser path=%:p:h select_buffer=true<CR>",
+  { noremap = true }
+)
+
