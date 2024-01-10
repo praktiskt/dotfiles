@@ -37,7 +37,8 @@ vim.g.VM_maps = binds
 -- Telescope file browser
 vim.api.nvim_set_keymap(
   "n",
-  "<leader>b",
+  --"<leader>b",
+  "<C-p>",
   ":Telescope file_browser<CR>",
   { noremap = true }
 )
