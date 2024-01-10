@@ -13,38 +13,22 @@ return require('packer').startup(function(use)
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
 
-    use {
-        "nvim-telescope/telescope-file-browser.nvim",
-        branch = "feat/tree",
-        requires = {
-            "nvim-telescope/telescope.nvim",
-            "nvim-lua/plenary.nvim",
-            "nvim-tree/nvim-web-devicons"
-        },
-        config = function()
-            require("telescope").setup {
-                extensions = {
-                    file_browser = {
-                        theme = "dropdown",
-                        -- disables netrw and use telescope-file-browser in its place
-                        hijack_netrw = true,
-                        -- These are features of branch feat/tree
-                        grouped=true,
-                        previewer=true,
-                        initial_browser="tree",
-                        auto_depth=true,
-                        depth=1,
-                    },
-                },
-            }
-            -- To get telescope-file-browser loaded and working with telescope,
-            -- you need to call load_extension, somewhere after setup function:
-            require("telescope").load_extension "file_browser"
-        end
+    use "nvim-tree/nvim-web-devicons"
 
+    use {
+        "nvim-tree/nvim-tree.lua",
+        config = function()
+            require("nvim-tree").setup {
+                -- https://github.com/nvim-tree/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L339
+                view = {
+                    width = 40
+                }
+            }
+        end
     }
 
-    -- Color schemes. See after/plugin/colors.lua
+
+    -- -- Color schemes. See after/plugin/colors.lua
     use { "catppuccin/nvim", as = "catppuccin" }
 
     -- Statusline
@@ -81,6 +65,12 @@ return require('packer').startup(function(use)
 
     -- Fade window not in focus
     -- use 'TaDaa/vimade'
+    use {
+        'sunjon/shade.nvim',
+        config = function()
+            require("shade").setup()
+        end
+    }
 
     -- Highlight todo comments
     use {

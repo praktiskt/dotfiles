@@ -34,21 +34,9 @@ binds["Find Under"] = "<C-d>"
 binds["Find Subword Under"] = "<C-d>"
 vim.g.VM_maps = binds
 
--- Telescope file browser
-vim.api.nvim_set_keymap(
-  "n",
-  --"<leader>b",
-  "<C-p>",
-  ":Telescope file_browser<CR>",
-  { noremap = true }
-)
--- open file_browser with the path of the current buffer
-vim.api.nvim_set_keymap(
-  "n",
-  "<space>b",
-  ":Telescope file_browser path=%:p:h select_buffer=true<CR>",
-  { noremap = true }
-)
+-- File tree config
+vim.keymap.set("n", "<leader>e", "<esc>:NvimTreeToggle<CR>")
+vim.keymap.set("v", "<leader>e", "<esc>:NvimTreeToggle<CR>")
 
 -- Terminal shortcuts
 vim.keymap.set('n', '<leader>t', "<esc>:ToggleTerm<CR>")
