@@ -9,7 +9,7 @@ return require('packer').startup(function(use)
 
     -- File picker and fuzzy finder. See after/plugin/telescope.lua
 	use {
-		'nvim-telescope/telescope.nvim', tag = '0.1.5',
+		'nvim-telescope/telescope.nvim', tag = '0.1.x',
 		-- or                            , branch = '0.1.x',
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
@@ -90,4 +90,12 @@ return require('packer').startup(function(use)
 
     -- Multi-cursor
     use { "mg979/vim-visual-multi" }
+
+    -- Terminal
+    use {"akinsho/toggleterm.nvim", tag = '*', config = function()
+      require("toggleterm").setup{
+          direction="float"
+      }
+    end}
+
 end)
