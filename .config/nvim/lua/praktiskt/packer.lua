@@ -20,6 +20,9 @@ return require('packer').startup(function(use)
         config = function()
             require("nvim-tree").setup {
                 -- https://github.com/nvim-tree/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L339
+                filters = {
+                    dotfiles = true
+                },
                 view = {
                     width = 40
                 }
