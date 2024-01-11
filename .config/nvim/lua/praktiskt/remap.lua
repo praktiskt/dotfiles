@@ -28,14 +28,13 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 -- Substitute the word we're on-macro
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
--- Multi-select
--- Rebind C-n to C-d
-local binds = {}
-binds["Find Under"] = "<C-d>"
-binds["Find Subword Under"] = "<C-d>"
-vim.g.VM_maps = binds
-
 -- File tree config
 vim.keymap.set("n", "<leader>te", "<esc>:NvimTreeToggle<CR>")
 vim.keymap.set("v", "<leader>te", "<esc>:NvimTreeToggle<CR>")
 
+-- Visual multi select
+local binds = {}
+binds["Find Under"] = "<C-d>"
+binds["Find Subword Under"] = "<C-d>"
+vim.g.VM_maps = binds
+vim.g.VM_theme = "nord"
