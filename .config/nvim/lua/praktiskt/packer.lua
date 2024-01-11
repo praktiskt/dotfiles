@@ -32,7 +32,17 @@ return require('packer').startup(function(use)
 
 
     -- -- Color schemes. See after/plugin/colors.lua
-    use { "catppuccin/nvim", as = "catppuccin" }
+    use {
+        "catppuccin/nvim",
+        as = "catppuccin",
+        flavor = "mocha",
+        term_colors = true,
+        dim_inactive = {
+            enabled = false, -- dims the background color of inactive window
+            shade = "dark",
+            percentage = 0.15, -- percentage of the shade to apply to the inactive window
+        },
+    }
 
     -- Statusline
     use {
@@ -107,9 +117,16 @@ return require('packer').startup(function(use)
 
     -- Terminal
     use {"akinsho/toggleterm.nvim", tag = '*', config = function()
-      require("toggleterm").setup{
-          direction="float"
-      }
+      -- see after/plugin/toggleterm.lua
+      require("toggleterm").setup({
+          size = function(term)
+              if term.direction == "horizontal" then
+                  return 20
+              elseif term.direction == "vertical" then
+                  return vim.o.columns * 0.4
+              end
+          end,
+      })
     end}
 
 end)
