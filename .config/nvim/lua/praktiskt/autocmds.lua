@@ -23,3 +23,12 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
     group = autocmd_group,
 })
 
+vim.api.nvim_create_autocmd({ "QuitPre" }, {
+    pattern = { "*.*" },
+    desc = "Close minimap upon exit",
+    callback = function()
+        vim.cmd(":MinimapClose")
+    end,
+    group = autocmd_group,
+})
+
