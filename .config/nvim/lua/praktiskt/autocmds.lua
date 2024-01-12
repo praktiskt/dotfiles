@@ -32,11 +32,11 @@ vim.api.nvim_create_autocmd({ "QuitPre" }, {
     group = autocmd_group,
 })
 
--- vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
---     pattern = { "*.*" },
---     desc = "Close tree when entering a file",
---     callback = function()
---         vim.cmd(":NvimTreeClose")
---     end,
---     group = autocmd_group,
--- })
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+    pattern = { "*.*" },
+    desc = "Close tree when entering a file",
+    callback = function()
+        vim.cmd(":NvimTreeClose")
+    end,
+    group = autocmd_group,
+})
