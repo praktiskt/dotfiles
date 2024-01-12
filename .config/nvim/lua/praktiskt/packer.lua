@@ -30,7 +30,6 @@ return require('packer').startup(function(use)
         end
     }
 
-
     -- -- Color schemes. See after/plugin/colors.lua
     use {
         "catppuccin/nvim",
@@ -68,6 +67,11 @@ return require('packer').startup(function(use)
             {'hrsh7th/cmp-nvim-lsp'}, -- Required
             {'L3MON4D3/LuaSnip'},     -- Required
         }
+    }
+
+    use {
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
     }
 
     -- Match brackets.

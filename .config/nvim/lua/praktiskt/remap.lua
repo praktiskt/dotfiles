@@ -38,3 +38,7 @@ binds["Find Under"] = "<C-d>"
 binds["Find Subword Under"] = "<C-d>"
 vim.g.VM_maps = binds
 vim.g.VM_theme = "nord"
+
+-- Trouble
+vim.keymap.set("n", "<leader>td", "<esc>:TroubleToggle<CR>")
+vim.keymap.set("v", "<leader>td", "<esc>:TroubleToggle<CR>")
