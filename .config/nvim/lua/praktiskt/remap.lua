@@ -26,7 +26,7 @@ vim.keymap.set("n", "<leader>Y", "\"+Y")
 vim.keymap.set("i", "<C-c>", "<Esc>")
 
 -- Substitute the word we're on-macro
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- File tree config
 vim.keymap.set("n", "<leader>te", "<esc>:NvimTreeToggle<CR>")
