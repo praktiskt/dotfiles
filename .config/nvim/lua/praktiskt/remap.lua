@@ -29,8 +29,8 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- File tree config
-vim.keymap.set("n", "<leader>te", "<esc>:NvimTreeToggle<CR>")
-vim.keymap.set("v", "<leader>te", "<esc>:NvimTreeToggle<CR>")
+-- vim.keymap.set("n", "<leader>te", ":NvimTreeToggle<CR>")
+-- vim.keymap.set("v", "<leader>te", ":NvimTreeToggle<CR>")
 
 -- Visual multi select
 local binds = {}

@@ -24,23 +24,19 @@ return require('packer').startup(function(use)
                     dotfiles = true
                 },
                 view = {
-                    width = 40
+                    width = 35
                 }
             }
         end
     }
+
 
     -- -- Color schemes. See after/plugin/colors.lua
     use {
         "catppuccin/nvim",
         as = "catppuccin",
         flavor = "mocha",
-        term_colors = true,
-        dim_inactive = {
-            enabled = false, -- dims the background color of inactive window
-            shade = "dark",
-            percentage = 0.15, -- percentage of the shade to apply to the inactive window
-        },
+        term_colors = true
     }
 
     -- Statusline
@@ -97,10 +93,6 @@ return require('packer').startup(function(use)
 
 
     -- Match brackets.
-    -- use {
-    --     "windwp/nvim-autopairs",
-    --     config = function() require("nvim-autopairs").setup {} end
-    -- }
     use{
         'altermo/ultimate-autopair.nvim',
         event={'InsertEnter','CmdlineEnter'},
@@ -115,9 +107,13 @@ return require('packer').startup(function(use)
 
     -- Fade window not in focus
     use {
-        'sunjon/shade.nvim',
+        'levouh/tint.nvim',
         config = function()
-            require("shade").setup()
+            require("tint").setup {
+                tint = -65,  -- Darken colors, use a positive value to brighten
+                saturation = 0.6,  -- Saturation to preserve
+                tint_background_colors = false,  -- Tint background portions of highlight groups
+            }
         end
     }
 
@@ -187,7 +183,7 @@ return require('packer').startup(function(use)
             vim.g.minimap_left = 0
             vim.g.minimap_block_filetypes = {'fugitive', 'nvim-tree', 'tagbar', 'fzf', 'telescope', 'NvimTree'}
             vim.g.minimap_block_buftypes = {'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt', 'NvimTree'}
-            vim.g.minimap_close_filetypes = {'startify', 'netrw', 'vim-plug', 'NvimTree'}
+            vim.g.minimap_close_filetypes = {'startify', 'netrw', 'vim-plug', 'packer', 'NvimTree'}
             vim.g.minimap_highlight_range = 1
             vim.g.minimap_highlight_search = 1
             vim.g.minimap_git_colors = 1
