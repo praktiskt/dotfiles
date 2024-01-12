@@ -97,13 +97,23 @@ return require('packer').startup(function(use)
 
 
     -- Match brackets.
-    use {
-        "windwp/nvim-autopairs",
-        config = function() require("nvim-autopairs").setup {} end
+    -- use {
+    --     "windwp/nvim-autopairs",
+    --     config = function() require("nvim-autopairs").setup {} end
+    -- }
+    use{
+        'altermo/ultimate-autopair.nvim',
+        event={'InsertEnter','CmdlineEnter'},
+        branch='v0.6', --recomended as each new version will have breaking changes
+        config=function ()
+            require('ultimate-autopair').setup({
+                --Config goes here
+            })
+        end,
     }
 
+
     -- Fade window not in focus
-    -- use 'TaDaa/vimade'
     use {
         'sunjon/shade.nvim',
         config = function()
@@ -118,6 +128,9 @@ return require('packer').startup(function(use)
             {"nvim-lua/plenary.nvim"}
         },
     }
+
+    -- Highlight word under cursor with LSP, tree-sitter or regex
+    use { "RRethy/vim-illuminate" }
 
     -- Strip whitespace as you are writing.
     use {
@@ -154,5 +167,14 @@ return require('packer').startup(function(use)
           end,
       })
     end}
+
+    -- VCS show changes in sidebar
+    use {
+        "lewis6991/gitsigns.nvim",
+        config = function()
+            require('gitsigns').setup {
+            }
+        end
+    }
 
 end)
