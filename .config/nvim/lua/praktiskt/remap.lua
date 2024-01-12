@@ -46,3 +46,9 @@ vim.keymap.set("v", "<leader>td", "<esc>:TroubleToggle<CR>")
 -- Which key
 vim.keymap.set("n", "<leader>h", "<esc>:WhichKey<CR>")
 vim.keymap.set("v", "<leader>h", "<esc>:WhichKey<CR>")
+
+-- Tabby
+vim.g.tabby_trigger_mode = 'manual'
+vim.g.tabby_keybinding_accept = '<Tab>'
+vim.g.tabby_keybinding_trigger_or_dismiss = '<C-a>'
+

@@ -70,6 +70,10 @@ return require('packer').startup(function(use)
     }
 
     use {
+        "TabbyML/vim-tabby"
+    }
+
+    use {
         "folke/trouble.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
     }
@@ -82,6 +86,15 @@ return require('packer').startup(function(use)
             require("which-key").setup {}
         end
     }
+
+    use {
+        "lukas-reineke/indent-blankline.nvim",
+        as = "ibl",
+        config = function()
+            require("ibl").setup()
+        end
+    }
+
 
     -- Match brackets.
     use {
