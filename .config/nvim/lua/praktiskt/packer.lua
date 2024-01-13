@@ -4,14 +4,14 @@
 vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function(use)
-	-- Packer can manage itself
-	use 'wbthomason/packer.nvim'
+    -- Packer can manage itself
+    use 'wbthomason/packer.nvim'
 
     -- File picker and fuzzy finder. See after/plugin/telescope.lua
-	use {
-		'nvim-telescope/telescope.nvim', tag = '0.1.x',
-		requires = { {'nvim-lua/plenary.nvim'} }
-	}
+    use {
+        'nvim-telescope/telescope.nvim', tag = '0.1.x',
+        requires = { {'nvim-lua/plenary.nvim'} }
+    }
 
     use "nvim-tree/nvim-web-devicons"
 
@@ -47,17 +47,17 @@ return require('packer').startup(function(use)
     }
 
     -- Nice highlighting. See after/plugin/treesitter.lua
-	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
+    use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
 
     -- Configure LSP. See after/plugin/lsp.lua
-	use {
-		'VonHeikemen/lsp-zero.nvim',
-		branch = 'v2.x',
-		requires = {
-			-- LSP Support
-			{'neovim/nvim-lspconfig'},             -- Required
-			{'williamboman/mason.nvim'},           -- Optional
-			{'williamboman/mason-lspconfig.nvim'}, -- Optional
+    use {
+        'VonHeikemen/lsp-zero.nvim',
+        branch = 'v2.x',
+        requires = {
+            -- LSP Support
+            {'neovim/nvim-lspconfig'},             -- Required
+            {'williamboman/mason.nvim'},           -- Optional
+            {'williamboman/mason-lspconfig.nvim'}, -- Optional
 
             -- Autocompletion
             {'hrsh7th/nvim-cmp'},     -- Required
@@ -153,16 +153,16 @@ return require('packer').startup(function(use)
 
     -- Terminal
     use {"akinsho/toggleterm.nvim", tag = '*', config = function()
-      -- see after/plugin/toggleterm.lua
-      require("toggleterm").setup({
-          size = function(term)
-              if term.direction == "horizontal" then
-                  return 20
-              elseif term.direction == "vertical" then
-                  return vim.o.columns * 0.4
-              end
-          end,
-      })
+        -- see after/plugin/toggleterm.lua
+        require("toggleterm").setup({
+            size = function(term)
+                if term.direction == "horizontal" then
+                    return 20
+                elseif term.direction == "vertical" then
+                    return vim.o.columns * 0.4
+                end
+            end,
+        })
     end}
 
     -- VCS show changes in sidebar
