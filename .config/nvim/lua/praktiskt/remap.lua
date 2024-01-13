@@ -4,6 +4,12 @@ vim.keymap.set("n", "gf", "<C-i>")
 -- vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 vim.keymap.set("n", "<C-f>", "/")
 
+-- Spelling shortcuts
+vim.keymap.set("n", "<leader>sn", "]s") -- next misspell
+vim.keymap.set("n", "<leader>sb", "[s") -- previous misspell
+vim.keymap.set("n", "<leader>sa", "zg") -- add to dictionary
+vim.keymap.set("n", "<leader>sf", "z=") -- open spelling fix
+
 -- Allow moving lines in visual mode
 vim.keymap.set("v", "<A-Up>", ":m '<-2<CR>gv=gv")
 vim.keymap.set("v", "<A-Down>", ":m '>+1<CR>gv=gv")

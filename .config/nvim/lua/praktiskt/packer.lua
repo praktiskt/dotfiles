@@ -49,7 +49,7 @@ return require('packer').startup(function(use)
     -- Nice highlighting. See after/plugin/treesitter.lua
 	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
 
-    -- Configure LSP. See after/plugin/lsp.lua 
+    -- Configure LSP. See after/plugin/lsp.lua
 	use {
 		'VonHeikemen/lsp-zero.nvim',
 		branch = 'v2.x',
@@ -97,10 +97,10 @@ return require('packer').startup(function(use)
     use{
         'altermo/ultimate-autopair.nvim',
         event={'InsertEnter','CmdlineEnter'},
-        branch='v0.6', --recomended as each new version will have breaking changes
+        branch='v0.6', --recommended as each new version will have breaking changes
         config=function ()
             require('ultimate-autopair').setup({
-                --Config goes here
+                -- Config goes here
             })
         end,
     }
@@ -129,7 +129,7 @@ return require('packer').startup(function(use)
     -- Highlight word under cursor with LSP, tree-sitter or regex
     use { "RRethy/vim-illuminate" }
 
-    -- Strip whitespace as you are writing.
+    -- Strip white space as you are writing.
     use {
         'lewis6991/spaceless.nvim',
         config = function()
@@ -174,7 +174,7 @@ return require('packer').startup(function(use)
         end
     }
 
-    -- Mimimap (right side-panel)
+    -- Minimap (right side-panel)
     use {
         'wfxr/minimap.vim',
         config = function()

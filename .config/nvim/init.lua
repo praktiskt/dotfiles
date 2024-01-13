@@ -1,6 +1,8 @@
 require("praktiskt")
 
 vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
+vim.opt.spelllang = "en_us"
+vim.opt.spell = true
 
 -- Required by nvim-tree
 vim.g.loaded_netrw = 1
