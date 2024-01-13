@@ -32,6 +32,10 @@ vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left>
 vim.keymap.set("n", "<leader>te", ":NvimTreeOpen<CR>")
 vim.keymap.set("v", "<leader>te", ":NvimTreeOpen<CR>")
 
+-- Minimap
+vim.keymap.set("n", "<leader>tm", ":Minimap<CR>")
+vim.keymap.set("v", "<leader>tm", ":Minimap<CR>")
+
 -- Visual multi select
 local binds = {}
 binds["Find Under"] = "<C-d>"
