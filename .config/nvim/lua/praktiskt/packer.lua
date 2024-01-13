@@ -179,7 +179,7 @@ return require('packer').startup(function(use)
         'wfxr/minimap.vim',
         config = function()
             vim.g.minimap_width = 10
-            vim.g.minimap_auto_start = 1
+            vim.g.minimap_auto_start = 0
             vim.g.minimap_auto_start_win_enter = 0
             vim.g.minimap_left = 0
             vim.g.minimap_block_filetypes = {'fugitive', 'nvim-tree', 'tagbar', 'fzf', 'telescope', 'NvimTree'}

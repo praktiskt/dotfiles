@@ -20,11 +20,14 @@ vim.keymap.set("n", "N", "nzzzv")
 vim.keymap.set("n", "<leader><leader>", "zz")
 
 -- Replace currently marked selection with buffer
-vim.keymap.set("x", "<leader>p", "\"_dP")
+vim.keymap.set("n", "<leader>p", "\"_dP")
+vim.keymap.set("v", "<leader>p", "\"_dP")
 
 -- Allow yanking into system clipboard
-vim.keymap.set("x", "<leader>y", "\"+y")
-vim.keymap.set("x", "<leader>Y", "\"+Y")
+vim.keymap.set("n", "<leader>y", "\"+y")
+vim.keymap.set("v", "<leader>y", "\"+y")
+vim.keymap.set("n", "<leader>Y", "\"+Y")
+vim.keymap.set("v", "<leader>Y", "\"+Y")
 
 -- In vertical edit mode, allow ctrl+c to paste
 vim.keymap.set("i", "<C-c>", "<Esc>")
@@ -34,10 +37,10 @@ vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left>
 vim.keymap.set("v", "<leader>cs", '"zy<Esc>:%s/<C-R>z//g<Left><Left>')
 
 -- File tree config
-vim.keymap.set("x", "<leader>te", ":NvimTreeOpen<CR>")
+vim.keymap.set("n", "<leader>te", ":NvimTreeOpen<CR>")
 
 -- Minimap
-vim.keymap.set("x", "<leader>tm", ":Minimap<CR>")
+vim.keymap.set("n", "<leader>tm", ":MinimapToggle<CR>")
 
 -- Visual multi select
 local binds = {}
@@ -47,10 +50,10 @@ vim.g.VM_maps = binds
 vim.g.VM_theme = "nord"
 
 -- Trouble
-vim.keymap.set("x", "<leader>td", "<esc>:TroubleToggle<CR>")
+vim.keymap.set("n", "<leader>td", "<esc>:TroubleToggle<CR>")
 
 -- Which key
-vim.keymap.set("x", "<leader>h", "<esc>:WhichKey<CR>")
+vim.keymap.set("n", "<leader>h", "<esc>:WhichKey<CR>")
 
 -- Tabby
 vim.g.tabby_trigger_mode = 'manual'
