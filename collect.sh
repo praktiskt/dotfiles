@@ -34,10 +34,13 @@ ohmyzh() {
 nvim() {
     LUAS=`find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs`
     SNIPPETS=`find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs`
-    FILES=`echo "$LUAS $SNIPPETS"`
+    SPELLING=`find ~/.config/nvim -name "*.add" | sed -E 's/^.*nvim\///g' | xargs`
+    SPELLING_SPL=`find ~/.config/nvim -name "*.add.spl" | sed -E 's/^.*nvim\///g' | xargs`
+    FILES=`echo "$LUAS $SNIPPETS $SPELLING $SPELLING_SPL"`
     mkdir -p .config/nvim/after/plugin
     mkdir -p .config/nvim/lua/praktiskt
     mkdir -p .config/nvim/snippets
+    mkdir -p .config/nvim/spell
     for FILE in $FILES; do
         if [[ `echo $FILE | grep 'packer_compiled.lua'` ]]; then
             continue
