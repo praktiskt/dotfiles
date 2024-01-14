@@ -1,23 +1,20 @@
--- This file can be loaded by calling `lua require('plugins')` from your init.vim
+-- This file can be loaded by calling `lua require("plugins")` from your init.vim
 
 -- Only required if you have packer configured as `opt`
 vim.cmd [[packadd packer.nvim]]
 
-return require('packer').startup(function(use)
+return require("packer").startup(function(use)
     -- Packer can manage itself
-    use 'wbthomason/packer.nvim'
+    use "wbthomason/packer.nvim"
 
     -- File picker and fuzzy finder. See after/plugin/telescope.lua
-    use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.x',
-        requires = { {'nvim-lua/plenary.nvim'} }
-    }
-
+    use { "nvim-telescope/telescope.nvim", tag = "0.1.x" }
     use "nvim-tree/nvim-web-devicons"
+    use "nvim-lua/plenary.nvim"
 
+    -- File tree
     use {
         "nvim-tree/nvim-tree.lua",
-        requires = { {"nvim-tree/nvim-web-devicons"} },
         config = function()
             require("nvim-tree").setup {
                 -- https://github.com/nvim-tree/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L339
@@ -41,40 +38,39 @@ return require('packer').startup(function(use)
     }
 
     -- Statusline
-    use {
-        'nvim-lualine/lualine.nvim',
-        requires = { 'nvim-tree/nvim-web-devicons', opt = true }
-    }
+    use { "nvim-lualine/lualine.nvim" }
 
     -- Nice highlighting. See after/plugin/treesitter.lua
-    use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
+    use("nvim-treesitter/nvim-treesitter", {run = ":TSUpdate"})
+    use { "nvim-treesitter/nvim-treesitter-context" }
 
     -- Configure LSP. See after/plugin/lsp.lua
     use {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
+        "VonHeikemen/lsp-zero.nvim",
+        branch = "v2.x",
         requires = {
             -- LSP Support
-            {'neovim/nvim-lspconfig'},             -- Required
-            {'williamboman/mason.nvim'},           -- Optional
-            {'williamboman/mason-lspconfig.nvim'}, -- Optional
+            {"neovim/nvim-lspconfig"},             -- Required
+            {"williamboman/mason.nvim"},           -- Optional
+            {"williamboman/mason-lspconfig.nvim"}, -- Optional
 
             -- Autocompletion
-            {'hrsh7th/nvim-cmp'},     -- Required
-            {'hrsh7th/cmp-nvim-lsp'}, -- Required
-            {'L3MON4D3/LuaSnip'},     -- Required
+            {"hrsh7th/nvim-cmp"},     -- Required
+            {"hrsh7th/cmp-nvim-lsp"}, -- Required
+            {"L3MON4D3/LuaSnip"},     -- Required
         }
     }
 
-    use {
-        "TabbyML/vim-tabby"
-    }
+    -- Autocomplete
+    use { "TabbyML/vim-tabby" }
 
+    -- Diagnostics
     use {
         "folke/trouble.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
     }
 
+    -- Display shortcuts on pause for current chord
     use {
         "folke/which-key.nvim",
         config = function()
@@ -84,6 +80,7 @@ return require('packer').startup(function(use)
         end
     }
 
+    -- Add indentation guide
     use {
         "lukas-reineke/indent-blankline.nvim",
         as = "ibl",
@@ -92,23 +89,21 @@ return require('packer').startup(function(use)
         end
     }
 
-
     -- Match brackets.
     use{
-        'altermo/ultimate-autopair.nvim',
-        event={'InsertEnter','CmdlineEnter'},
-        branch='v0.6', --recommended as each new version will have breaking changes
+        "altermo/ultimate-autopair.nvim",
+        event={"InsertEnter","CmdlineEnter"},
+        branch="v0.6", --recommended as each new version will have breaking changes
         config=function ()
-            require('ultimate-autopair').setup({
+            require("ultimate-autopair").setup({
                 -- Config goes here
             })
         end,
     }
 
-
     -- Fade window not in focus
     use {
-        'levouh/tint.nvim',
+        "levouh/tint.nvim",
         config = function()
             require("tint").setup {
                 tint = -65,  -- Darken colors, use a positive value to brighten
@@ -119,40 +114,35 @@ return require('packer').startup(function(use)
     }
 
     -- Highlight todo comments
-    use {
-        "folke/todo-comments.nvim",
-        requires = {
-            {"nvim-lua/plenary.nvim"}
-        },
-    }
+    use { "folke/todo-comments.nvim" }
 
     -- Highlight word under cursor with LSP, tree-sitter or regex
     use { "RRethy/vim-illuminate" }
 
     -- Strip white space as you are writing.
     use {
-        'lewis6991/spaceless.nvim',
+        "lewis6991/spaceless.nvim",
         config = function()
-            require'spaceless'.setup()
+            require"spaceless".setup()
         end
     }
 
     -- Add snippets
     use { "rafamadriz/friendly-snippets" }
     use {
-        'L3MON4D3/LuaSnip',
+        "L3MON4D3/LuaSnip",
         dependencies = {
             "rafamadriz/friendly-snippets"
         }
     }
-    use { 'saadparwaiz1/cmp_luasnip' }
-    use { 'nvim-telescope/telescope-symbols.nvim' }
+    use { "saadparwaiz1/cmp_luasnip" }
+    use { "nvim-telescope/telescope-symbols.nvim" }
 
     -- Multi-cursor
     use { "mg979/vim-visual-multi" }
 
     -- Terminal
-    use {"akinsho/toggleterm.nvim", tag = '*', config = function()
+    use {"akinsho/toggleterm.nvim", tag = "*", config = function()
         -- see after/plugin/toggleterm.lua
         require("toggleterm").setup({
             size = function(term)
@@ -169,28 +159,29 @@ return require('packer').startup(function(use)
     use {
         "lewis6991/gitsigns.nvim",
         config = function()
-            require('gitsigns').setup {
+            require("gitsigns").setup {
             }
         end
     }
 
     -- Minimap (right side-panel)
     use {
-        'wfxr/minimap.vim',
+        "wfxr/minimap.vim",
         config = function()
             vim.g.minimap_width = 10
             vim.g.minimap_auto_start = 0
             vim.g.minimap_auto_start_win_enter = 0
             vim.g.minimap_left = 0
-            vim.g.minimap_block_filetypes = {'fugitive', 'nvim-tree', 'tagbar', 'fzf', 'telescope', 'NvimTree'}
-            vim.g.minimap_block_buftypes = {'nofile', 'nowrite', 'quickfix', 'terminal', 'prompt', 'NvimTree'}
-            vim.g.minimap_close_filetypes = {'startify', 'netrw', 'vim-plug', 'packer', 'NvimTree'}
+            vim.g.minimap_block_filetypes = {"fugitive", "nvim-tree", "tagbar", "fzf", "telescope", "NvimTree"}
+            vim.g.minimap_block_buftypes = {"nofile", "nowrite", "quickfix", "terminal", "prompt", "NvimTree"}
+            vim.g.minimap_close_filetypes = {"startify", "netrw", "vim-plug", "packer", "NvimTree"}
             vim.g.minimap_highlight_range = 1
             vim.g.minimap_highlight_search = 1
             vim.g.minimap_git_colors = 1
         end
     }
 
+    -- Show colors on color codes, like #ffffff
     use {
         "NvChad/nvim-colorizer.lua",
         config = function()
