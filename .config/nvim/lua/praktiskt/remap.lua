@@ -60,3 +60,6 @@ vim.g.tabby_trigger_mode = 'manual'
 vim.g.tabby_keybinding_accept = '<Tab>'
 vim.g.tabby_keybinding_trigger_or_dismiss = '<C-a>'
 
+-- LSP shortcuts. Many only work in insert mode. I want them in normal mode too.
+vim.keymap.set("n", "<C-Space>", "a<C-Space>n")
+

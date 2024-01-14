@@ -1,5 +1,10 @@
 local lsp = require('lsp-zero').preset({})
 
+lsp.ensure_installed({
+    "tsserver",
+    "rust_analyzer"
+})
+
 local cmp = require('cmp')
 -- local cmp_action = require('lsp-zero').cmp_action()
 -- local cmp_select = {behavior = cmp.SelectBehavior.Select}
@@ -17,7 +22,8 @@ cmp.setup({
   mapping = {
     ['<CR>'] = cmp.mapping.confirm({select = false}),
     ['<Tab>'] = cmp.mapping.confirm({select = false}),
-    ["<C-Space>"] = cmp.mapping.complete(),
+ 	["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "s", "c" }),
+    -- ["<C-Space>"] = cmp.mapping.complete(),
   },
   window = {
       completion = cmp.config.window.bordered(),
@@ -35,9 +41,17 @@ cmp.setup({
           item.menu = menu_icon[entry.source.name]
           return item
       end,
-  },
+  }
+})
 
-
+lsp.set_preferences({
+    suggest_lsp_servers = false,
+    sign_icons = {
+        error = 'E',
+        warn = 'W',
+        hint = 'H',
+        info = 'I'
+    }
 })
 
 lsp.on_attach(function(_, bufnr)
