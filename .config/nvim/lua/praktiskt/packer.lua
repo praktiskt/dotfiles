@@ -61,6 +61,15 @@ return require("packer").startup(function(use)
         }
     }
 
+    -- rust-analyzer for LSP
+    use {
+        "mrcjkb/rustaceanvim",
+        tag = "3.15.0",
+        requires = {
+            {"mfussenegger/nvim-dap"},
+        }
+    }
+
     -- Autocomplete
     use { "TabbyML/vim-tabby" }
 
@@ -164,7 +173,7 @@ return require("packer").startup(function(use)
         end
     }
 
-    -- Minimap (right side-panel)
+    -- Minimap (right side-panel), requires "cargo install --locked code-minimap"
     use {
         "wfxr/minimap.vim",
         config = function()
