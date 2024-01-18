@@ -7,7 +7,7 @@ lsp.ensure_installed({
 
 local cmp = require('cmp')
 -- local cmp_action = require('lsp-zero').cmp_action()
--- local cmp_select = {behavior = cmp.SelectBehavior.Select}
+local cmp_select = {behavior = cmp.SelectBehavior.Select}
 
 cmp.setup({
   preselect = 'item',
@@ -20,8 +20,9 @@ cmp.setup({
       {name = 'luasnip'}
   },
   mapping = {
-    ['<CR>'] = cmp.mapping.confirm({select = false}),
-    ['<Tab>'] = cmp.mapping.confirm({select = false}),
+    ['<CR>'] = cmp.mapping.confirm({select = true}),
+    ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
+    ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
  	["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "s", "c" }),
     -- ["<C-Space>"] = cmp.mapping.complete(),
   },

@@ -72,10 +72,7 @@ return require("packer").startup(function(use)
     use { "TabbyML/vim-tabby" }
 
     -- Diagnostics
-    use {
-        "folke/trouble.nvim",
-        dependencies = { "nvim-tree/nvim-web-devicons" },
-    }
+    use { "folke/trouble.nvim" }
 
     -- Display shortcuts on pause for current chord
     use {
@@ -108,6 +105,9 @@ return require("packer").startup(function(use)
         end,
     }
 
+    -- Add end to things like Ruby, Julia, Lua ...
+    use { "RRethy/nvim-treesitter-endwise" }
+
     -- Fade window not in focus
     use {
         "levouh/tint.nvim",
@@ -135,14 +135,14 @@ return require("packer").startup(function(use)
     }
 
     -- Add snippets
-    use { "rafamadriz/friendly-snippets" }
-    use {
-        "L3MON4D3/LuaSnip",
-        dependencies = {
-            "rafamadriz/friendly-snippets"
-        }
-    }
-    use { "saadparwaiz1/cmp_luasnip" }
+    -- use { "rafamadriz/friendly-snippets" }
+    -- use {
+    --     "L3MON4D3/LuaSnip",
+    --     dependencies = {
+    --         "rafamadriz/friendly-snippets"
+    --     }
+    -- }
+    -- use { "saadparwaiz1/cmp_luasnip" }
     use { "nvim-telescope/telescope-symbols.nvim" }
 
     -- Multi-cursor
@@ -188,9 +188,17 @@ return require("packer").startup(function(use)
         end
     }
 
+    -- TODO: Use satellite instead of minimap once nvim hits 0.10 stable
+    -- use {
+    --     "lewis6991/satellite.nvim",
+    --     config = function()
+    --         require("satellite").setup {}
+    --     end
+    -- }
+
     -- Show colors on color codes, like #ffffff
     use {
-        "NvChad/nvim-colorizer.lua",
+        "norcalli/nvim-colorizer.lua",
         config = function()
             require("colorizer").setup()
         end
