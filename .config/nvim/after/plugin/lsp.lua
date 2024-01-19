@@ -10,9 +10,11 @@ cmp.setup({
       completeopt = 'menu,menuone,noinsert,preview'
   },
   sources = {
+      {name = 'path'},
       {name = 'nvim_lsp'},
-      {name = 'nvim_lsp_signature_help'},
-      {name = 'luasnip'}
+      {name = 'nvim_lua'},
+      {name = 'luasnip', keyword_length = 2},
+      {name = 'buffer', keyword_length = 3},
   },
   mapping = cmp.mapping.preset.insert({
       ['<CR>'] = cmp.mapping.confirm({select = true}),
