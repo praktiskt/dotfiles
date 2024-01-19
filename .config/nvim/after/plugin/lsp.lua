@@ -20,11 +20,10 @@ cmp.setup({
       {name = 'luasnip'}
   },
   mapping = {
-    ['<CR>'] = cmp.mapping.confirm({select = true}),
-    ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
-    ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
- 	["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "s", "c" }),
-    -- ["<C-Space>"] = cmp.mapping.complete(),
+      ['<CR>'] = cmp.mapping.confirm({select = true}),
+      ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
+      ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
+      ["<C-Space>"] = cmp.mapping.complete(),
   },
   window = {
       completion = cmp.config.window.bordered(),

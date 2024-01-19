@@ -41,7 +41,11 @@ return require("packer").startup(function(use)
     use { "nvim-lualine/lualine.nvim" }
 
     -- Nice highlighting. See after/plugin/treesitter.lua
-    use("nvim-treesitter/nvim-treesitter", {run = ":TSUpdate"})
+    use {
+        "nvim-treesitter/nvim-treesitter",
+        tag = "0.9.x",
+        { run = ":TSUpdate" }
+    }
     use { "nvim-treesitter/nvim-treesitter-context" }
 
     -- Configure LSP. See after/plugin/lsp.lua
@@ -94,10 +98,10 @@ return require("packer").startup(function(use)
     }
 
     -- Match brackets.
-    use{
+    use {
         "altermo/ultimate-autopair.nvim",
         event={"InsertEnter","CmdlineEnter"},
-        branch="v0.6", --recommended as each new version will have breaking changes
+        branch="v0.6",
         config=function ()
             require("ultimate-autopair").setup({
                 -- Config goes here
@@ -135,14 +139,6 @@ return require("packer").startup(function(use)
     }
 
     -- Add snippets
-    -- use { "rafamadriz/friendly-snippets" }
-    -- use {
-    --     "L3MON4D3/LuaSnip",
-    --     dependencies = {
-    --         "rafamadriz/friendly-snippets"
-    --     }
-    -- }
-    -- use { "saadparwaiz1/cmp_luasnip" }
     use { "nvim-telescope/telescope-symbols.nvim" }
 
     -- Multi-cursor
@@ -171,24 +167,7 @@ return require("packer").startup(function(use)
         end
     }
 
-    -- Minimap (right side-panel), requires "cargo install --locked code-minimap"
-    use {
-        "wfxr/minimap.vim",
-        config = function()
-            vim.g.minimap_width = 10
-            vim.g.minimap_auto_start = 0
-            vim.g.minimap_auto_start_win_enter = 0
-            vim.g.minimap_left = 0
-            vim.g.minimap_block_filetypes = {"fugitive", "nvim-tree", "tagbar", "fzf", "telescope", "NvimTree"}
-            vim.g.minimap_block_buftypes = {"nofile", "nowrite", "quickfix", "terminal", "prompt", "NvimTree"}
-            vim.g.minimap_close_filetypes = {"startify", "netrw", "vim-plug", "packer", "NvimTree"}
-            vim.g.minimap_highlight_range = 1
-            vim.g.minimap_highlight_search = 1
-            vim.g.minimap_git_colors = 1
-        end
-    }
-
-    -- TODO: Use satellite instead of minimap once nvim hits 0.10 stable
+    -- TODO: Use satellite once nvim hits 0.10 stable
     -- use {
     --     "lewis6991/satellite.nvim",
     --     config = function()

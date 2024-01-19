@@ -9,11 +9,11 @@ vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 local Terminal  = require('toggleterm.terminal').Terminal
 local floating_terminal = Terminal:new({
     direction = "float",
-    shade_terminals = false,
+    shade_terminals = true,
 })
 local horizontal_terminal= Terminal:new({
     direction = "horizontal",
-    shade_terminals = false
+    shade_terminals = true
 })
 
 function _Toggle_floating_terminal() floating_terminal:toggle() end
