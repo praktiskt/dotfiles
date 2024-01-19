@@ -51,7 +51,7 @@ return require("packer").startup(function(use)
     -- Configure LSP. See after/plugin/lsp.lua
     use {
         "VonHeikemen/lsp-zero.nvim",
-        branch = "v2.x",
+        branch = "v3.x",
         requires = {
             -- LSP Support
             {'neovim/nvim-lspconfig'},

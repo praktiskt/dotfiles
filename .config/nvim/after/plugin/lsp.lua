@@ -1,10 +1,5 @@
 local lsp = require('lsp-zero').preset({})
 
-lsp.ensure_installed({
-    "tsserver",
-    "rust_analyzer"
-})
-
 local cmp = require('cmp')
 -- local cmp_action = require('lsp-zero').cmp_action()
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
@@ -19,12 +14,12 @@ cmp.setup({
       {name = 'nvim_lsp_signature_help'},
       {name = 'luasnip'}
   },
-  mapping = {
+  mapping = cmp.mapping.preset.insert({
       ['<CR>'] = cmp.mapping.confirm({select = true}),
       ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
       ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
       ["<C-Space>"] = cmp.mapping.complete(),
-  },
+  }),
   window = {
       completion = cmp.config.window.bordered(),
       documentation = cmp.config.window.bordered(),
@@ -36,7 +31,7 @@ cmp.setup({
               nvim_lsp = 'λ',
               vsnip = '⋗',
               buffer = 'Ω',
-              path = '🖫',
+              path = '/',
           }
           item.menu = menu_icon[entry.source.name]
           return item
@@ -65,20 +60,6 @@ lsp.on_attach(function(_, bufnr)
     vim.keymap.set('n', 'ge', function() vim.diagnostic.goto_next() end, opts)
     vim.keymap.set('n', 'gpe', function() vim.diagnostic.goto_prev() end, opts)
 end)
-
-lsp.setup_servers({'tsserver', 'eslint'})
-
--- (Optional) Configure lua language server for neovim
-require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
-
--- Configure golang language server
-require('lspconfig').gopls.setup({
-    settings = {
-        gopls = {
-            gofumpt = true
-        }
-    }
-})
 
 -- Add VSCode snippets (from rafamadriz/friendly-snippets)
 require('luasnip.loaders.from_vscode').lazy_load()
