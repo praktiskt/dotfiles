@@ -14,16 +14,16 @@ local ih = require("lsp-inlayhints")
 ih.setup()
 
 require("mason-lspconfig").setup({
-    ensure_installed = {"tsserver", "gopls", "rust_analyzer", "pylsp"},
+    ensure_installed = {"tsserver", "gopls", "rust_analyzer", "ruff_lsp"},
     handlers = {
         lsp_zero.default_setup,
         lua_ls = function()
             -- Configure inlay hints
-            local lua_opts = lsp_zero.nvim_lua_ls()
-            lua_opts["on_attach"] = function(client, bufnr)
+            local opts = lsp_zero.nvim_lua_ls()
+            opts["on_attach"] = function(client, bufnr)
                 ih.on_attach(client, bufnr)
             end
-            lua_opts["settings"] = {
+            opts["settings"] = {
                 Lua = {
                     hint = {
                         enable = true
@@ -33,34 +33,39 @@ require("mason-lspconfig").setup({
                     }
                 }
             }
-            require("lspconfig").lua_ls.setup(lua_opts)
+            require("lspconfig").lua_ls.setup(opts)
         end,
         gopls = function()
             -- Configure inlay hints
-            local go_opts = {}
-            go_opts["on_attach"] = function(client, bufnr)
-                ih.on_attach(client, bufnr)
-            end
-            go_opts["settings"] = {
-                gopls = {
-                    hints = {
-                        assignVariableTypes = true,
-                        compositeLiteralFields = true,
-                        constantValues = true,
-                        functionTypeParameters = true,
-                        parameterNames = true,
-                        rangeVariableTypes = true
+            local opts = {
+                on_attach = function(client, bufnr)
+                    ih.on_attach(client, bufnr)
+                end,
+                settings = {
+                    gopls = {
+                        hints = {
+                            assignVariableTypes = true,
+                            compositeLiteralFields = true,
+                            constantValues = true,
+                            functionTypeParameters = true,
+                            parameterNames = true,
+                            rangeVariableTypes = true
+                        }
                     }
-                }
-            }
-            require("lspconfig").gopls.setup(go_opts)
+                }}
+            require("lspconfig").gopls.setup(opts)
         end
     },
-    pylsp = function()
-        require("lspconfig").pylsp.setup({})
-    end,
     rust_analyzer = lsp_zero.noop,
+    ruff_lsp = function()
+        local opts = {
+            init_options = {
+                settings = {
+                    -- Any extra CLI arguments for `ruff` go here.
+                    args = {}
+                }
+            }
+        }
+        require("lspconfig").ruff_lsp.setup(opts)
+    end
 })
-
-local rt = require("rust-tools")
-rt.setup()
