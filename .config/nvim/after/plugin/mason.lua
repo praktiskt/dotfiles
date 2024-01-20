@@ -14,7 +14,7 @@ local ih = require("lsp-inlayhints")
 ih.setup()
 
 require("mason-lspconfig").setup({
-    ensure_installed = {"tsserver", "gopls", "rust_analyzer", "ruff_lsp"},
+    ensure_installed = {"tsserver", "gopls", "rust_analyzer", "pylsp"},
     handlers = {
         lsp_zero.default_setup,
         lua_ls = function()
@@ -54,18 +54,10 @@ require("mason-lspconfig").setup({
                     }
                 }}
             require("lspconfig").gopls.setup(opts)
+        end,
+        rust_analyzer = lsp_zero.noop,
+        pylsp = function()
+            require("lspconfig").pylsp.setup({})
         end
-    },
-    rust_analyzer = lsp_zero.noop,
-    ruff_lsp = function()
-        local opts = {
-            init_options = {
-                settings = {
-                    -- Any extra CLI arguments for `ruff` go here.
-                    args = {}
-                }
-            }
-        }
-        require("lspconfig").ruff_lsp.setup(opts)
-    end
+    }
 })
