@@ -3,6 +3,8 @@ vim.keymap.set("n", "gb", "<C-o>")
 vim.keymap.set("n", "gf", "<C-i>")
 vim.keymap.set("n", "<C-f>", "/")
 vim.keymap.set("n", "<C-s>", ":w<CR>")
+vim.keymap.set({"n", "v"}, "<S-Up>", "<Up>")
+vim.keymap.set({"n", "v"}, "<S-Down>", "<Down>")
 
 -- Spelling shortcuts
 vim.keymap.set("n", "<leader>sn", "]s") -- next misspell
@@ -24,10 +26,8 @@ vim.keymap.set("n", "<leader>p", "\"_dP")
 vim.keymap.set("v", "<leader>p", "\"_dP")
 
 -- Allow yanking into system clipboard
-vim.keymap.set("n", "<leader>y", "\"+y")
-vim.keymap.set("v", "<leader>y", "\"+y")
-vim.keymap.set("n", "<leader>Y", "\"+Y")
-vim.keymap.set("v", "<leader>Y", "\"+Y")
+vim.keymap.set({"n", "v"}, "<leader>y", "\"+y")
+vim.keymap.set({"n", "v"}, "<leader>Y", "\"+Y")
 
 -- In vertical edit mode, allow ctrl+c to paste
 vim.keymap.set("i", "<C-c>", "<Esc>")
@@ -38,9 +38,6 @@ vim.keymap.set("v", "<leader>cs", '"zy<Esc>:%s/<C-R>z//g<Left><Left>')
 
 -- File tree config
 vim.keymap.set("n", "<leader>te", ":NvimTreeOpen<CR>")
-
--- Minimap
-vim.keymap.set("n", "<leader>tm", ":MinimapToggle<CR>")
 
 -- Visual multi select
 local binds = {}
