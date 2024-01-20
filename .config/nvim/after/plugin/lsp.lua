@@ -5,40 +5,28 @@ local cmp = require('cmp')
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 
 cmp.setup({
-  preselect = 'item',
-  completion = {
-      completeopt = 'menu,menuone,noinsert,preview'
-  },
-  sources = {
-      {name = 'path'},
-      {name = 'nvim_lsp'},
-      {name = 'nvim_lua'},
-      {name = 'luasnip', keyword_length = 2},
-      {name = 'buffer', keyword_length = 3},
-  },
-  mapping = cmp.mapping.preset.insert({
-      ['<CR>'] = cmp.mapping.confirm({select = true}),
-      ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
-      ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
-      ["<C-Space>"] = cmp.mapping.complete(),
-  }),
-  window = {
-      completion = cmp.config.window.bordered(),
-      documentation = cmp.config.window.bordered(),
-  },
-  formatting = {
-      fields = {'menu', 'abbr', 'kind'},
-      format = function(entry, item)
-          local menu_icon ={
-              nvim_lsp = 'λ',
-              vsnip = '⋗',
-              buffer = 'Ω',
-              path = '/',
-          }
-          item.menu = menu_icon[entry.source.name]
-          return item
-      end,
-  }
+    preselect = 'item',
+    completion = {
+        completeopt = 'menu,menuone,noinsert,preview'
+    },
+    sources = {
+        {name = 'path'},
+        {name = 'nvim_lsp'},
+        {name = 'nvim_lua'},
+        {name = 'luasnip', keyword_length = 2},
+        {name = 'buffer', keyword_length = 3},
+    },
+    mapping = cmp.mapping.preset.insert({
+        ['<CR>'] = cmp.mapping.confirm({select = true}),
+        ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
+        ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
+        ["<C-Space>"] = cmp.mapping.complete(),
+    }),
+    window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+    },
+    formatting = lsp.cmp_format(),
 })
 
 lsp.set_preferences({

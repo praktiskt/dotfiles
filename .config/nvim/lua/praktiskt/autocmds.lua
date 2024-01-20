@@ -40,3 +40,12 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
     end,
     group = autocmd_group,
 })
+
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+    pattern = { "*.rs" },
+    desc = "Enable inlay hints in Rust files",
+    callback = function()
+        vim.cmd(":RustEnableInlayHints")
+    end,
+    group = autocmd_group,
+})
