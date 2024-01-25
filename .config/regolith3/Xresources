@@ -1,0 +1,24 @@
+! Bindings
+wm.binding.exit_app: q
+
+! styling
+regolith.wallpaper.file: /home/magnus/Pictures/nature-forest.jpg
+regolith.wallpaper.options: zoom 
+regolith.lockscreen.wallpaper.file: /home/magnus/Pictures/nature-blurred.png
+gnome.gtk.theme: Ayu-Mirage-Dark
+gnome.terminal.update: false
+gtk.theme_name: Ayu-Mirage-Dark
+wm.client.focused.color.child_border: #268bd2
+wm.client.focused.color.indicator: #ffa500
+wm.gaps.inner.size: 0 
+wm.bar.position: bottom
+wm.bar.mode: dock
+
+! i3xrocks
+i3xrocks.date.format2: %Y-%m-%d %T
+i3xrocks.time.interval: 1
+i3xrocks.rofication.interval: 1
+i3xrocks.bluetooth.interval: 1
+i3xrocks.keyindicator.interval: 1 
+!regolith.look.path: /usr/share/regolith-look/i3-default
+regolith.look.path: /usr/share/regolith-look/i3-default
