@@ -20,7 +20,8 @@ alacritty() {
 }
 
 regolith() {
-    collector .config/regolith2 Xresources
+    collector .config/regolith3 Xresources
+    collector .config/i3lock.sh Xresources
 }
 
 fusuma() {
