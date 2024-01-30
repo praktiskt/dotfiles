@@ -15,11 +15,13 @@ return require("packer").startup(function(use)
     -- File tree
     use {
         "nvim-tree/nvim-tree.lua",
+        tag = "nvim-tree-v0.99.0",
         config = function()
             require("nvim-tree").setup {
                 -- https://github.com/nvim-tree/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L339
                 filters = {
-                    dotfiles = true
+                    dotfiles = false,
+                    custom = { '^.git$' }
                 },
                 view = {
                     width = 35

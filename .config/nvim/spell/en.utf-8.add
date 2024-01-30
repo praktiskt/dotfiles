@@ -49,3 +49,6 @@ minimap
 golang
 neovim
 VSCode
+sqlite3
+async
+timelines

@@ -5,9 +5,9 @@ wm.binding.exit_app: q
 regolith.wallpaper.file: /home/magnus/Pictures/nature-forest.jpg
 regolith.wallpaper.options: zoom 
 regolith.lockscreen.wallpaper.file: /home/magnus/Pictures/nature-blurred.png
-gnome.gtk.theme: Ayu-Mirage-Dark
+gnome.gtk.theme: Catppuccin-Mocha-Standard-Lavender-Dark
 gnome.terminal.update: false
-gtk.theme_name: Ayu-Mirage-Dark
+gtk.theme_name: Catppuccin-Mocha-Standard-Lavender-Dark
 wm.client.focused.color.child_border: #268bd2
 wm.client.focused.color.indicator: #ffa500
 wm.gaps.inner.size: 0 

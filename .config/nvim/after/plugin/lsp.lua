@@ -1,7 +1,6 @@
-local lsp = require('lsp-zero').preset({})
+local lsp = require('lsp-zero').preset("recommended")
 
 local cmp = require('cmp')
--- local cmp_action = require('lsp-zero').cmp_action()
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 
 cmp.setup({
@@ -12,12 +11,11 @@ cmp.setup({
     sources = {
         {name = 'path'},
         {name = 'nvim_lsp'},
-        {name = 'nvim_lua'},
-        {name = 'luasnip', keyword_length = 2},
+        {name = 'luasnip'},
         {name = 'buffer', keyword_length = 3},
     },
     mapping = cmp.mapping.preset.insert({
-        ['<CR>'] = cmp.mapping.confirm({select = true}),
+        ['<CR>'] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
         ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
         ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
         ["<C-Space>"] = cmp.mapping.complete(),
