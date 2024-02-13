@@ -16,7 +16,11 @@ return require("packer").startup(function(use)
     use {
         "nvim-tree/nvim-tree.lua",
         tag = "nvim-tree-v0.99.0",
+        requires = {
+            { "nvim-tree/nvim-web-devicons" }
+        },
         config = function()
+            require("nvim-web-devicons")
             require("nvim-tree").setup {
                 -- https://github.com/nvim-tree/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L339
                 filters = {
@@ -29,7 +33,6 @@ return require("packer").startup(function(use)
             }
         end
     }
-
 
     -- -- Color schemes. See after/plugin/colors.lua
     use {
