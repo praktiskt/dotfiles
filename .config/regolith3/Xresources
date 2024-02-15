@@ -19,6 +19,9 @@ i3xrocks.date.format2: %Y-%m-%d %T
 i3xrocks.time.interval: 1
 i3xrocks.rofication.interval: 1
 i3xrocks.bluetooth.interval: 1
-i3xrocks.keyindicator.interval: 1 
+i3xrocks.keyindicator.interval: 1
+
+! Sway compositor, use i3status-rs
+wm.bar.status_config: /home/magnus/i3status-rust/config.toml
 !regolith.look.path: /usr/share/regolith-look/i3-default
 regolith.look.path: /usr/share/regolith-look/i3-default
