@@ -21,15 +21,19 @@ alacritty() {
 
 regolith() {
     collector .config/regolith3 Xresources
-    collector .config/i3lock.sh Xresources
+    # collector .config/i3lock.sh Xresources
 }
 
 fusuma() {
-    collector .config/fusuma config.yml
+    collector .config/fusuma config.yaml
 }
 
 ohmyzh() {
     collector .oh-my-zsh/themes gitster.zsh-theme
+}
+
+mpv() {
+    collector .config/mpv mpv.conf
 }
 
 nvim() {
@@ -72,10 +76,11 @@ EOF
 
 main() {
     nvim
-    alacritty
+    # alacritty
     regolith
     fusuma
     ohmyzh
+    mpv
     aliases
 }
 
