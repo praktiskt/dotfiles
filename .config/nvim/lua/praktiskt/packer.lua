@@ -25,7 +25,7 @@ return require("packer").startup(function(use)
                 -- https://github.com/nvim-tree/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L339
                 filters = {
                     dotfiles = false,
-                    custom = { '^.git$' }
+                    custom = { '^.git$', '^node_modules$', '^venv$' }
                 },
                 view = {
                     width = 35
@@ -82,6 +82,17 @@ return require("packer").startup(function(use)
 
     use {
         "simrat39/rust-tools.nvim"
+    }
+
+    use {
+        "AckslD/swenv.nvim",
+        requires = {
+            { "nvim-lua/plenary.nvim" }
+        }
+    }
+
+    use {
+        "stevearc/dressing.nvim"
     }
 
     -- Autocomplete

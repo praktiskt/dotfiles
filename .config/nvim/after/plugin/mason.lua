@@ -14,7 +14,7 @@ local ih = require("lsp-inlayhints")
 ih.setup()
 
 require("mason-lspconfig").setup({
-    ensure_installed = {"tsserver", "gopls", "rust_analyzer", "pylsp"},
+    ensure_installed = {"tsserver", "gopls", "rust_analyzer", "pylsp", "htmx"},
     handlers = {
         lsp_zero.default_setup,
         lua_ls = function()
@@ -57,7 +57,57 @@ require("mason-lspconfig").setup({
         end,
         rust_analyzer = lsp_zero.noop,
         pylsp = function()
-            require("lspconfig").pylsp.setup({})
+            require("lspconfig").pylsp.setup({
+                settings = {
+                    pylsp = {
+                        plugins = {
+                            pycodestyle = {
+                                maxLineLength = 88
+                            },
+                            flake8 = {
+                                maxLineLength = 88
+                            }
+                        }
+                    }
+                }
+            })
+        end,
+        tsserver = function()
+            local opts = {
+                on_attach = function(client, bufnr)
+                    ih.on_attach(client, bufnr)
+                end,
+                settings = {
+                  typescript = {
+                    inlayHints = {
+                      includeInlayParameterNameHints = 'all',
+                      includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                      includeInlayFunctionParameterTypeHints = true,
+                      includeInlayVariableTypeHints = true,
+                      includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                      includeInlayPropertyDeclarationTypeHints = true,
+                      includeInlayFunctionLikeReturnTypeHints = true,
+                      includeInlayEnumMemberValueHints = true,
+                    }
+                  },
+                  javascript = {
+                    inlayHints = {
+                      includeInlayParameterNameHints = 'all',
+                      includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                      includeInlayFunctionParameterTypeHints = true,
+                      includeInlayVariableTypeHints = true,
+                      includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                      includeInlayPropertyDeclarationTypeHints = true,
+                      includeInlayFunctionLikeReturnTypeHints = true,
+                      includeInlayEnumMemberValueHints = true,
+                    }
+                  }
+                }
+              }
+            require("lspconfig").tsserver.setup(opts)
+        end,
+        htmx = function()
+            require("lspconfig").htmx.setup({})
         end
-    }
-})
+        }
+    })
