@@ -72,6 +72,9 @@ require("mason-lspconfig").setup({
                 }
             })
         end,
+        pyright = function()
+            require("lspconfig").pyright.setup({})
+        end,
         tsserver = function()
             local opts = {
                 on_attach = function(client, bufnr)
