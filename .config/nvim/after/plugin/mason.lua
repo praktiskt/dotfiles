@@ -14,7 +14,15 @@ local ih = require("lsp-inlayhints")
 ih.setup()
 
 require("mason-lspconfig").setup({
-    ensure_installed = {"tsserver", "gopls", "rust_analyzer", "pylsp", "htmx"},
+    ensure_installed = {
+        "tsserver",
+        "gopls",
+        "rust_analyzer",
+        "pylsp",
+        "pyright",
+        "htmx",
+        "lua_ls"
+    },
     handlers = {
         lsp_zero.default_setup,
         lua_ls = function()
