@@ -63,9 +63,6 @@ return require("packer").startup(function(use)
             {'williamboman/mason.nvim'},
             {'williamboman/mason-lspconfig.nvim'},
 
-            -- Hints
-            {'lvimuser/lsp-inlayhints.nvim'},
-
             -- Autocompletion
             {'hrsh7th/nvim-cmp'},
             {'hrsh7th/cmp-buffer'},
@@ -78,10 +75,6 @@ return require("packer").startup(function(use)
             {'L3MON4D3/LuaSnip'},
             {'rafamadriz/friendly-snippets'},
         }
-    }
-
-    use {
-        "simrat39/rust-tools.nvim"
     }
 
     use {
@@ -190,13 +183,13 @@ return require("packer").startup(function(use)
         end
     }
 
-    -- TODO: Use satellite once nvim hits 0.10 stable
-    -- use {
-    --     "lewis6991/satellite.nvim",
-    --     config = function()
-    --         require("satellite").setup {}
-    --     end
-    -- }
+    -- Decorated scrollbar (requires >=0.10.0)
+    use {
+        "lewis6991/satellite.nvim",
+        config = function()
+            require("satellite").setup {}
+        end
+    }
 
     -- Show colors on color codes, like #ffffff
     use {

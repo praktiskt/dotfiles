@@ -3,6 +3,7 @@ vim.keymap.set("n", "gb", "<C-o>")
 vim.keymap.set("n", "gf", "<C-i>")
 vim.keymap.set("n", "<C-f>", "/")
 vim.keymap.set("n", "<C-s>", ":w<CR>")
+vim.keymap.set("i", "<C-s>", "<Esc>:w<CR>i")
 vim.keymap.set({"n", "v"}, "<S-Up>", "<Up>")
 vim.keymap.set({"n", "v"}, "<S-Down>", "<Down>")
 
