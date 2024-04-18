@@ -16,9 +16,8 @@ require("mason-lspconfig").setup({
         "tsserver",
         "gopls",
         "rust_analyzer",
-        "pylsp",
+        "ruff_lsp",
         "pyright",
-        "isort",
         "htmx",
         "lua_ls"
     },
@@ -59,25 +58,23 @@ require("mason-lspconfig").setup({
         rust_analyzer = function()
             require("lspconfig").rust_analyzer.setup({})
         end,
-        pylsp = function()
-            require("lspconfig").pylsp.setup({
-                settings = {
-                    pylsp = {
-                        plugins = {
-                            pycodestyle = {
-                                maxLineLength = 88
-                            },
-                            flake8 = {
-                                maxLineLength = 88
-                            }
-                        }
-                    }
-                }
+        ruff_lsp = function()
+            require("lspconfig").ruff_lsp.setup({
+                on_attach = function(client, bufnr)
+                    -- Disable hover in favor of Pyright
+                    if client.name == 'ruff_lsp' then
+                        client.server_capabilities.hoverProvider = false
+                    end
+                end,
+
             })
         end,
         pyright = function()
             require("lspconfig").pyright.setup({
                 settings = {
+                    pyright = {
+                        disableOrganizeImports = true
+                    },
                     python = {
                         analysis = {
                             autoSearchPaths = true,
