@@ -6,6 +6,7 @@ vim.keymap.set("n", "<C-s>", ":w<CR>")
 vim.keymap.set("i", "<C-s>", "<Esc>:w<CR>i")
 vim.keymap.set({"n", "v"}, "<S-Up>", "<Up>")
 vim.keymap.set({"n", "v"}, "<S-Down>", "<Down>")
+vim.keymap.set("i", "<S-Tab>", "<C-\\><C-N><<<C-\\><C-N>^i")
 
 -- Spelling shortcuts
 vim.keymap.set("n", "<leader>sn", "]s") -- next misspell
@@ -16,6 +17,8 @@ vim.keymap.set("n", "<leader>sf", "z=") -- open spelling fix
 -- Allow moving lines in visual mode
 vim.keymap.set("v", "<A-Up>", ":m '<-2<CR>gv=gv")
 vim.keymap.set("v", "<A-Down>", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "<Tab>", ">gv")
+vim.keymap.set("v", "<S-Tab>", "<gv")
 
 -- Keep cursor in the middle
 vim.keymap.set("n", "n", "nzzzv")
@@ -39,6 +42,7 @@ vim.keymap.set("v", "<leader>cs", '"zy<Esc>:%s/<C-R>z//g<Left><Left>')
 
 -- File tree config
 vim.keymap.set("n", "<leader>te", ":NvimTreeOpen<CR>")
+vim.keymap.set("n", "te", ":NvimTreeOpen<CR>")
 
 -- Visual multi select
 local binds = {}
@@ -49,6 +53,7 @@ vim.g.VM_theme = "nord"
 
 -- Trouble
 vim.keymap.set("n", "<leader>td", "<esc>:TroubleToggle<CR>")
+vim.keymap.set("n", "td", "<esc>:TroubleToggle<CR>")
 
 -- Which key
 vim.keymap.set("n", "<leader>h", "<esc>:WhichKey<CR>")
