@@ -17,7 +17,7 @@ require("mason-lspconfig").setup({
         "gopls",
         "rust_analyzer",
         "ruff_lsp",
-        "pyright",
+        "basedpyright",
         "htmx",
         "lua_ls"
     },
@@ -69,11 +69,11 @@ require("mason-lspconfig").setup({
 
             })
         end,
-        pyright = function()
-            require("lspconfig").pyright.setup({
+        basedpyright = function()
+            require("lspconfig").basedpyright.setup({
                 settings = {
                     pyright = {
-                        disableOrganizeImports = true
+                        disableOrganizeImports = true,
                     },
                     python = {
                         analysis = {
