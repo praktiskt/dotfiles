@@ -45,9 +45,12 @@ vim.keymap.set("n", "<leader>te", ":NvimTreeOpen<CR>")
 vim.keymap.set("n", "te", ":NvimTreeOpen<CR>")
 
 -- Visual multi select
+vim.g.VM_default_mappings = 0
 local binds = {}
 binds["Find Under"] = "<C-d>"
 binds["Find Subword Under"] = "<C-d>"
+binds["Select Cursor Up"] = '<C-Up>'
+binds["Select Cursor Down"] = '<C-Down>'
 vim.g.VM_maps = binds
 vim.g.VM_theme = "nord"
 
