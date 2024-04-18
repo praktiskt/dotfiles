@@ -23,6 +23,16 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
     group = autocmd_group,
 })
 
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+    pattern = { "*.rs" },
+    desc = "Auto-format Rust files after saving",
+    callback = function()
+        local fileName = vim.api.nvim_buf_get_name(0)
+        vim.cmd(":silent !rustfmt " .. fileName)
+    end,
+    group = autocmd_group,
+})
+
 vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
     pattern = { "*.*" },
     desc = "Close tree when entering a file",
