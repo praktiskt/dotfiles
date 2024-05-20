@@ -68,4 +68,4 @@ vim.g.tabby_keybinding_trigger_or_dismiss = '<C-a>'
 
 -- LSP
 vim.keymap.set({"n", "v"}, '<leader>qf', ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
-
+vim.keymap.set({"n", "v"}, '<C-Space>', ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
