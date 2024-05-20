@@ -19,10 +19,14 @@ require("mason-lspconfig").setup({
         "ruff_lsp",
         "basedpyright",
         "htmx",
-        "lua_ls"
+        "lua_ls",
+        "dockerls"
     },
     handlers = {
         lsp_zero.default_setup,
+        dockerls = function()
+            require("lspconfig").dockerls.setup({})
+        end,
         lua_ls = function()
             -- Configure inlay hints
             local opts = lsp_zero.nvim_lua_ls()
