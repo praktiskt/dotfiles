@@ -25,7 +25,7 @@ return require("packer").startup(function(use)
                 -- https://github.com/nvim-tree/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L339
                 filters = {
                     dotfiles = false,
-                    custom = { '^.git$', '^node_modules$', '^venv$' }
+                    custom = { '^.git$', '^node_modules$', '^venv$', '^target/debug$' }
                 },
                 view = {
                     width = 35

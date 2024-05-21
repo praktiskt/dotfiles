@@ -7,3 +7,11 @@ vim.keymap.set('n', '<leader>fw', function() builtin.grep_string() end)
 vim.keymap.set('n', '<leader>ff', function()
 	builtin.grep_string({ search = vim.fn.input("Grep > ") });
 end)
+
+require("telescope").setup({
+    defaults = {
+        file_ignore_patterns = {
+            "target/debug"
+        }
+    }
+})
