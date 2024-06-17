@@ -1,6 +1,6 @@
 local set = vim.opt
 set.number = true
-set.relativenumber = true
+set.relativenumber = false
 
 set.tabstop = 4
 set.softtabstop = 4

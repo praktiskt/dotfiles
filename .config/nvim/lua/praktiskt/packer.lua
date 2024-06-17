@@ -48,7 +48,6 @@ return require("packer").startup(function(use)
     -- Nice highlighting. See after/plugin/treesitter.lua
     use {
         "nvim-treesitter/nvim-treesitter",
-        tag = "0.9.x",
         { run = ":TSUpdate" }
     }
     use { "nvim-treesitter/nvim-treesitter-context" }

@@ -16,7 +16,7 @@ require("mason-lspconfig").setup({
         "tsserver",
         "gopls",
         "rust_analyzer",
-        "ruff_lsp",
+        "ruff",
         "basedpyright",
         "htmx",
         "lua_ls",
@@ -61,12 +61,13 @@ require("mason-lspconfig").setup({
         end,
         rust_analyzer = function()
             require("lspconfig").rust_analyzer.setup({})
+            vim.g.rustfmt_autosave = 1
         end,
-        ruff_lsp = function()
-            require("lspconfig").ruff_lsp.setup({
-                on_attach = function(client, bufnr)
+        ruff = function()
+            require("lspconfig").ruff.setup({
+                on_attach = function(client, _)
                     -- Disable hover in favor of Pyright
-                    if client.name == 'ruff_lsp' then
+                    if client.name == 'ruff' then
                         client.server_capabilities.hoverProvider = false
                     end
                 end,

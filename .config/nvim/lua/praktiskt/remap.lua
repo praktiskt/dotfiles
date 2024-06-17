@@ -49,14 +49,12 @@ vim.g.VM_default_mappings = 0
 local binds = {}
 binds["Find Under"] = "<C-d>"
 binds["Find Subword Under"] = "<C-d>"
-binds["Select Cursor Up"] = '<C-Up>'
-binds["Select Cursor Down"] = '<C-Down>'
 vim.g.VM_maps = binds
 vim.g.VM_theme = "nord"
 
 -- Trouble
-vim.keymap.set("n", "<leader>td", "<esc>:TroubleToggle<CR>")
-vim.keymap.set("n", "td", "<esc>:TroubleToggle<CR>")
+vim.keymap.set("n", "<leader>td", "<esc><cmd>Trouble diagnostics toggle<CR>")
+vim.keymap.set("n", "td", "<esc><cmd>Trouble diagnostics toggle<CR>")
 
 -- Which key
 vim.keymap.set("n", "<leader>h", "<esc>:WhichKey<CR>")
@@ -69,3 +67,4 @@ vim.g.tabby_keybinding_trigger_or_dismiss = '<C-a>'
 -- LSP
 vim.keymap.set({"n", "v"}, '<leader>qf', ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
 vim.keymap.set({"n", "v"}, '<C-Space>', ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
+
