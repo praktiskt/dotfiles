@@ -33,6 +33,7 @@ vim.keymap.set("v", "<leader>p", "\"_dP")
 vim.keymap.set({"n", "v"}, "<leader>y", "\"+y")
 vim.keymap.set({"n", "v"}, "<leader>Y", "\"+Y")
 
+
 -- In vertical edit mode, allow ctrl+c to paste
 vim.keymap.set("i", "<C-c>", "<Esc>")
 

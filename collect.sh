@@ -36,6 +36,10 @@ mpv() {
     collector .config/mpv mpv.conf
 }
 
+neovide() {
+    collector .config/neovide config.toml
+}
+
 nvim() {
     LUAS=`find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs`
     SNIPPETS=`find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs`
