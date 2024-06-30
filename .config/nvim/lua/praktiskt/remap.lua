@@ -33,7 +33,6 @@ vim.keymap.set("v", "<leader>p", "\"_dP")
 vim.keymap.set({"n", "v"}, "<leader>y", "\"+y")
 vim.keymap.set({"n", "v"}, "<leader>Y", "\"+Y")
 
-
 -- In vertical edit mode, allow ctrl+c to paste
 vim.keymap.set("i", "<C-c>", "<Esc>")
 
@@ -42,8 +41,8 @@ vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left>
 vim.keymap.set("v", "<leader>cs", '"zy<Esc>:%s/<C-R>z//g<Left><Left>')
 
 -- File tree config
-vim.keymap.set("n", "<leader>te", ":NvimTreeOpen<CR>")
-vim.keymap.set("n", "te", ":NvimTreeOpen<CR>")
+vim.keymap.set("n", "<leader>te", ":NvimTreeToggle .<CR>")
+vim.keymap.set("n", "te", ":NvimTreeToggle .<CR>")
 
 -- Visual multi select
 vim.g.VM_default_mappings = 0

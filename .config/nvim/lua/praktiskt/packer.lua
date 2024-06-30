@@ -52,9 +52,9 @@ return require("packer").startup(function(use)
     }
     use { "nvim-treesitter/nvim-treesitter-context" }
     use({
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      after = "nvim-treesitter",
-      requires = "nvim-treesitter/nvim-treesitter",
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        after = "nvim-treesitter",
+        requires = "nvim-treesitter/nvim-treesitter",
     })
 
     -- Configure LSP. See after/plugin/lsp.lua
