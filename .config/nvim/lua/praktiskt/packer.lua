@@ -34,7 +34,7 @@ return require("packer").startup(function(use)
         end
     }
 
-    -- -- Color schemes. See after/plugin/colors.lua
+    -- Color schemes. See after/plugin/colors.lua
     use {
         "catppuccin/nvim",
         as = "catppuccin",
@@ -51,6 +51,11 @@ return require("packer").startup(function(use)
         { run = ":TSUpdate" }
     }
     use { "nvim-treesitter/nvim-treesitter-context" }
+    use({
+      "nvim-treesitter/nvim-treesitter-textobjects",
+      after = "nvim-treesitter",
+      requires = "nvim-treesitter/nvim-treesitter",
+    })
 
     -- Configure LSP. See after/plugin/lsp.lua
     use {
@@ -165,11 +170,12 @@ return require("packer").startup(function(use)
         require("toggleterm").setup({
             size = function(term)
                 if term.direction == "horizontal" then
-                    return 20
+                    return vim.o.lines * 1
                 elseif term.direction == "vertical" then
                     return vim.o.columns * 0.4
                 end
             end,
+            autochdir = true,
         })
     end}
 
