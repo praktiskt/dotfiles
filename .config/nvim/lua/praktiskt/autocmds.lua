@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 	desc = "Auto-format Lua files after saving",
 	callback = function()
 		local fileName = vim.api.nvim_buf_get_name(0)
-		vim.cmd(":silent !stylua " .. fileName)
+		vim.cmd(":silent !stylua --indent-type=tabs --indent-width=1 " .. fileName)
 		-- TODO: LSP stops working after stylua. See if we can make this cleaner.
 		vim.cmd("silent LspRestart")
 	end,
