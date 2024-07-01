@@ -104,6 +104,7 @@ require("mason-lspconfig").setup({
 							includeInlayPropertyDeclarationTypeHints = true,
 							includeInlayFunctionLikeReturnTypeHints = true,
 							includeInlayEnumMemberValueHints = true,
+							importModuleSpecifierPreference = "non-relative",
 						},
 					},
 					javascript = {
@@ -116,6 +117,7 @@ require("mason-lspconfig").setup({
 							includeInlayPropertyDeclarationTypeHints = true,
 							includeInlayFunctionLikeReturnTypeHints = true,
 							includeInlayEnumMemberValueHints = true,
+							importModuleSpecifierPreference = "non-relative",
 						},
 					},
 				},
