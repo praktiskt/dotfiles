@@ -35,6 +35,8 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 	callback = function()
 		local fileName = vim.api.nvim_buf_get_name(0)
 		vim.cmd(":silent !stylua " .. fileName)
+		-- TODO: LSP stops working after stylua. See if we can make this cleaner.
+		vim.cmd("silent LspRestart")
 	end,
 	group = autocmd_group,
 })
