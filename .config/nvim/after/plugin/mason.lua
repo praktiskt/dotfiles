@@ -20,7 +20,7 @@ require("mason-lspconfig").setup({
         "basedpyright",
         "htmx",
         "lua_ls",
-        "dockerls"
+        "dockerls",
     },
     handlers = {
         lsp_zero.default_setup,
@@ -56,7 +56,8 @@ require("mason-lspconfig").setup({
                             rangeVariableTypes = true
                         }
                     }
-                }}
+                }
+            }
             require("lspconfig").gopls.setup(opts)
         end,
         rust_analyzer = function()
@@ -93,36 +94,36 @@ require("mason-lspconfig").setup({
         tsserver = function()
             local opts = {
                 settings = {
-                  typescript = {
-                    inlayHints = {
-                      includeInlayParameterNameHints = 'all',
-                      includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                      includeInlayFunctionParameterTypeHints = true,
-                      includeInlayVariableTypeHints = true,
-                      includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                      includeInlayPropertyDeclarationTypeHints = true,
-                      includeInlayFunctionLikeReturnTypeHints = true,
-                      includeInlayEnumMemberValueHints = true,
+                    typescript = {
+                        inlayHints = {
+                            includeInlayParameterNameHints = 'all',
+                            includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                            includeInlayFunctionParameterTypeHints = true,
+                            includeInlayVariableTypeHints = true,
+                            includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                            includeInlayPropertyDeclarationTypeHints = true,
+                            includeInlayFunctionLikeReturnTypeHints = true,
+                            includeInlayEnumMemberValueHints = true,
+                        }
+                    },
+                    javascript = {
+                        inlayHints = {
+                            includeInlayParameterNameHints = 'all',
+                            includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                            includeInlayFunctionParameterTypeHints = true,
+                            includeInlayVariableTypeHints = true,
+                            includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                            includeInlayPropertyDeclarationTypeHints = true,
+                            includeInlayFunctionLikeReturnTypeHints = true,
+                            includeInlayEnumMemberValueHints = true,
+                        }
                     }
-                  },
-                  javascript = {
-                    inlayHints = {
-                      includeInlayParameterNameHints = 'all',
-                      includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                      includeInlayFunctionParameterTypeHints = true,
-                      includeInlayVariableTypeHints = true,
-                      includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                      includeInlayPropertyDeclarationTypeHints = true,
-                      includeInlayFunctionLikeReturnTypeHints = true,
-                      includeInlayEnumMemberValueHints = true,
-                    }
-                  }
                 }
-              }
+            }
             require("lspconfig").tsserver.setup(opts)
         end,
         htmx = function()
             require("lspconfig").htmx.setup({})
         end
-        }
-    })
+    }
+})
