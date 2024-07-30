@@ -1,3 +1,5 @@
+! Use xrdb -query to list options.
+
 ! Bindings
 wm.binding.exit_app: q
 
@@ -13,6 +15,8 @@ wm.client.focused.color.indicator: #ffa500
 wm.gaps.inner.size: 0 
 wm.bar.position: bottom
 wm.bar.mode: dock
+Xcursor.theme: Yaru
+Xcursor.size: 24
 
 ! i3xrocks
 i3xrocks.date.format2: %Y-%m-%d %T
