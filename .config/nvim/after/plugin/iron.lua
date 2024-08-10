@@ -114,9 +114,8 @@ vim.api.nvim_create_user_command("ReplRunBlock", function()
 	send_block_or_line()
 end, {})
 
-vim.api.nvim_create_user_command("ReplRunVisual", function()
-	iron.visual_send()
-end, {})
-
 vim.api.nvim_create_user_command("ReplStart", ":IronRepl", {})
 vim.api.nvim_create_user_command("ReplAttach", ":IronAttach", {})
+vim.api.nvim_create_user_command("ReplHide", ":IronHide", {})
+vim.api.nvim_create_user_command("ReplRestart", ":IronRestart", {})
+vim.api.nvim_create_user_command("ReplFocus", ":IronFocus", {})
