@@ -70,3 +70,8 @@ vim.g.tabby_keybinding_trigger_or_dismiss = "<C-a>"
 -- LSP
 vim.keymap.set({ "n", "v" }, "<leader>qf", ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<C-Space>", ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
+
+-- REPL
+vim.keymap.set("n", "<A-Enter>", ":ReplRunBlockAndAdvance<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-BS>", ":ReplRunBlock<CR>", { noremap = true, silent = true })
+-- Note that <A-Enter> in visual mode exists, check iron.lua
