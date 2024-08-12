@@ -12,7 +12,7 @@ require("iron.core").setup({
 				format = require("iron.fts.common").bracketed_paste,
 			},
 		},
-		repl_open_cmd = view.right("40%"),
+		repl_open_cmd = view.split.vertical.botright("40%"),
 	},
 	keymaps = {
 		visual_send = "<A-Enter>",
@@ -61,57 +61,41 @@ local function move_to_next_code_line()
 	end
 end
 
-local function send_block_or_line()
-	local ts = vim.treesitter
+local function send_code_block()
+	local ts_utils = require("nvim-treesitter.ts_utils")
+	local node = ts_utils.get_node_at_cursor()
 
-	local parser = ts.get_parser(0)
-	local syntax_tree = parser:parse()[1]
-
-	local root = syntax_tree:root()
-	local cursor = vim.api.nvim_win_get_cursor(0)
-	local row, col = cursor[1] - 1, cursor[2]
-
-	-- Locate the outermost node for a given type.
-	local trigger_nodes = {
-		"function",
-		"function_definition",
-		"class",
-		"class_definition",
-		"block",
-		"if_statement",
-		"else_statement",
-		"try_statement",
+	local stop_nodes = {
+		"assignment_statement",
+		"variable_declaration",
+		"expression_statement",
+		"call_expression",
+		"argument_list",
+		"parenthesized_expression",
 	}
-	local node = root:named_descendant_for_range(row, col, row, col)
-	local context_node = nil
+	local root = node
 	while node do
-		local node_type = node:type()
-		for _, type in ipairs(trigger_nodes) do
-			if node_type == type then
-				context_node = node
-			end
+		if vim.tbl_contains(stop_nodes, node:type()) then
+			root = node
+			break
 		end
 		node = node:parent()
 	end
 
-	if context_node then
-		local start_row, start_col, end_row, end_col = context_node:range()
-		vim.api.nvim_win_set_cursor(0, { start_row + 1, start_col })
-		vim.cmd("normal v")
-		vim.api.nvim_win_set_cursor(0, { end_row + 1, end_col })
-		iron.visual_send()
-	else
-		iron.send_line()
-	end
+	local sr, sc, er, ec = root:range()
+	vim.api.nvim_win_set_cursor(0, { sr + 1, sc })
+	vim.cmd("normal v")
+	vim.api.nvim_win_set_cursor(0, { er + 1, ec })
+	iron.visual_send()
 end
 
 vim.api.nvim_create_user_command("ReplRunBlockAndAdvance", function()
-	send_block_or_line()
+	send_code_block()
 	move_to_next_code_line()
 end, {})
 
 vim.api.nvim_create_user_command("ReplRunBlock", function()
-	send_block_or_line()
+	send_code_block()
 end, {})
 
 vim.api.nvim_create_user_command("ReplStart", ":IronRepl", {})
