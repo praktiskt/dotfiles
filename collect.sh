@@ -12,7 +12,7 @@ collector() {
     FILES=(${@:2})
     for FILE in $FILES; do
         cp ~/$P/$FILE $P/$FILE
-    done    
+    done
 }
 
 alacritty() {
@@ -41,17 +41,18 @@ neovide() {
 }
 
 nvim() {
-    LUAS=`find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs`
-    SNIPPETS=`find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs`
-    SPELLING=`find ~/.config/nvim -name "*.add" | sed -E 's/^.*nvim\///g' | xargs`
-    SPELLING_SPL=`find ~/.config/nvim -name "*.add.spl" | sed -E 's/^.*nvim\///g' | xargs`
-    FILES=`echo "$LUAS $SNIPPETS $SPELLING $SPELLING_SPL"`
+    LUAS=$(find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs)
+    LOCKFILE="lazy-lock.json"
+    SNIPPETS=$(find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs)
+    SPELLING=$(find ~/.config/nvim -name "*.add" | sed -E 's/^.*nvim\///g' | xargs)
+    SPELLING_SPL=$(find ~/.config/nvim -name "*.add.spl" | sed -E 's/^.*nvim\///g' | xargs)
+    FILES=$(echo "$LUAS $LOCKFILE $SNIPPETS $SPELLING $SPELLING_SPL")
     mkdir -p .config/nvim/after/plugin
     mkdir -p .config/nvim/lua/praktiskt
     mkdir -p .config/nvim/snippets
     mkdir -p .config/nvim/spell
     for FILE in $FILES; do
-        if [[ `echo $FILE | grep 'packer_compiled.lua'` ]]; then
+        if [[ $(echo $FILE | grep 'packer_compiled.lua') ]]; then
             continue
         fi
         collector .config/nvim $FILE
@@ -60,7 +61,7 @@ nvim() {
 
 aliases() {
     # Add these to your current shell.
-    cat <<EOF > aliases
+    cat <<EOF >aliases
 # Aliases from praktiskt/dotfiles
 alias vim="nvim"
 alias open="xdg-open"
