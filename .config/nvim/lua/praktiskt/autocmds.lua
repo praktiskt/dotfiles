@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = { "*/templates/*.yaml", "*/templates/*.tpl", "*.gotmpl", "helmfile*.yaml" },
 	desc = "Set ft=helm for Helm files",
 	callback = function()
-        vim.cmd(":silent set ft=helm")
+		vim.cmd(":silent set ft=helm")
 	end,
 	group = autocmd_group,
 })
