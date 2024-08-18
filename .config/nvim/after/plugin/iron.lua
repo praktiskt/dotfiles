@@ -1,5 +1,6 @@
 local iron = require("iron.core")
 local view = require("iron.view")
+local ts_utils = require("nvim-treesitter.ts_utils")
 require("iron.core").setup({
 	config = {
 		scratch_repl = true,
@@ -62,7 +63,6 @@ local function move_to_next_code_line()
 end
 
 local function send_code_block()
-	local ts_utils = require("nvim-treesitter.ts_utils")
 	local node = ts_utils.get_node_at_cursor()
 
 	local stop_nodes = {
@@ -95,7 +95,10 @@ vim.api.nvim_create_user_command("ReplRunBlockAndAdvance", function()
 end, {})
 
 vim.api.nvim_create_user_command("ReplRunBlock", function()
+	local node = ts_utils.get_node_at_cursor()
+	local sr, sc, _, _ = node:range()
 	send_code_block()
+	vim.api.nvim_win_set_cursor(0, { sr + 1, sc })
 end, {})
 
 vim.api.nvim_create_user_command("ReplStart", ":IronRepl", {})
