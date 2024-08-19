@@ -15,54 +15,25 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Regular configuration
+require("praktiskt.conf")
+
 -- Required by Lazy
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
--- Custom
-local set = vim.opt
-set.number = true
-set.relativenumber = false
-
-set.tabstop = 4
-set.softtabstop = 4
-set.shiftwidth = 4
-set.expandtab = true
-
-set.smartindent = true
-
-set.smartcase = true
-set.cursorline = true
-set.termguicolors = true
-vim.wo.wrap = false
-
-set.hlsearch = false
-set.incsearch = true
-
-set.scrolloff = 8
-set.updatetime = 50
-
-set.colorcolumn = "88"
-set.background = "dark"
-set.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
-set.spelllang = "en_us"
-set.spell = true
-set.termguicolors = true
-
--- Required by nvim-tree
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-vim.g.terminal_color_4 = "#89B4FA"
-
+-- Init lazy
 require("lazy").setup({
 	spec = {
 		-- File picker and fuzzy finder. See after/plugin/telescope.lua
 		{
 			"nvim-telescope/telescope.nvim",
 			version = "0.1.x",
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"nvim-tree/nvim-web-devicons",
+			},
 		},
-		"nvim-tree/nvim-web-devicons",
-		"nvim-lua/plenary.nvim",
 
 		-- File tree
 		{
@@ -71,6 +42,7 @@ require("lazy").setup({
 			dependencies = {
 				{ "nvim-tree/nvim-web-devicons" },
 			},
+			lazy = false,
 			config = function()
 				require("nvim-web-devicons")
 				require("nvim-tree").setup({
@@ -95,7 +67,10 @@ require("lazy").setup({
 		},
 
 		-- Statusline
-		"nvim-lualine/lualine.nvim",
+		{
+			"nvim-lualine/lualine.nvim",
+			dependencies = { "nvim-tree/nvim-web-devicons" },
+		},
 
 		-- Nice highlighting. See after/plugin/treesitter.lua
 		{
@@ -106,7 +81,9 @@ require("lazy").setup({
 		{
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			after = "nvim-treesitter",
-			dependencies = "nvim-treesitter/nvim-treesitter",
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+			},
 		},
 
 		-- Configure LSP. See after/plugin/lsp.lua
@@ -139,9 +116,6 @@ require("lazy").setup({
 		-- Manage formatting triggers
 		{
 			"stevearc/conform.nvim",
-			config = function()
-				require("conform").setup()
-			end,
 		},
 
 		{
@@ -162,6 +136,7 @@ require("lazy").setup({
 		-- Display shortcuts on pause for current chord
 		{
 			"folke/which-key.nvim",
+			event = "VeryLazy",
 			config = function()
 				vim.o.timeout = true
 				vim.o.timeoutlen = 300
@@ -206,7 +181,12 @@ require("lazy").setup({
 		},
 
 		-- Highlight todo comments
-		"folke/todo-comments.nvim",
+		{
+			"folke/todo-comments.nvim",
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+			},
+		},
 
 		-- Highlight word under cursor with LSP, tree-sitter or regex
 		"RRethy/vim-illuminate",
@@ -220,10 +200,31 @@ require("lazy").setup({
 		},
 
 		-- Add snippets
-		"nvim-telescope/telescope-symbols.nvim",
+		{
+			"nvim-telescope/telescope-symbols.nvim",
+			dependencies = {
+				"nvim-telescope/telescope.nvim",
+			},
+		},
 
 		-- Multi-cursor
-		"mg979/vim-visual-multi",
+		{
+			"smoka7/multicursors.nvim",
+			event = "VeryLazy",
+			dependencies = {
+				"nvimtools/hydra.nvim",
+			},
+			opts = {},
+			cmd = { "MCstart", "MCvisual", "MCclear", "MCpattern", "MCvisualPattern", "MCunderCursor" },
+			keys = {
+				{
+					mode = { "v", "n" },
+					"<C-d>",
+					"<cmd>MCstart<cr>",
+					desc = "Create a selection for selected text or word under the cursor",
+				},
+			},
+		},
 
 		-- Terminal
 		{
