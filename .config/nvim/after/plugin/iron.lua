@@ -42,30 +42,37 @@ local function get_code_block_language(bufnr)
 	return nil
 end
 
+local repl_definition = {
+	sh = {
+		command = { "zsh" },
+	},
+	python = {
+		command = { "ipython", "--no-autoindent", "--no-confirm-exit" },
+		format = require("iron.fts.common").bracketed_paste,
+	},
+	py = {
+		command = { "ipython", "--no-autoindent", "--no-confirm-exit" },
+		format = require("iron.fts.common").bracketed_paste,
+	},
+	lua = {
+		command = { "lua" },
+	},
+}
+
+repl_definition["markdown"] = {
+	command = function(meta)
+		local language = get_code_block_language(meta.current_bufnr)
+		local conf = repl_definition[language]
+		assert(conf ~= nil, "No REPL support implemented")
+		return conf["command"]
+	end,
+	format = require("iron.fts.common").bracketed_paste,
+}
+
 require("iron.core").setup({
 	config = {
 		scratch_repl = true,
-		repl_definition = {
-			sh = {
-				command = { "zsh" },
-			},
-			python = {
-				command = { "ipython", "--no-autoindent", "--no-confirm-exit" },
-				format = require("iron.fts.common").bracketed_paste,
-			},
-			markdown = {
-				command = function(meta)
-					local language = get_code_block_language(meta.current_bufnr)
-
-					-- TODO: Cleanup, use previous definitions so we don't repeat.
-					if language == "python" or language == "py" then
-						return { "ipython", "--no-autoindent", "--no-confirm-exit" }
-					elseif language == "sh" then
-						return { "zsh" }
-					end
-				end,
-			},
-		},
+		repl_definition = repl_definition,
 		repl_open_cmd = view.split.vertical.botright("40%"),
 	},
 	keymaps = {
