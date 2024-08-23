@@ -127,7 +127,22 @@ require("mason-lspconfig").setup({
 			lspconfig.tsserver.setup(opts)
 		end,
 		htmx = function()
-			lspconfig.htmx.setup({})
+			lspconfig.htmx.setup({
+				filetypes = {
+					"html",
+					"htmlangular",
+					"html-eex",
+					"javascript",
+					"javascriptreact",
+					"reason",
+					"rescript",
+					"typescript",
+					"typescriptreact",
+					"vue",
+					"svelte",
+					"templ",
+				},
+			})
 		end,
 		yamlls = function()
 			lspconfig.yamlls.setup({
