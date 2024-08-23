@@ -1,6 +1,47 @@
 local iron = require("iron.core")
 local view = require("iron.view")
 local ts_utils = require("nvim-treesitter.ts_utils")
+
+local function get_node_at_cursor_in_buffer(bufnr)
+	if not vim.api.nvim_buf_is_loaded(bufnr) then
+		vim.cmd("badd " .. bufnr)
+	end
+
+	local win_id = vim.fn.bufwinid(bufnr)
+	if win_id == -1 then
+		print("Buffer is not currently displayed in any window.")
+		return nil
+	end
+
+	local cursor = vim.api.nvim_win_get_cursor(win_id)
+	local row = cursor[1] - 1 -- tree-sitter uses 0-based indexing for rows
+	local col = cursor[2] -- 0-based indexing for columns
+
+	local parser = vim.treesitter.get_parser(bufnr)
+	local tree = parser:parse()[1]
+	local root = tree:root()
+
+	return root:named_descendant_for_range(row, col, row, col)
+end
+
+local function get_code_block_language(bufnr)
+	local node = get_node_at_cursor_in_buffer(bufnr)
+
+	while node do
+		if node:type() == "fenced_code_block" then
+			for child in node:iter_children() do
+				if child:type() == "info_string" then
+					-- first child of info_string is typically language
+					return vim.treesitter.get_node_text(child:child(), bufnr)
+				end
+			end
+		end
+		node = node:parent()
+	end
+
+	return nil
+end
+
 require("iron.core").setup({
 	config = {
 		scratch_repl = true,
@@ -9,8 +50,20 @@ require("iron.core").setup({
 				command = { "zsh" },
 			},
 			python = {
-				command = { "ipython", "--no-autoindent" },
+				command = { "ipython", "--no-autoindent", "--no-confirm-exit" },
 				format = require("iron.fts.common").bracketed_paste,
+			},
+			markdown = {
+				command = function(meta)
+					local language = get_code_block_language(meta.current_bufnr)
+
+					-- TODO: Cleanup, use previous definitions so we don't repeat.
+					if language == "python" or language == "py" then
+						return { "ipython", "--no-autoindent", "--no-confirm-exit" }
+					elseif language == "sh" then
+						return { "zsh" }
+					end
+				end,
 			},
 		},
 		repl_open_cmd = view.split.vertical.botright("40%"),
@@ -99,6 +152,10 @@ vim.api.nvim_create_user_command("ReplRunBlock", function()
 	local sr, sc, _, _ = node:range()
 	send_code_block()
 	vim.api.nvim_win_set_cursor(0, { sr + 1, sc })
+end, {})
+
+vim.api.nvim_create_user_command("ReplStop", function()
+	iron.close_repl(vim.bo.filetype)
 end, {})
 
 vim.api.nvim_create_user_command("ReplStart", ":IronRepl", {})
