@@ -126,23 +126,24 @@ local function send_code_block()
 	local node = ts_utils.get_node_at_cursor()
 
 	local stop_nodes = {
-		"assignment_statement",
-		"variable_declaration",
-		"expression_statement",
-		"call_expression",
-		"argument_list",
-		"parenthesized_expression",
+		"assignment_statement", -- py
+		"variable_declaration", -- py
+		"expression_statement", -- py
+		"call_expression", -- py
+		"argument_list", -- py
+		"parenthesized_expression", -- py
+		"function_call", -- py, lua
+		"function_definition", -- py, sh, lua
+		"command", -- py, sh
 	}
-	local root = node
 	while node do
 		if vim.tbl_contains(stop_nodes, node:type()) then
-			root = node
 			break
 		end
 		node = node:parent()
 	end
 
-	local sr, sc, er, ec = root:range()
+	local sr, sc, er, ec = node:range()
 	vim.api.nvim_win_set_cursor(0, { sr + 1, sc })
 	vim.cmd("normal v")
 	vim.api.nvim_win_set_cursor(0, { er + 1, ec })
