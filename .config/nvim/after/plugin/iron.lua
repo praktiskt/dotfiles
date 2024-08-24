@@ -136,14 +136,16 @@ local function send_code_block()
 		"function_definition", -- py, sh, lua
 		"command", -- py, sh
 	}
+	local root = node
 	while node do
 		if vim.tbl_contains(stop_nodes, node:type()) then
+			root = node
 			break
 		end
 		node = node:parent()
 	end
 
-	local sr, sc, er, ec = node:range()
+	local sr, sc, er, ec = root:range()
 	vim.api.nvim_win_set_cursor(0, { sr + 1, sc })
 	vim.cmd("normal v")
 	vim.api.nvim_win_set_cursor(0, { er + 1, ec })
