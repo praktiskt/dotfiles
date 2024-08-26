@@ -268,6 +268,12 @@ require("lazy").setup({
 			end,
 		},
 	},
+	install = {
+		missing = false,
+	},
+	checker = {
+		enabled = false,
+	},
 	change_detection = {
 		enabled = false,
 		notify = false,
