@@ -14,7 +14,6 @@ local lspconfig = require("lspconfig")
 
 require("mason-lspconfig").setup({
 	ensure_installed = {
-		"tsserver",
 		"gopls",
 		"rust_analyzer",
 		"ruff",
@@ -92,39 +91,6 @@ require("mason-lspconfig").setup({
 					},
 				},
 			})
-		end,
-		tsserver = function()
-			local opts = {
-				settings = {
-					typescript = {
-						inlayHints = {
-							includeInlayParameterNameHints = "all",
-							includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-							includeInlayFunctionParameterTypeHints = true,
-							includeInlayVariableTypeHints = true,
-							includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-							includeInlayPropertyDeclarationTypeHints = true,
-							includeInlayFunctionLikeReturnTypeHints = true,
-							includeInlayEnumMemberValueHints = true,
-							importModuleSpecifierPreference = "non-relative",
-						},
-					},
-					javascript = {
-						inlayHints = {
-							includeInlayParameterNameHints = "all",
-							includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-							includeInlayFunctionParameterTypeHints = true,
-							includeInlayVariableTypeHints = true,
-							includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-							includeInlayPropertyDeclarationTypeHints = true,
-							includeInlayFunctionLikeReturnTypeHints = true,
-							includeInlayEnumMemberValueHints = true,
-							importModuleSpecifierPreference = "non-relative",
-						},
-					},
-				},
-			}
-			lspconfig.tsserver.setup(opts)
 		end,
 		htmx = function()
 			lspconfig.htmx.setup({
