@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+body() {
+    cat <<EOF
+{
+    "messages": [
+        {
+            "role": "system",
+            "content": "Briefly respond to the user, being crystal clear and helpful. Never lie."
+        },
+        {
+            "role": "user",
+            "content": ${@}
+        }
+    ],
+    "model": "${GROQ_MODEL:-llama-3.1-70b-versatile}"
+}
+EOF
+}
+
+main() {
+    MSG=$(body $(echo $@ | jq -R))
+    RESP=$(curl --silent -X POST "https://api.groq.com/openai/v1/chat/completions" \
+        -H "Authorization: Bearer $GROQ_API_KEY" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/json" \
+        -d "$MSG")
+    if [[ $(jq -e '.error' <<<"$RESP") != "null" ]]; then
+        echo $RESP | jq
+        exit 1
+    fi
+
+    echo $RESP | jq -r '.choices[0].message.content'
+}
+
+if [ -t 0 ]; then
+    main "${@:-$(cat)}"
+else
+    main "$(cat)}\n\n${@}"
+fi

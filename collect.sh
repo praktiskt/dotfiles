@@ -19,6 +19,10 @@ alacritty() {
     collector .config/alacritty alacritty.yml
 }
 
+bin() {
+    collector bin groq
+}
+
 regolith() {
     collector .config/regolith3 Xresources
     # collector .config/i3lock.sh Xresources
@@ -81,6 +85,7 @@ EOF
 
 main() {
     nvim
+    bin
     # alacritty
     regolith
     fusuma
