@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 body() {
     cat <<EOF
 {
@@ -18,19 +20,52 @@ body() {
 EOF
 }
 
-main() {
+stream() {
     MSG=$(body $(echo $@ | jq -R))
-    RESP=$(curl --silent -X POST "https://api.groq.com/openai/v1/chat/completions" \
+    MSG=$(echo $MSG | jq '. += {stream: true}')
+    curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
+        -H "Authorization: Bearer $GROQ_API_KEY" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/json" \
+        -d "$MSG" | while read -r line; do
+
+        line=${line#"data: "}
+        if [[ "$line" = "[DONE]" ]]; then
+            echo
+            exit 0
+        fi
+
+        if [[ $(jq -e 'has("error")' <<<$line >/dev/null) ]]; then
+            echo $line | jq
+            exit 1
+        fi
+
+        P=".choices[0].delta.content"
+        if [[ $(jq -e "$P" <<<"$line") != "null" ]]; then
+            echo $line | jq "$P" | jq -j
+        fi
+    done
+}
+
+nostream() {
+    MSG=$(body $(echo $@ | jq -R))
+    MSG=$(echo $MSG | jq '. += {stream: false}')
+    RESP=$(curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
         -H "Authorization: Bearer $GROQ_API_KEY" \
         -H "Content-Type: application/json" \
         -H "Accept: application/json" \
         -d "$MSG")
+
     if [[ $(jq -e '.error' <<<"$RESP") != "null" ]]; then
         echo $RESP | jq
         exit 1
     fi
 
     echo $RESP | jq -r '.choices[0].message.content'
+}
+
+main() {
+    stream $@
 }
 
 if [ -t 0 ]; then
