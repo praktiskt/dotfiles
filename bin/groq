@@ -14,13 +14,16 @@ def body(prompt: list[str] = []) -> str:
             "messages": [
                 {
                     "role": "system",
-                    "content": "Briefly respond to the user, being crystal clear and helpful. Never lie.",
+                    "content": os.environ.get(
+                        "GROQ_SYSTEM_PROMPT",
+                        "Briefly respond to the user, being crystal clear and helpful. Never lie.",
+                    ),
                 },
                 {"role": "user", "content": " ".join(prompt)},
             ],
             "model": os.environ.get("GROQ_MODEL", "llama-3.1-70b-versatile"),
-            "temperature": 0.1,
-            "stream": True,
+            "temperature": float(os.environ.get("GROQ_TEMPERATURE", 0.1)),
+            "stream": os.environ.get("GROQ_STREAM", "True").lower() == "true",
         }
     )
 
@@ -53,7 +56,7 @@ def stream(prompt: list[str]):
             continue
 
         if "error" in data:
-            print(json.dumps(data))
+            print(json.dumps(data, indent=2))
             return
 
         if data.get("choices", [{}])[0].get("delta", {}).get("content"):
