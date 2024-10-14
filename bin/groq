@@ -1,75 +1,71 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
 
-set -e
+import json
+import os
+import sys
+from typing import Any
 
-body() {
-    cat <<EOF
-{
-    "messages": [
+import requests
+
+
+def body(prompt: list[str] = []) -> str:
+    return json.dumps(
         {
-            "role": "system",
-            "content": "Briefly respond to the user, being crystal clear and helpful. Never lie."
-        },
-        {
-            "role": "user",
-            "content": ${@}
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "Briefly respond to the user, being crystal clear and helpful. Never lie.",
+                },
+                {"role": "user", "content": " ".join(prompt)},
+            ],
+            "model": os.environ.get("GROQ_MODEL", "llama-3.1-70b-versatile"),
+            "temperature": 0.1,
+            "stream": True,
         }
-    ],
-    "model": "${GROQ_MODEL:-llama-3.1-70b-versatile}"
-}
-EOF
-}
+    )
 
-stream() {
-    MSG=$(body $(echo $@ | jq -R))
-    MSG=$(echo $MSG | jq '. += {stream: true}')
-    curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
-        -H "Authorization: Bearer $GROQ_API_KEY" \
-        -H "Content-Type: application/json" \
-        -H "Accept: application/json" \
-        -d "$MSG" | while read -r line; do
 
-        line=${line#"data: "}
-        if [[ "$line" = "[DONE]" ]]; then
-            echo
-            exit 0
-        fi
+def stream(prompt: list[str]):
+    msg: dict[str, Any] = json.loads(body(prompt=prompt))
 
-        if [[ $(jq -e 'has("error")' <<<$line >/dev/null) ]]; then
-            echo $line | jq
-            exit 1
-        fi
+    headers = {
+        "Authorization": f'Bearer {os.environ["GROQ_API_KEY"]}',
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
 
-        P=".choices[0].delta.content"
-        if [[ $(jq -e "$P" <<<"$line") != "null" ]]; then
-            echo $line | jq "$P" | jq -j
-        fi
-    done
-}
+    response = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers=headers,
+        data=json.dumps(msg),
+        stream=True,
+    )
 
-nostream() {
-    MSG=$(body $(echo $@ | jq -R))
-    MSG=$(echo $MSG | jq '. += {stream: false}')
-    RESP=$(curl -s -X POST "https://api.groq.com/openai/v1/chat/completions" \
-        -H "Authorization: Bearer $GROQ_API_KEY" \
-        -H "Content-Type: application/json" \
-        -H "Accept: application/json" \
-        -d "$MSG")
+    for line in response.iter_lines():
+        tok: str = line.decode("utf-8").lstrip("data: ")
+        if tok == "[DONE]":
+            print()
+            return
 
-    if [[ $(jq -e '.error' <<<"$RESP") != "null" ]]; then
-        echo $RESP | jq
-        exit 1
-    fi
+        try:
+            data: dict[str, Any] = json.loads(tok)
+        except json.JSONDecodeError:
+            continue
 
-    echo $RESP | jq -r '.choices[0].message.content'
-}
+        if "error" in data:
+            print(json.dumps(data))
+            return
 
-main() {
-    stream $@
-}
+        if data.get("choices", [{}])[0].get("delta", {}).get("content"):
+            print(data["choices"][0]["delta"]["content"], end="")
 
-if [ -t 0 ]; then
-    main "${@:-$(cat)}"
-else
-    main "$(cat)}\n\n${@}"
-fi
+
+def main():
+    if sys.stdin.isatty():
+        stream([*sys.argv[1:]])
+    else:
+        stream([*sys.argv[1:], "\n\n", *sys.stdin.read().splitlines()])
+
+
+if __name__ == "__main__":
+    main()
