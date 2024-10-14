@@ -8,6 +8,14 @@ from typing import Any
 import requests
 
 
+def stdout(msg, **kwargs):
+    print(msg, file=sys.stdout, **kwargs)
+
+
+def stderr(msg, **kwargs):
+    print(msg, file=sys.stderr, **kwargs)
+
+
 def body(prompt: list[str] = []) -> str:
     return json.dumps(
         {
@@ -44,10 +52,12 @@ def stream(prompt: list[str]):
         stream=True,
     )
 
+    response.raise_for_status()
+
     for line in response.iter_lines():
         tok: str = line.decode("utf-8").lstrip("data: ")
         if tok == "[DONE]":
-            print()
+            stdout("")
             return
 
         try:
@@ -56,11 +66,11 @@ def stream(prompt: list[str]):
             continue
 
         if "error" in data:
-            print(json.dumps(data, indent=2))
+            stderr(json.dumps(data, indent=2))
             return
 
         if data.get("choices", [{}])[0].get("delta", {}).get("content"):
-            print(data["choices"][0]["delta"]["content"], end="")
+            stdout(data["choices"][0]["delta"]["content"], end="")
 
 
 def main():
