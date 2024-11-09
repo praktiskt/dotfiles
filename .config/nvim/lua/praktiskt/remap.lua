@@ -61,11 +61,6 @@ vim.keymap.set("n", "td", "<esc><cmd>Trouble diagnostics toggle<CR>")
 -- Which key
 vim.keymap.set("n", "<leader>h", "<esc>:WhichKey<CR>")
 
--- Tabby
-vim.g.tabby_trigger_mode = "manual"
-vim.g.tabby_keybinding_accept = "<Tab>"
-vim.g.tabby_keybinding_trigger_or_dismiss = "<C-a>"
-
 -- LSP
 vim.keymap.set({ "n", "v" }, "<leader>qf", ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<C-Space>", ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })

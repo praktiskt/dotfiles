@@ -127,9 +127,6 @@ require("lazy").setup({
 
 		"stevearc/dressing.nvim",
 
-		-- Autocomplete
-		"TabbyML/vim-tabby",
-
 		-- Diagnostics
 		"folke/trouble.nvim",
 
