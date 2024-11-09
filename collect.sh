@@ -59,7 +59,6 @@ nvim() {
 	mkdir -p .config/nvim/after/plugin
 	mkdir -p .config/nvim/lua/praktiskt
 	mkdir -p .config/nvim/snippets .config/nvim/spell
-	mkdir -p .config/zed/snippets .config/zed/themes
 	for FILE in $FILES; do
 		if [[ $(echo $FILE | grep 'packer_compiled.lua') ]]; then
 			continue
