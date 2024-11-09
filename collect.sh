@@ -7,65 +7,72 @@ set -e
 # * All files collected shall be placed in a folder identical to the function name
 
 collector() {
-    P=$1
-    mkdir -p $P
-    FILES=(${@:2})
-    for FILE in $FILES; do
-        cp ~/$P/$FILE $P/$FILE
-    done
+	P=$1
+	mkdir -p $P
+	FILES=(${@:2})
+	for FILE in $FILES; do
+		cp ~/$P/$FILE $P/$FILE
+	done
 }
 
 alacritty() {
-    collector .config/alacritty alacritty.yml
+	collector .config/alacritty alacritty.yml
 }
 
 bin() {
-    collector bin groq
+	collector bin groq
+}
+
+bin() {
+	collector .config/zed keymap.json
+	collector .config/zed settings.json
+	collector .config/zed/snippets go.json
+	collector .config/zed/snippets yaml.json
 }
 
 regolith() {
-    collector .config/regolith3 Xresources
-    # collector .config/i3lock.sh Xresources
+	collector .config/regolith3 Xresources
+	# collector .config/i3lock.sh Xresources
 }
 
 fusuma() {
-    collector .config/fusuma config.yaml
+	collector .config/fusuma config.yaml
 }
 
 ohmyzh() {
-    collector .oh-my-zsh/themes gitster.zsh-theme
+	collector .oh-my-zsh/themes gitster.zsh-theme
 }
 
 mpv() {
-    collector .config/mpv mpv.conf
+	collector .config/mpv mpv.conf
 }
 
 neovide() {
-    collector .config/neovide config.toml
+	collector .config/neovide config.toml
 }
 
 nvim() {
-    LUAS=$(find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs)
-    LOCKFILE="lazy-lock.json"
-    SNIPPETS=$(find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs)
-    SPELLING=$(find ~/.config/nvim -name "*.add" | sed -E 's/^.*nvim\///g' | xargs)
-    SPELLING_SPL=$(find ~/.config/nvim -name "*.add.spl" | sed -E 's/^.*nvim\///g' | xargs)
-    FILES=$(echo "$LUAS $LOCKFILE $SNIPPETS $SPELLING $SPELLING_SPL")
-    mkdir -p .config/nvim/after/plugin
-    mkdir -p .config/nvim/lua/praktiskt
-    mkdir -p .config/nvim/snippets
-    mkdir -p .config/nvim/spell
-    for FILE in $FILES; do
-        if [[ $(echo $FILE | grep 'packer_compiled.lua') ]]; then
-            continue
-        fi
-        collector .config/nvim $FILE
-    done
+	LUAS=$(find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs)
+	LOCKFILE="lazy-lock.json"
+	SNIPPETS=$(find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs)
+	SPELLING=$(find ~/.config/nvim -name "*.add" | sed -E 's/^.*nvim\///g' | xargs)
+	SPELLING_SPL=$(find ~/.config/nvim -name "*.add.spl" | sed -E 's/^.*nvim\///g' | xargs)
+	FILES=$(echo "$LUAS $LOCKFILE $SNIPPETS $SPELLING $SPELLING_SPL")
+	mkdir -p .config/nvim/after/plugin
+	mkdir -p .config/nvim/lua/praktiskt
+	mkdir -p .config/nvim/snippets .config/nvim/spell
+	mkdir -p .config/zed/snippets .config/zed/themes
+	for FILE in $FILES; do
+		if [[ $(echo $FILE | grep 'packer_compiled.lua') ]]; then
+			continue
+		fi
+		collector .config/nvim $FILE
+	done
 }
 
 aliases() {
-    # Add these to your current shell.
-    cat <<EOF >aliases
+	# Add these to your current shell.
+	cat <<EOF >aliases
 # Aliases from praktiskt/dotfiles
 alias vim="nvim"
 alias open="xdg-open"
@@ -84,14 +91,15 @@ EOF
 }
 
 main() {
-    nvim
-    bin
-    # alacritty
-    regolith
-    fusuma
-    ohmyzh
-    mpv
-    aliases
+	nvim
+	bin
+	# alacritty
+	regolith
+	fusuma
+	ohmyzh
+	mpv
+	aliases
+	zed
 }
 
 main $@
