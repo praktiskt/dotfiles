@@ -23,11 +23,9 @@ bin() {
 	collector bin groq
 }
 
-bin() {
-	collector .config/zed keymap.json
-	collector .config/zed settings.json
-	collector .config/zed/snippets go.json
-	collector .config/zed/snippets yaml.json
+zedf() {
+	collector .config/zed $(ls .config/zed | grep json | xargs)
+	collector .config/zed/snippets $(ls .config/zed/snippets | xargs)
 }
 
 regolith() {
@@ -99,7 +97,7 @@ main() {
 	ohmyzh
 	mpv
 	aliases
-	zed
+	zedf
 }
 
 main $@
