@@ -1,0 +1,55 @@
+[
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-b": "workspace::ToggleLeftDock",
+      "ctrl-t": "terminal_panel::ToggleFocus"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "ctrl-d": ["editor::SelectNext", { "replace_newest": false }],
+      "ctrl-enter": null,
+      "ctrl-f": "buffer_search::Deploy",
+      "ctrl-h": "search::ToggleReplace",
+      "ctrl-t": "terminal_panel::ToggleFocus",
+      "ctrl-w f": "workspace::ToggleZoom",
+      "g b": "pane::GoBack",
+      "g e": "editor::GoToDiagnostic",
+      "g f": "pane::GoForward",
+      "g p e": "editor::GoToPrevDiagnostic",
+      "space a a": "assistant::NewContext",
+      "space a e": "assistant::InlineAssist",
+      "space f f": "buffer_search::Deploy",
+      "t d": "diagnostics::Deploy"
+    }
+  },
+  {
+    "context": "Editor && (vim_mode == visual_line || vim_mode == visual)",
+    "bindings": {
+      "ctrl-d": ["editor::SelectNext", { "replace_newest": false }],
+      "ctrl-enter": null,
+      "ctrl-f": "buffer_search::Deploy",
+      "ctrl-h": "search::ToggleReplace",
+      "g b": "pane::GoBack",
+      "g f": "pane::GoForward",
+      "shift-tab": "editor::Outdent",
+      "space Y": "editor::Copy",
+      "space a a": "assistant::NewContext",
+      "space a e": "assistant::InlineAssist",
+      "space y": "editor::Copy",
+      "tab": "editor::Indent"
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-w up": "terminal_panel::ToggleFocus",
+      "ctrl-t": "terminal_panel::ToggleFocus",
+      "ctrl-tab": "tab_switcher::Toggle",
+      "ctrl-n": "workspace::NewTerminal",
+      "ctrl-w f": "workspace::ToggleZoom"
+    }
+  }
+]

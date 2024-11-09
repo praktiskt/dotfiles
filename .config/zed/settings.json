@@ -1,0 +1,128 @@
+{
+  "ssh_connections": [
+    {
+      "host": "nuc-0",
+      "projects": [
+        {
+          "paths": ["~/Downloads"]
+        }
+      ]
+    }
+  ],
+  "assistant": {
+    "enabled": true,
+    "button": false,
+    "default_model": {
+      "provider": "openai",
+      "model": "llama-3.1-70b-versatile"
+    },
+    "version": "2"
+  },
+  "language_models": {
+    "openai": {
+      "version": "1",
+      "api_url": "https://api.groq.com/openai/v1",
+      "low_speed_timeout_in_seconds": 600,
+      "available_models": [
+        {
+          "name": "llama-3.1-70b-versatile",
+          "display_name": "groq/llama-3.1-70b-versatile",
+          "max_tokens": 8192
+        }
+      ]
+    }
+  },
+  "base_keymap": "VSCode",
+  "vim_mode": true,
+  "vim": {
+    "use_system_clipboard": "never"
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "ui_font_size": 16,
+  "buffer_font_size": 14,
+  "theme": "Catppuccin Mocha - No Italics",
+  "toolbar": {
+    "breadcrumbs": false,
+    "quick_actions": false
+  },
+  "tab_bar": {
+    "show": true
+  },
+  "indent_guides": {
+    "enabled": true,
+    "coloring": "indent_aware"
+  },
+  "inlay_hints": {
+    "enabled": true
+  },
+  "languages": {
+    "Python": {
+      "formatter": [
+        {
+          "external": {
+            // pip3 install ruff
+            "command": "ruff",
+            "arguments": ["check", "--fix", "--select=I", "-"]
+          }
+        },
+        {
+          "external": {
+            // pip3 install ruff
+            "command": "ruff",
+            "arguments": ["format", "--line-length=88", "-"]
+          }
+        }
+      ]
+    },
+    "Go": {
+      "formatter": [
+        {
+          "external": {
+            "command": "goimports"
+          }
+        },
+        {
+          "external": {
+            // go install mvdan.cc/gofumpt@latest
+            "command": "gofumpt"
+          }
+        }
+      ]
+    },
+    "Rust": {
+      "formatter": [
+        {
+          "external": {
+            "command": "rustfmt",
+            "arguments": ["-"]
+          }
+        }
+      ]
+    },
+    "Shell Script": {
+      "formatter": [
+        {
+          "external": {
+            // wget -O shfmt https://github.com/patrickvane/shfmt/releases/download/master/shfmt_linux_amd64
+            "command": "shfmt",
+            "arguments": ["-s", "-"]
+          }
+        }
+      ]
+    },
+    "Markdown": {
+      "format_on_save": "on",
+      "formatter": [
+        {
+          "external": {
+            // go install github.com/shurcooL/markdownfmt@latest
+            "command": "markdownfmt"
+          }
+        }
+      ]
+    }
+  }
+}
