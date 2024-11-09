@@ -23,7 +23,7 @@ bin() {
 	collector bin groq
 }
 
-zedf() {
+zed() {
 	collector .config/zed $(ls .config/zed | grep json | xargs)
 	collector .config/zed/snippets $(ls .config/zed/snippets | xargs)
 }
@@ -97,7 +97,7 @@ main() {
 	ohmyzh
 	mpv
 	aliases
-	zedf
+	zed
 }
 
 main $@
