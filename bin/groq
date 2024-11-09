@@ -32,7 +32,7 @@ def body(prompt: list[str] = []) -> str:
             "model": os.environ.get("GROQ_MODEL", "llama-3.1-70b-versatile"),
             "temperature": float(os.environ.get("GROQ_TEMPERATURE", 0.1)),
             "stream": os.environ.get("GROQ_STREAM", "True").lower() == "true",
-        }
+        },
     )
 
 
