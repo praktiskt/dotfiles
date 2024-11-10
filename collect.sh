@@ -21,6 +21,7 @@ alacritty() {
 
 bin() {
 	collector bin groq
+	collector bin commitmsg
 }
 
 zed() {
