@@ -9,7 +9,7 @@ set -e
 collector() {
 	P=$1
 	mkdir -p $P
-	FILES=(${@:2})
+	FILES="${@:2}"
 	for FILE in $FILES; do
 		cp ~/$P/$FILE $P/$FILE
 	done
