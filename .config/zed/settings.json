@@ -1,14 +1,4 @@
 {
-  "ssh_connections": [
-    {
-      "host": "nuc-0",
-      "projects": [
-        {
-          "paths": ["~/Downloads"]
-        }
-      ]
-    }
-  ],
   "assistant": {
     "enabled": true,
     "button": false,
