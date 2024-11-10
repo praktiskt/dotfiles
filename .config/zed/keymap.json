@@ -3,7 +3,8 @@
     "context": "Editor",
     "bindings": {
       "ctrl-b": "workspace::ToggleLeftDock",
-      "ctrl-t": "terminal_panel::ToggleFocus"
+      "ctrl-t": "terminal_panel::ToggleFocus",
+      "alt-q": "pane::CloseActiveItem"
     }
   },
   {
@@ -20,6 +21,7 @@
       "ctrl-enter": null,
       "ctrl-f": "buffer_search::Deploy",
       "ctrl-h": "search::ToggleReplace",
+      "ctrl-j": "workspace::ToggleBottomDock",
       "ctrl-t": "terminal_panel::ToggleFocus",
       "ctrl-w f": "workspace::ToggleZoom",
       "g b": "pane::GoBack",
@@ -28,7 +30,7 @@
       "g p e": "editor::GoToPrevDiagnostic",
       "space a a": "assistant::NewContext",
       "space a e": "assistant::InlineAssist",
-      "space f f": "buffer_search::Deploy",
+      "space f f": "workspace::NewSearch",
       "t d": "diagnostics::Deploy"
     }
   },
@@ -47,6 +49,7 @@
       "space Y": "editor::Copy",
       "space a a": "assistant::NewContext",
       "space a e": "assistant::InlineAssist",
+      "space f f": "workspace::NewSearch",
       "space y": "editor::Copy",
       "tab": "editor::Indent"
     }
@@ -58,7 +61,8 @@
       "ctrl-t": "terminal_panel::ToggleFocus",
       "ctrl-tab": "tab_switcher::Toggle",
       "ctrl-w f": "workspace::ToggleZoom",
-      "ctrl-w up": "terminal_panel::ToggleFocus"
+      "ctrl-w up": "terminal_panel::ToggleFocus",
+      "alt-q": "pane::CloseActiveItem"
     }
   }
 ]

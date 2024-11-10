@@ -36,17 +36,12 @@
   "theme": "Catppuccin Mocha - No Italics",
   "toolbar": {
     "breadcrumbs": false,
-    "quick_actions": false
-  },
-  "tab_bar": {
-    "show": true
+    "quick_actions": false,
+    "selections_menu": false
   },
   "indent_guides": {
     "enabled": true,
     "coloring": "indent_aware"
-  },
-  "inlay_hints": {
-    "enabled": true
   },
   "languages": {
     "Python": {
