@@ -7,6 +7,13 @@
     }
   },
   {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "ctrl-c": "editor::Copy",
+      "ctrl-v": "editor::Paste"
+    }
+  },
+  {
     "context": "Editor && vim_mode == normal",
     "bindings": {
       "ctrl-d": ["editor::SelectNext", { "replace_newest": false }],
@@ -32,6 +39,8 @@
       "ctrl-enter": null,
       "ctrl-f": "buffer_search::Deploy",
       "ctrl-h": "search::ToggleReplace",
+      "ctrl-shift-c": "editor::Copy",
+      "ctrl-shift-v": "editor::Paste",
       "g b": "pane::GoBack",
       "g f": "pane::GoForward",
       "shift-tab": "editor::Outdent",
@@ -45,11 +54,11 @@
   {
     "context": "Terminal",
     "bindings": {
-      "ctrl-w up": "terminal_panel::ToggleFocus",
+      "ctrl-n": "workspace::NewTerminal",
       "ctrl-t": "terminal_panel::ToggleFocus",
       "ctrl-tab": "tab_switcher::Toggle",
-      "ctrl-n": "workspace::NewTerminal",
-      "ctrl-w f": "workspace::ToggleZoom"
+      "ctrl-w f": "workspace::ToggleZoom",
+      "ctrl-w up": "terminal_panel::ToggleFocus"
     }
   }
 ]
