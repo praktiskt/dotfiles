@@ -11,7 +11,8 @@
     "context": "Editor && vim_mode == insert",
     "bindings": {
       "ctrl-c": "editor::Copy",
-      "ctrl-v": "editor::Paste"
+      "ctrl-v": "editor::Paste",
+      "ctrl-x": "editor::Cut"
     }
   },
   {
@@ -31,6 +32,7 @@
       "space a a": "assistant::NewContext",
       "space a e": "assistant::InlineAssist",
       "space f f": "workspace::NewSearch",
+      "space f r": "editor::FindAllReferences",
       "t d": "diagnostics::Deploy"
     }
   },
