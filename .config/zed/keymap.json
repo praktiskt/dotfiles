@@ -1,6 +1,6 @@
 [
   {
-    "context": "Editor",
+    "context": "Editor || Workspace",
     "bindings": {
       "ctrl-b": "workspace::ToggleLeftDock",
       "ctrl-t": "terminal_panel::ToggleFocus",
