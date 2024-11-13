@@ -1,4 +1,19 @@
 {
+  "features": {
+    "inline_completion_provider": "none"
+  },
+  "collaboration_panel": {
+    "button": false
+  },
+  "chat_panel": {
+    "button": false
+  },
+  "notification_panel": {
+    "button": false
+  },
+  "terminal": {
+    "button": false
+  },
   "assistant": {
     "enabled": true,
     "button": false,
