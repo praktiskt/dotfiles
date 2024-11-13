@@ -16,6 +16,12 @@
     }
   },
   {
+    "context": "Dock",
+    "bindings": {
+      "ctrl-a": "project_panel::NewFile"
+    }
+  },
+  {
     "context": "Editor && vim_mode == normal",
     "bindings": {
       "ctrl-d": ["editor::SelectNext", { "replace_newest": false }],
@@ -33,7 +39,8 @@
       "space a e": "assistant::InlineAssist",
       "space f f": "workspace::NewSearch",
       "space f r": "editor::FindAllReferences",
-      "t d": "diagnostics::Deploy"
+      "t d": "diagnostics::Deploy",
+      "t e": "workspace::ToggleLeftDock"
     }
   },
   {
