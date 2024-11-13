@@ -12,7 +12,9 @@
     "button": false
   },
   "terminal": {
-    "button": false
+    "button": false,
+    "font_family": "JetBrains Mono NL",
+    "font_weight": 250
   },
   "assistant": {
     "enabled": true,
