@@ -17,6 +17,10 @@
     "font_weight": 250,
     "working_directory": "first_project_directory"
   },
+  "active_pane_modifiers": {
+    "border_size": 1,
+    "inactive_opacity": 0.3
+  },
   "assistant": {
     "enabled": true,
     "button": false,
