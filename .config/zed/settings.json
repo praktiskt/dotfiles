@@ -37,6 +37,7 @@
     }
   },
   "ui_font_size": 16,
+  "buffer_font_weight": 250,
   "buffer_font_size": 14,
   "buffer_font_family": "JetBrains Mono NL",
   "theme": "Catppuccin Mocha - No Italics",
@@ -114,6 +115,21 @@
           }
         }
       ]
+    },
+    "YAML": {
+      "format_on_save": "language_server"
+    }
+  },
+  "lsp": {
+    "yaml-language-server": {
+      "settings": {
+        "yaml": {
+          "format": {
+            "enable": true,
+            "bracketSpacing": false
+          }
+        }
+      }
     }
   }
 }
