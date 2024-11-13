@@ -1,2 +1,0 @@
-[tool.basedpyright]
-typeCheckingMode = "standard" # "standard" is equal to upstream pyright
