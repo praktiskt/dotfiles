@@ -67,7 +67,7 @@
     "context": "Terminal",
     "bindings": {
       "ctrl-n": "workspace::NewTerminal",
-      "ctrl-t": "terminal_panel::ToggleFocus",
+      "ctrl-t": "workspace::ToggleBottomDock",
       "ctrl-tab": "tab_switcher::Toggle",
       "ctrl-w f": "workspace::ToggleZoom",
       "ctrl-w up": "terminal_panel::ToggleFocus",
