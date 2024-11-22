@@ -5,6 +5,7 @@ alias python="python3"
 alias copy="xclip -sel clip"
 alias translate="docker run soimort/translate-shell"
 alias calc="docker run -it praktiskt/insect"
+alias diagon="docker run -i diagon"
 ffsub() {
     fn=$(uuidgen)
     echo "🌟 Output file will be: $fn"
