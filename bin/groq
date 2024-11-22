@@ -16,6 +16,16 @@ def stderr(msg, **kwargs):
     print(msg, file=sys.stderr, **kwargs)
 
 
+def _response_format():
+    return os.environ.get("GROQ_RESPONSE_FORMAT", "text")
+
+
+def _is_stream():
+    if _response_format() != "text":
+        return False
+    return os.environ.get("GROQ_STREAM", "True").lower() == "true"
+
+
 def body(prompt: list[str] = []) -> str:
     return json.dumps(
         {
@@ -31,7 +41,8 @@ def body(prompt: list[str] = []) -> str:
             ],
             "model": os.environ.get("GROQ_MODEL", "llama-3.1-70b-versatile"),
             "temperature": float(os.environ.get("GROQ_TEMPERATURE", 0.1)),
-            "stream": os.environ.get("GROQ_STREAM", "True").lower() == "true",
+            "stream": _is_stream(),
+            "response_format": {"type": _response_format()},
         }
     )
 
@@ -49,10 +60,16 @@ def stream(prompt: list[str]):
         "https://api.groq.com/openai/v1/chat/completions",
         headers=headers,
         data=json.dumps(msg),
-        stream=True,
+        stream=_is_stream(),
     )
 
-    response.raise_for_status()
+    if response.status_code != 200:
+        stderr(response.json())
+        sys.exit(1)
+
+    if not _is_stream():
+        stdout(response.json().get("choices")[0].get("message").get("content"))
+        return
 
     for line in response.iter_lines():
         tok: str = line.decode("utf-8").lstrip("data: ")
@@ -70,7 +87,7 @@ def stream(prompt: list[str]):
             return
 
         if data.get("choices", [{}])[0].get("delta", {}).get("content"):
-            stdout(data["choices"][0]["delta"]["content"], end="")
+            stdout(data["choices"][0]["delta"]["content"], end="", flush=True)
 
 
 def main():
