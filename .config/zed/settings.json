@@ -15,7 +15,8 @@
     "button": false,
     "font_family": "JetBrains Mono NL",
     "font_weight": 250,
-    "working_directory": "first_project_directory"
+    "working_directory": "current_project_directory",
+    "line_height": "standard"
   },
   "active_pane_modifiers": {
     "border_size": 1,
@@ -75,6 +76,7 @@
   },
   "languages": {
     "Python": {
+      "language_servers": ["basedpyright", "!pyright"],
       "formatter": [
         {
           "external": {
@@ -129,7 +131,6 @@
       ]
     },
     "Markdown": {
-      "format_on_save": "on",
       "formatter": [
         {
           "external": {
@@ -150,6 +151,19 @@
           "format": {
             "enable": true,
             "bracketSpacing": false
+          }
+        }
+      }
+    },
+    "basedpyright": {
+      "settings": {
+        //"python": {
+        //  "pythonPath": ".venv/bin/python"
+        //},
+        "basedpyright.analysis": {
+          "diagnosticMode": "workspace",
+          "inlayHints": {
+            "callArgumentNames": false
           }
         }
       }
