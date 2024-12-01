@@ -79,20 +79,16 @@
   },
   "languages": {
     "Python": {
-      "language_servers": ["ruff", "basedpyright", "!pyright"],
-      "formatter": [
-        {
-          "code_actions": {
-            "source.organizeImports.ruff": true,
-            "source.fixAll.ruff": true
-          }
-        },
-        {
-          "language_server": {
-            "name": "ruff"
-          }
+      "language_servers": ["basedpyright", "!pyright"],
+      "formatter": {
+        "external": {
+          "command": "bash",
+          "arguments": [
+            "-c",
+            "ruff check --select=I,F --exit-zero --fix --unsafe-fixes --stdin-filename {buffer_path} | ruff format --stdin-filename {buffer_path}"
+          ]
         }
-      ]
+      }
     },
     "Go": {
       "formatter": [
@@ -145,16 +141,6 @@
     }
   },
   "lsp": {
-    "ruff": {
-      "initialization_options": {
-        "settings": {
-          "lineLength": 88,
-          "lint": {
-            "extendSelect": ["I"]
-          }
-        }
-      }
-    },
     "yaml-language-server": {
       "settings": {
         "yaml": {
