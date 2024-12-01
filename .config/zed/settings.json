@@ -74,6 +74,9 @@
     "enabled": true,
     "coloring": "indent_aware"
   },
+  "file_types": {
+    "Dockerfile": ["Dockerfile.*"]
+  },
   "languages": {
     "Python": {
       "language_servers": ["ruff", "basedpyright", "!pyright"],
