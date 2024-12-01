@@ -76,20 +76,17 @@
   },
   "languages": {
     "Python": {
-      "language_servers": ["basedpyright", "!pyright"],
+      "language_servers": ["ruff", "basedpyright", "!pyright"],
       "formatter": [
         {
-          "external": {
-            // pip3 install ruff
-            "command": "ruff",
-            "arguments": ["check", "--fix", "--select=I", "-"]
+          "code_actions": {
+            "source.organizeImports.ruff": true,
+            "source.fixAll.ruff": true
           }
         },
         {
-          "external": {
-            // pip3 install ruff
-            "command": "ruff",
-            "arguments": ["format", "--line-length=88", "-"]
+          "language_server": {
+            "name": "ruff"
           }
         }
       ]
@@ -145,6 +142,16 @@
     }
   },
   "lsp": {
+    "ruff": {
+      "initialization_options": {
+        "settings": {
+          "lineLength": 88,
+          "lint": {
+            "extendSelect": ["I"]
+          }
+        }
+      }
+    },
     "yaml-language-server": {
       "settings": {
         "yaml": {
