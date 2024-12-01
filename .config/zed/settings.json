@@ -85,7 +85,7 @@
           "command": "bash",
           "arguments": [
             "-c",
-            "ruff check --select=I,F --exit-zero --fix --unsafe-fixes --stdin-filename {buffer_path} | ruff format --stdin-filename {buffer_path}"
+            "ruff check --select=ALL --ignore=T --exit-zero --fix --unsafe-fixes --stdin-filename {buffer_path} | ruff format --line-length=88 --stdin-filename {buffer_path}"
           ]
         }
       }
