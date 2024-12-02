@@ -77,6 +77,10 @@
   "file_types": {
     "Dockerfile": ["Dockerfile.*"]
   },
+  "inlay_hints": {
+    "enabled": true,
+    "show_background": true
+  },
   "languages": {
     "Python": {
       "language_servers": ["basedpyright", "!pyright"],
@@ -89,21 +93,6 @@
           ]
         }
       }
-    },
-    "Go": {
-      "formatter": [
-        {
-          "external": {
-            "command": "goimports"
-          }
-        },
-        {
-          "external": {
-            // go install mvdan.cc/gofumpt@latest
-            "command": "gofumpt"
-          }
-        }
-      ]
     },
     "Rust": {
       "formatter": [
@@ -162,6 +151,12 @@
             "callArgumentNames": false
           }
         }
+      }
+    },
+    "gopls": {
+      "gofumpt": true,
+      "initialization_options": {
+        "gofumpt": true
       }
     }
   }
