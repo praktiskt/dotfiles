@@ -18,6 +18,34 @@
     "working_directory": "current_project_directory",
     "line_height": "standard"
   },
+  "auto_install_extensions": {
+    "basedpyright": true,
+    "catppuccin": true,
+    "docker-compose": true,
+    "dockerfile": true,
+    "elixir": true,
+    "gleam": true,
+    "helm": true,
+    "html": true,
+    "java": true,
+    "julia": true,
+    "just": true,
+    "kotlin": true,
+    "lua": true,
+    "make": true,
+    "r": true,
+    "rainbow-csv": true,
+    "rose-pine-theme": true,
+    "ruby": true,
+    "ruff": true,
+    "scala": true,
+    "sql": true,
+    "temp": true,
+    "toml": true,
+    "typos": true,
+    "xml": true,
+    "zig": true
+  },
   "active_pane_modifiers": {
     "border_size": 1,
     "inactive_opacity": 0.3
@@ -75,7 +103,14 @@
     "coloring": "indent_aware"
   },
   "file_types": {
-    "Dockerfile": ["Dockerfile.*"]
+    "Dockerfile": ["Dockerfile.*"],
+    "Helm": [
+      "**/templates/**/*.tpl",
+      "**/templates/**/*.yaml",
+      "**/templates/**/*.yml",
+      "**/helmfile.d/**/*.yaml",
+      "**/helmfile.d/**/*.yml"
+    ]
   },
   "inlay_hints": {
     "enabled": true,
@@ -157,6 +192,11 @@
       "gofumpt": true,
       "initialization_options": {
         "gofumpt": true
+      }
+    },
+    "typos": {
+      "initialization_options": {
+        "diagnosticSeverity": "Warning"
       }
     }
   }
