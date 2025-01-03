@@ -1,27 +1,32 @@
 #!/usr/bin/env bash
 
 main() {
-	if ! git status &>/dev/null; then
-		echo "not in a git repo"
-		exit 1
-	fi
+    if ! git status &>/dev/null; then
+        echo "not in a git repo"
+        exit 1
+    fi
 
-	DIFF=$(git diff --cached)
-	if [ -z "$DIFF" ]; then
-		echo "add stuff with git add and re-run"
-		exit 0
-	fi
+    DIFF=$(git diff --cached)
+    if [ -z "$DIFF" ]; then
+        echo "add stuff with git add and re-run"
+        exit 0
+    fi
 
-	MSG=$(git diff --cached | groq "summarise into a single git commit message following semver naming convention (prefixing with feat, patch or fix), respond only with the commit message and no code block")
-	MSG=${MSG//[\'\"\`]/}
-	read -p "Is the commit message '$MSG' ok? (y/n) " -n 1 -r
-	echo
-	if [[ $REPLY =~ ^[Yy]$ ]]; then
-		git commit -m "$MSG"
-	else
-		echo "aborting"
-		exit 1
-	fi
+    MSG=$(git diff --cached | groq "summarise into a single git commit message following semver naming convention (prefixing with feat, patch or fix), respond only with the commit message and no code block")
+    MSG=${MSG//[\'\"\`]/}
+
+    if [ -z "$MSG" ]; then
+        echo "failed to generate message :("
+        exit 1
+    fi
+    read -p "Is the commit message '$MSG' ok? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        git commit -m "$MSG"
+    else
+        echo "aborting"
+        exit 1
+    fi
 }
 
 main $@
