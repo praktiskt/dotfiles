@@ -1,4 +1,6 @@
 {
+  //"server_url": "http://localhost:8080",
+  "auto_update": false,
   "features": {
     "inline_completion_provider": "none"
   },
@@ -14,7 +16,7 @@
   "terminal": {
     "button": false,
     "font_family": "JetBrains Mono NL",
-    "font_weight": 250,
+    "font_weight": 350,
     "working_directory": "current_project_directory",
     "line_height": "standard"
   },
@@ -55,9 +57,10 @@
     "button": false,
     "default_model": {
       "provider": "openai",
-      "model": "llama-3.1-70b-versatile"
+      "model": "llama-3.3-70b-versatile"
     },
-    "version": "2"
+    "version": "2",
+    "enable_experimental_live_diffs": true
   },
   "language_models": {
     "openai": {
@@ -66,8 +69,8 @@
       "low_speed_timeout_in_seconds": 600,
       "available_models": [
         {
-          "name": "llama-3.1-70b-versatile",
-          "display_name": "groq/llama-3.1-70b-versatile",
+          "name": "llama-3.3-70b-versatile",
+          "display_name": "groq/llama-3.3-70b-versatile",
           "max_tokens": 8192
         }
       ]
@@ -92,7 +95,8 @@
   "buffer_font_weight": 250,
   "buffer_font_size": 14,
   "buffer_font_family": "JetBrains Mono NL",
-  "theme": "Catppuccin Mocha - No Italics",
+  "buffer_font_fallbacks": ["Cantarell"],
+  "theme": "Catppuccin Mocha",
   "toolbar": {
     "breadcrumbs": false,
     "quick_actions": false,
@@ -116,7 +120,18 @@
     "enabled": true,
     "show_background": true
   },
+  "unnecessary_code_fade": 0.7,
   "languages": {
+    // Default: biome (JavaScript, TypeScript, JSX, TSX, JSON, CSS, GraphQL)
+    // "formatter": {
+    //   "language_server": {
+    //     "name": "biome"
+    //   }
+    // },
+    // "code_actions_on_format": {
+    //   "source.fixAll.biome": true,
+    //   "source.organizeImports.biome": true
+    // },
     "Python": {
       "language_servers": ["basedpyright", "!pyright"],
       "formatter": {
@@ -177,9 +192,9 @@
     },
     "basedpyright": {
       "settings": {
-        //"python": {
-        //  "pythonPath": ".venv/bin/python"
-        //},
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        },
         "basedpyright.analysis": {
           "diagnosticMode": "workspace",
           "inlayHints": {
@@ -199,5 +214,10 @@
         "diagnosticSeverity": "Warning"
       }
     }
+    // "biome": {
+    //   "settings": {
+    //     "require_config_file": true
+    //   }
+    // }
   }
 }
