@@ -12,13 +12,16 @@ main() {
 		exit 0
 	fi
 
-	PROMPT="<INSTRUCTION>Summarise into a single git commit message with max 15 words (prefer less than 8), following SEMVER formatting:
-* fix(<context>): for patches that fix bugs or minor issues
-* chore(<context>): for miscellaneous changes like updates to dependencies or configuration
-* feat(<context>): for new features or significant additions
-* docs(<context>): for changes to documentation
-* test(<context>): for adding or updating tests
-* breaking(<context>): for changes that break backwards compatibility
+	PROMPT="<INSTRUCTION>Summarise into a single git commit message with max 15 words.
+
+It must follow the following format: <type>(<context>): <description>.
+
+* for patches that fix bugs or minor issues, use: fix(<context>): <description>
+* for miscellaneous changes like updates to dependencies or configuration, use: chore(<context>): <description>
+* for new features or significant additions, use: feat(<context>): <description>
+* for changes to documentation, use: docs(<context>): <description>
+* for adding or updating tests, use: test(<context>): <description>
+* for changes that break backwards compatibility, use: breaking(<context>): <description>
 
 RULES:
 * <context> MUST BE MAX 2 WORDS
