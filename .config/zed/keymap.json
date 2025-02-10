@@ -1,10 +1,27 @@
 [
   {
+    "context": "Dock",
+    "bindings": {
+      "ctrl-a": "project_panel::NewFile",
+      "ctrl-d": "project_panel::NewDirectory"
+    }
+  },
+  {
     "context": "Editor || Workspace",
     "bindings": {
       "ctrl-b": "workspace::ToggleLeftDock",
       "ctrl-t": "terminal_panel::ToggleFocus",
       "alt-q": "pane::CloseActiveItem"
+      //"ctrl-p": [
+      //  "task::Spawn",
+      //  { "task_name": "File Finder", "reveal_target": "center" }
+      //]
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-s": ["workspace::SendKeystrokes", "ctrl-s escape"]
     }
   },
   {
@@ -16,49 +33,43 @@
     }
   },
   {
-    "context": "Dock",
-    "bindings": {
-      "ctrl-a": "project_panel::NewFile"
-    }
-  },
-  {
-    "context": "Editor && vim_mode == normal",
+    "context": "Editor && (vim_mode == normal || vim_mode == visual_line || vim_mode == visual)",
     "bindings": {
       "ctrl-d": ["editor::SelectNext", { "replace_newest": false }],
+      "ctrl-shift-d": "editor::SelectAllMatches",
       "ctrl-enter": null,
       "ctrl-f": "buffer_search::Deploy",
       "ctrl-h": "search::ToggleReplace",
       "ctrl-j": "workspace::ToggleBottomDock",
       "ctrl-t": "terminal_panel::ToggleFocus",
-      "ctrl-w f": "workspace::ToggleZoom",
       "g b": "pane::GoBack",
-      "g e": "editor::GoToDiagnostic",
       "g f": "pane::GoForward",
-      "g p e": "editor::GoToPrevDiagnostic",
       "space a a": "assistant::NewContext",
       "space a e": "assistant::InlineAssist",
       "space f f": "workspace::NewSearch",
-      "space f r": "editor::FindAllReferences",
+      "ctrl-w f": "workspace::ToggleZoom",
+      "ctrl-w s h": "pane::SplitHorizontal",
+      "ctrl-w s v": "pane::SplitVertical",
+      "ctrl-w s s": "pane::SplitRight"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "g e": "editor::GoToDiagnostic",
+      "g p e": "editor::GoToPrevDiagnostic",
       "t d": "diagnostics::Deploy",
-      "t e": "workspace::ToggleLeftDock"
+      "t e": "workspace::ToggleLeftDock",
+      "space f r": "editor::FindAllReferences"
     }
   },
   {
     "context": "Editor && (vim_mode == visual_line || vim_mode == visual)",
     "bindings": {
-      "ctrl-d": ["editor::SelectNext", { "replace_newest": false }],
-      "ctrl-enter": null,
-      "ctrl-f": "buffer_search::Deploy",
-      "ctrl-h": "search::ToggleReplace",
       "ctrl-shift-c": "editor::Copy",
       "ctrl-shift-v": "editor::Paste",
-      "g b": "pane::GoBack",
-      "g f": "pane::GoForward",
       "shift-tab": "editor::Outdent",
       "space Y": "editor::Copy",
-      "space a a": "assistant::NewContext",
-      "space a e": "assistant::InlineAssist",
-      "space f f": "workspace::NewSearch",
       "space y": "editor::Copy",
       "tab": "editor::Indent"
     }
@@ -71,6 +82,9 @@
       "ctrl-tab": "tab_switcher::Toggle",
       "ctrl-w f": "workspace::ToggleZoom",
       "ctrl-w up": "terminal_panel::ToggleFocus",
+      "ctrl-w s h": "pane::SplitHorizontal",
+      "ctrl-w s v": "pane::SplitVertical",
+      "ctrl-w s s": "pane::SplitRight",
       "alt-q": "pane::CloseActiveItem"
     }
   }
