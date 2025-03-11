@@ -44,7 +44,7 @@
       "ctrl-t": "terminal_panel::ToggleFocus",
       "g b": "pane::GoBack",
       "g f": "pane::GoForward",
-      "space a a": "assistant::NewContext",
+      "space a a": "assistant::NewChat",
       "space a e": "assistant::InlineAssist",
       "space f f": "workspace::NewSearch",
       "ctrl-w f": "workspace::ToggleZoom",
@@ -57,7 +57,7 @@
     "context": "Editor && vim_mode == normal",
     "bindings": {
       "g e": "editor::GoToDiagnostic",
-      "g p e": "editor::GoToPrevDiagnostic",
+      "g p e": "editor::GoToPreviousDiagnostic",
       "t d": "diagnostics::Deploy",
       "t e": "workspace::ToggleLeftDock",
       "space f r": "editor::FindAllReferences"
