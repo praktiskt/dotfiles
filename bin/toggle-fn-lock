@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+get_current() {
+	cat /sys/module/hid_apple/parameters/fnmode
+}
+
+set_locked() {
+	echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
+}
+set_unlocked() {
+	echo 1 | sudo tee /sys/module/hid_apple/parameters/fnmode
+}
+
+main() {
+	CURRENT=$(get_current)
+	if [ "$CURRENT" = "2" ]; then
+		echo "Fn is locked, unlocking..."
+		set_unlocked >/dev/null
+	else
+		echo "Fn is unlocked, locking..."
+		set_locked >/dev/null
+	fi
+}
+
+main "$@"
