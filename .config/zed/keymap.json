@@ -21,7 +21,7 @@
   {
     "context": "Editor",
     "bindings": {
-      "ctrl-s": ["workspace::SendKeystrokes", "ctrl-s escape"]
+      "ctrl-s": ["workspace::SendKeystrokes", "escape ctrl-s"]
     }
   },
   {
@@ -44,7 +44,7 @@
       "ctrl-t": "terminal_panel::ToggleFocus",
       "g b": "pane::GoBack",
       "g f": "pane::GoForward",
-      "space a a": "assistant::NewChat",
+      "space a a": "agent::NewTextThread",
       "space a e": "assistant::InlineAssist",
       "space f f": "workspace::NewSearch",
       "ctrl-w f": "workspace::ToggleZoom",
@@ -85,7 +85,8 @@
       "ctrl-w s h": "pane::SplitHorizontal",
       "ctrl-w s v": "pane::SplitVertical",
       "ctrl-w s s": "pane::SplitRight",
-      "alt-q": "pane::CloseActiveItem"
+      "alt-q": "pane::CloseActiveItem",
+      "ctrl-enter": null
     }
   }
 ]

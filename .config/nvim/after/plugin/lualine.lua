@@ -1,4 +1,3 @@
--- Extra functions for multi-cursor
 local function mc_is_active()
 	local ok, hydra = pcall(require, "hydra.statusline")
 	return ok and hydra.is_active()
@@ -11,7 +10,6 @@ local function mc_get_name()
 	end
 	return ""
 end
-
 require("lualine").setup({
 	sections = {
 		lualine_c = {

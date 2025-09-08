@@ -52,12 +52,11 @@ neovide() {
 
 nvim() {
 	LUAS=$(find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs)
-	LOCKFILE="lazy-lock.json"
 	SNIPPETS=$(find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs)
 	SPELLING=$(find ~/.config/nvim -name "*.add" | sed -E 's/^.*nvim\///g' | xargs)
 	SPELLING_SPL=$(find ~/.config/nvim -name "*.add.spl" | sed -E 's/^.*nvim\///g' | xargs)
-	FILES=$(echo "$LUAS $LOCKFILE $SNIPPETS $SPELLING $SPELLING_SPL")
-	mkdir -p .config/nvim/after/plugin
+	FILES=$(echo "$LUAS $SNIPPETS $SPELLING $SPELLING_SPL")
+	mkdir -p .config/nvim/after/plugin/lsp
 	mkdir -p .config/nvim/lua/praktiskt
 	mkdir -p .config/nvim/snippets .config/nvim/spell
 	for FILE in $FILES; do

@@ -18,3 +18,10 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	end,
 	group = autocmd_group,
 })
+
+vim.api.nvim_create_autocmd("User", {
+	pattern = "avante.nvim",
+	callback = function()
+		require("avante").setup({})
+	end,
+})

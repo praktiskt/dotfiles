@@ -1,3 +1,22 @@
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+
+parser_config.lua = {
+	install_info = {
+		url = "https://github.com/MunifTanjim/tree-sitter-lua",
+		files = { "src/parser.c" },
+	},
+	filetype = "lua",
+}
+
+parser_config.go = {
+	install_info = {
+		url = "https://github.com/tree-sitter/tree-sitter-go",
+		files = { "src/parser.c" },
+	},
+	filetype = "go",
+}
+
+require("nvim-treesitter.install").prefer_git = true
 require("nvim-treesitter.configs").setup({
 	ensure_installed = {
 		"bash",
@@ -46,21 +65,10 @@ require("nvim-treesitter.configs").setup({
 		"vue",
 		"yaml",
 	},
-
-	-- Install parsers synchronously (only applied to `ensure_installed`)
 	sync_install = false,
-
-	-- Automatically install missing parsers when entering buffer
-	-- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
 	auto_install = false,
-
 	highlight = {
 		enable = true,
-		-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-		-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-		-- Using this option may slow down your editor, and you may see some duplicate highlights.
-		-- Instead of true it can also be a list of languages
-		--disable = { "python" },
 		additional_vim_regex_highlighting = false,
 	},
 	endwise = {
@@ -75,11 +83,6 @@ require("nvim-treesitter.configs").setup({
 				["if"] = "@function.inner",
 				["ac"] = "@class.outer",
 				["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-			},
-			selection_modes = {
-				-- ['@parameter.outer'] = 'v', -- charwise
-				-- ['@function.outer'] = 'V', -- linewise
-				-- ['@class.outer'] = '<C-v>', -- blockwise
 			},
 			include_surrounding_whitespace = true,
 		},

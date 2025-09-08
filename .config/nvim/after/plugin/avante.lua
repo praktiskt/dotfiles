@@ -1,12 +1,27 @@
 require("avante").setup({
 	provider = "groq",
+	providers = {
+		groq = {
+			__inherited_from = "openai",
+			api_key_name = "GROQ_API_KEY",
+			endpoint = "https://api.groq.com/openai/v1/",
+			model = "meta-llama/llama-4-scout-17b-16e-instruct",
+			extra_request_body = {
+				max_completion_tokens = 8192,
+			},
+		},
+	},
 	windows = {
-		position = "right", -- the position of the sidebar
-		wrap = true, -- similar to vim.o.wrap
-		width = 40, -- default % based on available width
+		position = "right",
+		wrap = true,
+		width = 40,
 		sidebar_header = {
-			align = "center", -- left, center, right for title
-			rounded = false,
+			enabled = false,
+		},
+		ask = {
+			start_insert = false,
 		},
 	},
 })
+vim.opt.laststatus = 3
+vim.keymap.set({ "i", "n", "v" }, "<C-B>", "<esc>:AvanteToggle<CR>", {})

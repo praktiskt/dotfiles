@@ -1,11 +1,25 @@
 {
+  "edit_predictions": {
+    "mode": "eager",
+    "copilot": {
+      "proxy": null,
+      "proxy_no_verify": null
+    },
+    "enabled_in_text_threads": false
+  },
   //"server_url": "http://localhost:8080",
+  "debugger": {
+    "button": false
+  },
+  "title_bar": {
+    "show_sign_in": true,
+    "show_user_picture": false
+  },
   "icon_theme": "Material Icon Theme",
   "auto_update": false,
   "soft_wrap": "editor_width",
   "features": {
-    "edit_prediction_provider": "none",
-    "copilot": false
+    "edit_prediction_provider": "zed"
   },
   "collaboration_panel": {
     "button": false
@@ -63,33 +77,42 @@
     "border_size": 1,
     "inactive_opacity": 0.3
   },
-  "assistant": {
+  "agent": {
+    "inline_assistant_model": {
+      "provider": "openai",
+      "model": "llama-3.3-70b-versatile"
+    },
     "enabled": true,
     "button": false,
     "default_model": {
       "provider": "openai",
       "model": "llama-3.3-70b-versatile"
-    },
-    "version": "2",
-    "enable_experimental_live_diffs": true
+    }
   },
   "language_models": {
-    "copilot_chat": null,
     "openai": {
-      "version": "1",
       "api_url": "https://api.groq.com/openai/v1",
-      "low_speed_timeout_in_seconds": 600,
       "available_models": [
+        {
+          "name": "meta-llama/llama-4-scout-17b-16e-instruct",
+          "display_name": "groq/llama-4-scout-17b-16e-instruct",
+          "max_tokens": 8192
+        },
         {
           "name": "llama-3.3-70b-versatile",
           "display_name": "groq/llama-3.3-70b-versatile",
           "max_tokens": 8192
         },
-
         {
           "name": "deepseek-r1-distill-llama-70b",
           "display_name": "groq/deepseek-r1-distill-llama-70b",
           "max_tokens": 8192
+        },
+        {
+          "name": "moonshotai/kimi-k2-instruct",
+          "display_name": "groq/kimi-k2-instruct",
+          "max_tokens": 131072,
+          "max_completion_tokens": 16384
         }
       ]
     }
@@ -219,6 +242,9 @@
     },
     "YAML": {
       "format_on_save": "language_server"
+    },
+    "Helm": {
+      "format_on_save": "language_server"
     }
   },
   "lsp": {
@@ -246,7 +272,6 @@
       }
     },
     "gopls": {
-      "gofumpt": true,
       "initialization_options": {
         "gofumpt": true
       }
