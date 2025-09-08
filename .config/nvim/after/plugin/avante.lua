@@ -24,4 +24,4 @@ require("avante").setup({
 	},
 })
 vim.opt.laststatus = 3
-vim.keymap.set({ "i", "n", "v" }, "<C-B>", "<esc>:AvanteToggle<CR>", {})
+vim.keymap.set({ "i", "n", "v" }, "<C-A-b>", "<esc>:AvanteToggle<CR>", {})
