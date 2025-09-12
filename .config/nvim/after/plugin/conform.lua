@@ -1,6 +1,6 @@
 require("conform").setup({
 	formatters_by_ft = {
-		go = { "goimports", "gofumpt" },
+		-- go = { "goimports", "gofumpt" }, -- LSP
 		javascript = { "prettierd", "prettier", stop_after_first = true },
 		lua = { "stylua" },
 		python = { "ruff_organize_imports", "ruff_format" },
