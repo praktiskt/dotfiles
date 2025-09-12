@@ -11,6 +11,9 @@ require("avante").setup({
 			},
 		},
 	},
+	selection = {
+		hint_display = "none",
+	},
 	windows = {
 		position = "right",
 		wrap = true,

@@ -3,6 +3,7 @@ vim.keymap.set("n", "gf", "<C-i>")
 vim.keymap.set("n", "<C-f>", "/")
 vim.keymap.set("n", "<C-s>", ":w<CR>")
 vim.keymap.set("i", "<C-s>", "<Esc>:w<CR>i<Right>")
+vim.keymap.set({ "n", "s" }, "<C-k>s", "<Cmd>noautocmd w<CR>")
 vim.keymap.set({ "n", "v" }, "<S-Up>", "<Up>")
 vim.keymap.set({ "n", "v" }, "<S-Down>", "<Down>")
 vim.keymap.set("i", "<S-Tab>", "<C-\\><C-N><<<C-\\><C-N>^i")
@@ -44,22 +45,6 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("v", "<leader>cs", '"zy<Esc>:%s/<C-R>z//g<Left><Left>')
 
--- Visual multi select
-vim.g.VM_default_mappings = 0
-local binds = {}
-binds["Find Under"] = "<C-d>"
-binds["Find Subword Under"] = "<C-d>"
-vim.g.VM_maps = binds
-vim.g.VM_theme = "nord"
-
--- Which key
-vim.keymap.set("n", "<leader>h", "<esc>:WhichKey<CR>")
-
 -- LSP
 vim.keymap.set({ "n", "v" }, "<leader>qf", ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<C-Space>", ":lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
-
--- REPL
-vim.keymap.set("n", "<A-Enter>", ":ReplRunBlockAndAdvance<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<A-BS>", ":ReplRunBlock<CR>", { noremap = true, silent = true })
--- Note that <A-Enter> in visual mode exists, check iron.lua

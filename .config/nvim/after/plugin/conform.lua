@@ -8,6 +8,11 @@ require("conform").setup({
 		sh = { "shfmt" },
 		sql = { "sqlfluff" },
 	},
+	formatters = {
+		gofumpt = {
+			args = { "$FILENAME" },
+		},
+	},
 	format_on_save = {
 		timeout_ms = 500,
 		lsp_format = "fallback",
