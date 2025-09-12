@@ -27,6 +27,7 @@ set.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
 set.spelllang = "en_us"
 set.spell = true
 set.termguicolors = true
+set.winborder = "rounded"
 
 -- Required by nvim-tree
 vim.g.loaded_netrw = 1

@@ -1,4 +1,3 @@
-local vim = vim
 local Plug = vim.fn["plug#"]
 
 vim.g.mapleader = " "
@@ -50,6 +49,8 @@ Plug("nvim-tree/nvim-tree.lua")
 Plug("jake-stewart/multicursor.nvim")
 
 Plug("folke/trouble.nvim")
+
+Plug("m4xshen/autoclose.nvim")
 
 -- Languages
 Plug("nvim-treesitter/nvim-treesitter")

@@ -5,7 +5,7 @@ require("avante").setup({
 			__inherited_from = "openai",
 			api_key_name = "GROQ_API_KEY",
 			endpoint = "https://api.groq.com/openai/v1/",
-			model = "meta-llama/llama-4-scout-17b-16e-instruct",
+			model = "moonshotai/kimi-k2-instruct-0905",
 			extra_request_body = {
 				max_completion_tokens = 8192,
 			},
