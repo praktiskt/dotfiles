@@ -8,84 +8,84 @@ vim.opt.termguicolors = true
 vim.call("plug#begin")
 
 -- Styling
-Plug("catppuccin/nvim", { ["as"] = "catppuccin" })
+Plug("https://github.com/catppuccin/nvim", { ["as"] = "catppuccin" })
 
-Plug("RRethy/vim-illuminate")
+Plug("https://github.com/RRethy/vim-illuminate")
 
-Plug("lewis6991/gitsigns.nvim")
+Plug("https://github.com/lewis6991/gitsigns.nvim")
 
-Plug("lewis6991/satellite.nvim")
+Plug("https://github.com/lewis6991/satellite.nvim")
 
-Plug("norcalli/nvim-colorizer.lua")
+Plug("https://github.com/norcalli/nvim-colorizer.lua")
 
-Plug("nvim-tree/nvim-web-devicons")
-Plug("nvim-lualine/lualine.nvim")
+Plug("https://github.com/nvim-tree/nvim-web-devicons")
+Plug("https://github.com/nvim-lualine/lualine.nvim")
 
-Plug("nvim-lua/plenary.nvim")
-Plug("folke/todo-comments.nvim")
+Plug("https://github.com/nvim-lua/plenary.nvim")
+Plug("https://github.com/folke/todo-comments.nvim")
 
-Plug("levouh/tint.nvim")
+Plug("https://github.com/levouh/tint.nvim")
 
-Plug("lukas-reineke/indent-blankline.nvim")
+Plug("https://github.com/lukas-reineke/indent-blankline.nvim")
 
-Plug("folke/snacks.nvim")
+Plug("https://github.com/folke/snacks.nvim")
 
-Plug("neovim/nvim-lspconfig")
-Plug("MysticalDevil/inlay-hints.nvim")
+Plug("https://github.com/neovim/nvim-lspconfig")
+Plug("https://github.com/MysticalDevil/inlay-hints.nvim")
 
-Plug("nvim-tree/nvim-web-devicons")
-Plug("lewis6991/gitsigns.nvim")
-Plug("romgrk/barbar.nvim")
+Plug("https://github.com/nvim-tree/nvim-web-devicons")
+Plug("https://github.com/lewis6991/gitsigns.nvim")
+Plug("https://github.com/romgrk/barbar.nvim")
 
 -- UI
-Plug("nvim-lua/plenary.nvim")
-Plug("nvim-tree/nvim-web-devicons")
-Plug("nvim-telescope/telescope.nvim")
+Plug("https://github.com/nvim-lua/plenary.nvim")
+Plug("https://github.com/nvim-tree/nvim-web-devicons")
+Plug("https://github.com/nvim-telescope/telescope.nvim")
 
-Plug("nvim-tree/nvim-web-devicons")
-Plug("nvim-tree/nvim-tree.lua")
+Plug("https://github.com/nvim-tree/nvim-web-devicons")
+Plug("https://github.com/nvim-tree/nvim-tree.lua")
 
 -- Tooling
-Plug("jake-stewart/multicursor.nvim")
+Plug("https://github.com/jake-stewart/multicursor.nvim")
 
-Plug("folke/trouble.nvim")
+Plug("https://github.com/folke/trouble.nvim")
 
-Plug("m4xshen/autoclose.nvim")
+Plug("https://github.com/m4xshen/autoclose.nvim")
 
 -- Languages
-Plug("nvim-treesitter/nvim-treesitter")
-Plug("nvim-treesitter/nvim-treesitter-context")
-Plug("nvim-treesitter/nvim-treesitter-textobjects")
+Plug("https://github.com/nvim-treesitter/nvim-treesitter")
+Plug("https://github.com/nvim-treesitter/nvim-treesitter-context")
+Plug("https://github.com/nvim-treesitter/nvim-treesitter-textobjects")
 
-Plug("neovim/nvim-lspconfig")
+Plug("https://github.com/neovim/nvim-lspconfig")
 
-Plug("RRethy/nvim-treesitter-endwise")
+Plug("https://github.com/RRethy/nvim-treesitter-endwise")
 
-Plug("neovim/nvim-lspconfig")
-Plug("hrsh7th/cmp-nvim-lsp")
-Plug("hrsh7th/cmp-buffer")
-Plug("hrsh7th/cmp-path")
-Plug("hrsh7th/cmp-cmdline")
-Plug("hrsh7th/nvim-cmp")
-Plug("L3MON4D3/LuaSnip")
-Plug("saadparwaiz1/cmp_luasnip")
+Plug("https://github.com/neovim/nvim-lspconfig")
+Plug("https://github.com/hrsh7th/cmp-nvim-lsp")
+Plug("https://github.com/hrsh7th/cmp-buffer")
+Plug("https://github.com/hrsh7th/cmp-path")
+Plug("https://github.com/hrsh7th/cmp-cmdline")
+Plug("https://github.com/hrsh7th/nvim-cmp")
+Plug("https://github.com/L3MON4D3/LuaSnip")
+Plug("https://github.com/saadparwaiz1/cmp_luasnip")
 
 -- AI
-Plug("nvim-lua/plenary.nvim")
-Plug("MunifTanjim/nui.nvim")
-Plug("MeanderingProgrammer/render-markdown.nvim")
-Plug("hrsh7th/nvim-cmp")
-Plug("nvim-tree/nvim-web-devicons")
-Plug("HakonHarnes/img-clip.nvim")
-Plug("zbirenbaum/copilot.lua")
-Plug("stevearc/dressing.nvim")
-Plug("folke/snacks.nvim")
-Plug("yetone/avante.nvim", { ["branch"] = "main", ["do"] = "make" })
+Plug("https://github.com/nvim-lua/plenary.nvim")
+Plug("https://github.com/MunifTanjim/nui.nvim")
+Plug("https://github.com/MeanderingProgrammer/render-markdown.nvim")
+Plug("https://github.com/hrsh7th/nvim-cmp")
+Plug("https://github.com/nvim-tree/nvim-web-devicons")
+Plug("https://github.com/HakonHarnes/img-clip.nvim")
+Plug("https://github.com/zbirenbaum/copilot.lua")
+Plug("https://github.com/stevearc/dressing.nvim")
+Plug("https://github.com/folke/snacks.nvim")
+Plug("https://github.com/yetone/avante.nvim", { ["branch"] = "main", ["do"] = "make" })
 
 -- Formatting
-Plug("lewis6991/spaceless.nvim")
+Plug("https://github.com/lewis6991/spaceless.nvim")
 
-Plug("stevearc/conform.nvim")
+Plug("https://github.com/stevearc/conform.nvim")
 
 vim.call("plug#end")
 vim.cmd("silent! colorscheme catppuccin-mocha")
