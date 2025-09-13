@@ -41,6 +41,7 @@ Plug("https://github.com/romgrk/barbar.nvim")
 Plug("https://github.com/nvim-lua/plenary.nvim")
 Plug("https://github.com/nvim-tree/nvim-web-devicons")
 Plug("https://github.com/nvim-telescope/telescope.nvim")
+Plug("https://github.com/nvim-telescope/telescope-symbols.nvim")
 
 Plug("https://github.com/nvim-tree/nvim-web-devicons")
 Plug("https://github.com/nvim-tree/nvim-tree.lua")
