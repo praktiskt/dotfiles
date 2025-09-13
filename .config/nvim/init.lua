@@ -3,7 +3,6 @@ local Plug = vim.fn["plug#"]
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 vim.cmd("syntax enable")
-vim.opt.termguicolors = true
 
 vim.call("plug#begin")
 

@@ -1,21 +1,3 @@
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-
-parser_config.lua = {
-	install_info = {
-		url = "https://github.com/MunifTanjim/tree-sitter-lua",
-		files = { "src/parser.c" },
-	},
-	filetype = "lua",
-}
-
-parser_config.go = {
-	install_info = {
-		url = "https://github.com/tree-sitter/tree-sitter-go",
-		files = { "src/parser.c" },
-	},
-	filetype = "go",
-}
-
 require("nvim-treesitter.install").prefer_git = true
 require("nvim-treesitter.configs").setup({
 	ensure_installed = {
