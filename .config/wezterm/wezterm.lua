@@ -1,5 +1,5 @@
 local wezterm = require("wezterm")
-local config = {}
+local config = wezterm.config_builder()
 
 config.color_scheme = "Catppuccin Mocha"
 config.font_size = 12
