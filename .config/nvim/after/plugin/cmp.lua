@@ -4,7 +4,7 @@ local cmp_select = { behavior = cmp.SelectBehavior.Select }
 cmp.setup({
 	preselect = "item",
 	completion = {
-		completeopt = "menu,menuone,noinsert,preview",
+		completeopt = "menu,menuone,noinsert,preview,noselect",
 	},
 	sources = {
 		{ name = "path" },
