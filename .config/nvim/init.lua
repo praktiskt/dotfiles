@@ -52,6 +52,8 @@ Plug("https://github.com/folke/trouble.nvim")
 
 Plug("https://github.com/m4xshen/autoclose.nvim")
 
+Plug("sindrets/diffview.nvim")
+
 -- Languages
 Plug("https://github.com/nvim-treesitter/nvim-treesitter")
 Plug("https://github.com/nvim-treesitter/nvim-treesitter-context")
