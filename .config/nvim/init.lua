@@ -91,15 +91,10 @@ require("praktiskt.remap")
 require("praktiskt.autocmds")
 require("praktiskt.conf")
 
-vim.lsp.enable({
-	"basedpyright",
-	"css",
-	"gopls",
-	"helm_ls",
-	"html",
-	"lua_ls",
-	"protols",
-	"rust_analyzer",
-	"taplo",
-	"yamlls",
-})
+-- Activate LSPs in after/plugin/lsp by their <lsp name>.lua .
+for _, file in ipairs(vim.fn.readdir(vim.fn.stdpath("config") .. "/after/plugin/lsp/")) do
+	if file:match("%.lua$") then
+		local lsp_name = file:gsub("%.lua$", "")
+		vim.lsp.enable(lsp_name)
+	end
+end
