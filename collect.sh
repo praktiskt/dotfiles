@@ -54,6 +54,10 @@ wezterm() {
     collector .config/wezterm wezterm.lua
 }
 
+ghostty() {
+    collector .config/ghostty config
+}
+
 nvim() {
     LUAS=$(find ~/.config/nvim -name "*.lua" | sed -E 's/^.*nvim\///g' | xargs)
     SNIPPETS=$(find ~/.config/nvim -name "*.snippets" | sed -E 's/^.*nvim\///g' | xargs)
@@ -103,6 +107,7 @@ main() {
     aliases
     zed
     wezterm
+    ghostty
 }
 
 main $@
