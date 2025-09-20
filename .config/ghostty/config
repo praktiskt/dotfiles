@@ -1,4 +1,4 @@
 theme = Catppuccin Mocha
 gtk-titlebar = false
-window-decoration = false
+window-decoration = true
 
