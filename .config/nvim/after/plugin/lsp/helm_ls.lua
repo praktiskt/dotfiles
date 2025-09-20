@@ -1,1 +1,1 @@
-require("lspconfig").helm_ls.setup({})
+vim.lsp.config("helm_ls", {})

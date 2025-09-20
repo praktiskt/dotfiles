@@ -1,2 +1,2 @@
 -- cargo install protols
-require("lspconfig").protols.setup({})
+vim.lsp.config("protols", {})

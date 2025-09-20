@@ -1,4 +1,4 @@
-require("lspconfig").basedpyright.setup({
+vim.lsp.config("basedpyright", {
 	settings = {
 		basedpyright = {
 			analysis = {

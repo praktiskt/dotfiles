@@ -1,4 +1,4 @@
-require("lspconfig").html.setup({
+vim.lsp.config("html", {
 	cmd = {
 		"npx",
 		"-y",

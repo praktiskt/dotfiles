@@ -1,1 +1,1 @@
-require("lspconfig").taplo.setup({})
+vim.lsp.config("taplo", {})

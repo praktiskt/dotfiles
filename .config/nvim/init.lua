@@ -63,14 +63,9 @@ Plug("https://github.com/neovim/nvim-lspconfig")
 
 Plug("https://github.com/RRethy/nvim-treesitter-endwise")
 
-Plug("https://github.com/neovim/nvim-lspconfig")
-Plug("https://github.com/hrsh7th/cmp-nvim-lsp")
-Plug("https://github.com/hrsh7th/cmp-buffer")
-Plug("https://github.com/hrsh7th/cmp-path")
-Plug("https://github.com/hrsh7th/cmp-cmdline")
-Plug("https://github.com/hrsh7th/nvim-cmp")
+Plug("rafamadriz/friendly-snippets")
 Plug("https://github.com/L3MON4D3/LuaSnip")
-Plug("https://github.com/saadparwaiz1/cmp_luasnip")
+Plug("https://github.com/Saghen/blink.cmp", { ["do"] = "cargo build --release" })
 
 -- AI
 Plug("https://github.com/nvim-lua/plenary.nvim")
@@ -95,3 +90,16 @@ vim.cmd("silent! colorscheme catppuccin-mocha")
 require("praktiskt.remap")
 require("praktiskt.autocmds")
 require("praktiskt.conf")
+
+vim.lsp.enable({
+	"basedpyright",
+	"css",
+	"gopls",
+	"helm_ls",
+	"html",
+	"lua_ls",
+	"protols",
+	"rust_analyzer",
+	"taplo",
+	"yamlls",
+})
