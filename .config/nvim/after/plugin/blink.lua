@@ -28,5 +28,10 @@ require("blink.cmp").setup({
 				preselect = false,
 			},
 		},
+		accept = {
+			auto_brackets = {
+				enabled = true,
+			},
+		},
 	},
 })

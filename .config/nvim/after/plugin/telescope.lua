@@ -7,11 +7,19 @@ end)
 
 vim.keymap.set("n", "<leader>fr", builtin.lsp_references)
 vim.keymap.set("n", "<leader>ff", builtin.live_grep)
+vim.keymap.set("n", "<C-S-f>", builtin.live_grep)
+
+vim.keymap.set("v", "<leader>fs", function()
+	vim.cmd('noau normal! "vy')
+	local text = vim.fn.getreg("v")
+	require("telescope.builtin").live_grep({ default_text = text })
+end, { desc = "Telescope live_grep with visual selection" })
 
 require("telescope").setup({
 	defaults = {
 		file_ignore_patterns = {
 			"target/debug",
+			".venv",
 		},
 	},
 })
