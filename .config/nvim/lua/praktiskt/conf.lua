@@ -26,5 +26,5 @@ set.colorcolumn = "88"
 set.background = "dark"
 set.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
 set.spelllang = "en_us"
-set.spell = true
+set.spell = false
 set.winborder = "rounded"
