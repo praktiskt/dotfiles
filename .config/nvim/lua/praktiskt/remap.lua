@@ -44,7 +44,7 @@ vim.keymap.set("v", "<leader>p", '"_dP')
 -- Le yanks
 vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
 vim.keymap.set({ "n", "v" }, "<leader>Y", '"+Y')
-vim.keymap.set("v", "<C-S-c>", '"+Y')
+vim.keymap.set("v", "<C-S-c>", '"+y')
 
 -- Substitute the word we're on-macro
 vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
