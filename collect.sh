@@ -66,7 +66,7 @@ nvim() {
     FILES=$(echo "$LUAS $SNIPPETS $SPELLING $SPELLING_SPL")
     mkdir -p .config/nvim/after/plugin/lsp
     mkdir -p .config/nvim/lua/praktiskt
-    mkdir -p .config/nvim/snippets .config/nvim/spell
+    mkdir -p .config/nvim/lua/snippets .config/nvim/spell
     for FILE in $FILES; do
         if [[ $(echo $FILE | grep 'packer_compiled.lua') ]]; then
             continue
