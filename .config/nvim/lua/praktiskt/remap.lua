@@ -26,6 +26,12 @@ vim.keymap.set("v", "<A-Down>", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "<Tab>", ">gv")
 vim.keymap.set("v", "<S-Tab>", "<gv")
 
+-- Allow visual select with Shift
+vim.keymap.set("n", "<S-up>", "vk")
+vim.keymap.set("n", "<S-down>", "vj")
+vim.keymap.set("n", "<S-right>", "vl")
+vim.keymap.set("n", "<S-left>", "vh")
+
 -- Keep cursor in the middle
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "nzzzv")
