@@ -12,7 +12,7 @@ vim.keymap.set("i", "<A-BS>", "<Esc>ciw")
 vim.keymap.set("n", "<A-Right>", "e")
 vim.keymap.set("n", "<A-Left>", "b")
 -- \27 == alt
-vim.keymap.set("n", "\27q", "<Cmd>bdelete<CR>")
+vim.keymap.set("n", "<A-q>", "<Cmd>bdelete<CR>")
 
 -- Spelling shortcuts
 vim.keymap.set("n", "<leader>sn", "]s") -- next misspell
@@ -41,12 +41,10 @@ vim.keymap.set("n", "<leader><leader>", "zz")
 vim.keymap.set("n", "<leader>p", '"_dP')
 vim.keymap.set("v", "<leader>p", '"_dP')
 
--- Allow yanking into system clipboard
+-- Le yanks
 vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
 vim.keymap.set({ "n", "v" }, "<leader>Y", '"+Y')
-
--- In vertical edit mode, allow ctrl+c to paste
-vim.keymap.set("i", "<C-c>", "<Esc>")
+vim.keymap.set("v", "<C-S-c>", '"+Y')
 
 -- Substitute the word we're on-macro
 vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
