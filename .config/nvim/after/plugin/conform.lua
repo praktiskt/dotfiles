@@ -1,6 +1,6 @@
 require("conform").setup({
 	formatters_by_ft = {
-		go = { "gopls", "goimports" },
+		go = { "goimports" },
 		javascript = { "prettierd", "prettier", stop_after_first = true },
 		lua = { "stylua" },
 		python = { "ruff_organize_imports", "ruff_format" },
@@ -10,7 +10,7 @@ require("conform").setup({
 	},
 	format_on_save = {
 		timeout_ms = 500,
-		lsp_format = "fallback",
+		lsp_format = "first",
 	},
 })
 vim.api.nvim_create_user_command("Format", function(args)
