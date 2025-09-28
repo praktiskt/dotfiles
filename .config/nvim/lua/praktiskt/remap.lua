@@ -11,7 +11,6 @@ vim.keymap.set("i", "<S-Tab>", "<C-\\><C-N><<<C-\\><C-N>^i")
 vim.keymap.set("i", "<A-BS>", "<Esc>ciw")
 vim.keymap.set("n", "<A-Right>", "e")
 vim.keymap.set("n", "<A-Left>", "b")
--- \27 == alt
 vim.keymap.set("n", "<A-q>", "<Cmd>bdelete<CR>")
 
 -- Spelling shortcuts

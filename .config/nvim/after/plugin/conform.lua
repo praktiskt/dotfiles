@@ -1,17 +1,12 @@
 require("conform").setup({
 	formatters_by_ft = {
-		-- go = { "goimports", "gofumpt" }, -- LSP
+		go = { "gopls", "goimports" },
 		javascript = { "prettierd", "prettier", stop_after_first = true },
 		lua = { "stylua" },
 		python = { "ruff_organize_imports", "ruff_format" },
 		rust = { "rustfmt" },
 		sh = { "shfmt" },
 		sql = { "sqlfluff" },
-	},
-	formatters = {
-		gofumpt = {
-			args = { "$FILENAME" },
-		},
 	},
 	format_on_save = {
 		timeout_ms = 500,
