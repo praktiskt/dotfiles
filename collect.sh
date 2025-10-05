@@ -31,7 +31,8 @@ zed() {
 
 regolith() {
     collector .config/regolith3 Xresources
-    # collector .config/i3lock.sh Xresources
+    collector .config/regolith3/i3xrocks/scripts mullvad
+    collector .config/regolith3/i3xrocks/conf.d 10_mullvad
 }
 
 fusuma() {

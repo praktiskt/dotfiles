@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+TXT=$(curl -s --fail https://am.i.mullvad.net/json | jq -erj '.mullvad_exit_ip_hostname | values' || echo "disconnected")
+TXT=$(echo "$TXT" | tr -d '\n')
+
+if echo "$TXT" | grep -iq "disconnected"; then
+    PREFIX="mullvad"
+    COLOR="#ff0000"
+else
+    PREFIX="🔒"
+    COLOR="#00cc66"
+fi
+
+printf "$PREFIX %s\n\n%s\n" "$TXT" "$COLOR"

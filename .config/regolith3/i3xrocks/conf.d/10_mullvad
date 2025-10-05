@@ -1,0 +1,3 @@
+[i3xrocks.mullvad]
+command=/home/$USER/.config/regolith3/i3xrocks/scripts/mullvad
+interval=5
