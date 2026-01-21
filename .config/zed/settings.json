@@ -3,35 +3,32 @@
     "mode": "eager",
     "copilot": {
       "proxy": null,
-      "proxy_no_verify": null
+      "proxy_no_verify": null,
     },
-    "enabled_in_text_threads": false
+    "enabled_in_text_threads": false,
   },
   //"server_url": "http://localhost:8080",
   "debugger": {
-    "button": false
+    "button": false,
   },
   "title_bar": {
     "show_sign_in": true,
-    "show_user_picture": false
+    "show_user_picture": false,
   },
   "icon_theme": "Material Icon Theme",
   "auto_update": false,
   "soft_wrap": "editor_width",
   "features": {
-    "edit_prediction_provider": "zed"
+    "edit_prediction_provider": "zed",
   },
   "collaboration_panel": {
-    "button": false
-  },
-  "chat_panel": {
-    "button": "never"
+    "button": false,
   },
   "notification_panel": {
-    "button": false
+    "button": false,
   },
   "outline_panel": {
-    "button": false
+    "button": false,
   },
   "terminal": {
     "button": false,
@@ -41,8 +38,8 @@
     "working_directory": "current_project_directory",
     "line_height": "standard",
     "toolbar": {
-      "breadcrumbs": false
-    }
+      "breadcrumbs": true,
+    },
   },
   "auto_install_extensions": {
     "basedpyright": true,
@@ -71,71 +68,85 @@
     "toml": true,
     "typos": true,
     "xml": true,
-    "zig": true
+    "zig": true,
   },
   "active_pane_modifiers": {
     "border_size": 1,
-    "inactive_opacity": 0.3
+    "inactive_opacity": 0.3,
   },
   "agent": {
-    "inline_assistant_model": {
-      "provider": "openai",
-      "model": "llama-3.3-70b-versatile"
-    },
-    "enabled": true,
-    "button": false,
     "default_model": {
       "provider": "openai",
-      "model": "llama-3.3-70b-versatile"
-    }
+      "model": "zai-glm-4.7"
+    },
+    "inline_assistant_model": {
+      "provider": "openai",
+      "model": "zai-glm-4.7",
+    },
+    "model_parameters": [],
   },
   "language_models": {
     "openai": {
-      "api_url": "https://api.groq.com/openai/v1",
+      "api_url": "https://litellm.snow-lizard.ts.net/v1",
       "available_models": [
         {
-          "name": "meta-llama/llama-4-scout-17b-16e-instruct",
-          "display_name": "groq/llama-4-scout-17b-16e-instruct",
-          "max_tokens": 8192
+          "name": "gpt-oss-120b",
+          "display_name": "litellm/gpt-oss-120b",
+          "max_tokens": 65536,
         },
         {
-          "name": "llama-3.3-70b-versatile",
-          "display_name": "groq/llama-3.3-70b-versatile",
-          "max_tokens": 8192
+          "name": "zai-glm-4.7",
+          "display_name": "litellm/zai-glm-4.7",
+          "max_tokens": 65536,
         },
-        {
-          "name": "deepseek-r1-distill-llama-70b",
-          "display_name": "groq/deepseek-r1-distill-llama-70b",
-          "max_tokens": 8192
-        },
-        {
-          "name": "moonshotai/kimi-k2-instruct",
-          "display_name": "groq/kimi-k2-instruct",
-          "max_tokens": 131072,
-          "max_completion_tokens": 16384
-        }
-      ]
-    }
+      ],
+    },
+    // "openai": {
+    //   "api_url": "https://api.groq.com/openai/v1",
+    //   "available_models": [
+    //     {
+    //       "name": "meta-llama/llama-4-scout-17b-16e-instruct",
+    //       "display_name": "groq/llama-4-scout-17b-16e-instruct",
+    //       "max_tokens": 8192,
+    //     },
+    //     {
+    //       "name": "llama-3.3-70b-versatile",
+    //       "display_name": "groq/llama-3.3-70b-versatile",
+    //       "max_tokens": 8192,
+    //     },
+    //     {
+    //       "name": "deepseek-r1-distill-llama-70b",
+    //       "display_name": "groq/deepseek-r1-distill-llama-70b",
+    //       "max_tokens": 8192,
+    //     },
+    //     {
+    //       "name": "moonshotai/kimi-k2-instruct",
+    //       "display_name": "groq/kimi-k2-instruct",
+    //       "max_tokens": 131072,
+    //       "max_completion_tokens": 16384,
+    //     },
+    //   ],
+    // },
   },
   "base_keymap": "VSCode",
   "vim_mode": true,
   "wrap_guides": [88],
   "vim": {
-    "use_system_clipboard": "never"
+    "use_system_clipboard": "never",
   },
   "telemetry": {
     "diagnostics": false,
-    "metrics": false
+    "metrics": false,
   },
   "git": {
     "inline_blame": {
-      "enabled": false
-    }
+      "enabled": false,
+    },
   },
   "tabs": {
     "git_status": true,
     "file_icons": true,
-    "show_diagnostics": "errors"
+    "show_diagnostics": "errors",
   },
   "buffer_font_fallbacks": ["JetBrains Mono NL", "Cantarell"],
   "buffer_font_family": "Ubuntu Sans Mono",
@@ -151,19 +162,19 @@
     "button": true,
     "indent_size": 24,
     "indent_guides": {
-      "show": "always"
+      "show": "always",
     },
-    "default_width": 300
+    "default_width": 300,
   },
   "theme": "Catppuccin Mocha",
   "toolbar": {
     "breadcrumbs": true,
     "quick_actions": false,
-    "selections_menu": false
+    "selections_menu": false,
   },
   "indent_guides": {
     "enabled": true,
-    "coloring": "indent_aware"
+    "coloring": "indent_aware",
   },
   "file_types": {
     "Dockerfile": ["Dockerfile.*"],
@@ -172,18 +183,18 @@
       "**/templates/**/*.yaml",
       "**/templates/**/*.yml",
       "**/helmfile.d/**/*.yaml",
-      "**/helmfile.d/**/*.yml"
-    ]
+      "**/helmfile.d/**/*.yml",
+    ],
   },
   "inlay_hints": {
     "enabled": true,
-    "show_background": true
+    "show_background": true,
   },
   "diagnostics": {
     "include_warnings": false,
     "inline": {
-      "enabled": true
-    }
+      "enabled": true,
+    },
   },
   "unnecessary_code_fade": 0.7,
   "languages": {
@@ -198,16 +209,16 @@
     //   "source.organizeImports.biome": true
     // },
     "Python": {
-      "language_servers": ["basedpyright", "!pyright"],
+      "language_servers": ["ty", "basedpyright", "!pyright"],
       "formatter": {
         "external": {
           "command": "bash",
           "arguments": [
             "-c",
-            "ruff check --select=ALL --ignore=T --exit-zero --fix --unsafe-fixes --stdin-filename {buffer_path} | ruff format --line-length=88 --stdin-filename {buffer_path}"
-          ]
-        }
-      }
+            "ruff check --select=ALL --ignore=T --exit-zero --fix --unsafe-fixes --stdin-filename {buffer_path} | ruff format --line-length=88 --stdin-filename {buffer_path}",
+          ],
+        },
+      },
     },
     //"Rust": {
     //  "formatter": [
@@ -225,27 +236,32 @@
           "external": {
             // wget -O shfmt https://github.com/patrickvane/shfmt/releases/download/master/shfmt_linux_amd64
             "command": "shfmt",
-            "arguments": ["-s", "-"]
-          }
-        }
-      ]
+            "arguments": ["-s", "-"],
+          },
+        },
+      ],
     },
     "Markdown": {
       "formatter": [
         {
           "external": {
             // go install github.com/shurcooL/markdownfmt@latest
-            "command": "markdownfmt"
-          }
-        }
-      ]
+            "command": "markdownfmt",
+          },
+        },
+      ],
     },
     "YAML": {
-      "format_on_save": "language_server"
+      "formatter": "language_server",
+      "format_on_save": "on",
     },
     "Helm": {
-      "format_on_save": "language_server"
-    }
+      "formatter": "language_server",
+      "format_on_save": "on",
+    },
+    "HTML": {
+      "preferred_line_length": 200,
+    },
   },
   "lsp": {
     "yaml-language-server": {
@@ -253,33 +269,41 @@
         "yaml": {
           "format": {
             "enable": true,
-            "bracketSpacing": false
-          }
-        }
-      }
+            "bracketSpacing": false,
+          },
+        },
+      },
     },
     "basedpyright": {
       "settings": {
         "python": {
-          "pythonPath": ".venv/bin/python"
+          "pythonPath": ".venv/bin/python",
         },
         "basedpyright.analysis": {
-          "diagnosticMode": "workspace",
-          "inlayHints": {
-            "callArgumentNames": false
-          }
-        }
-      }
+          "typeCheckingMode": "off",
+          // "diagnosticMode": "workspace",
+          // "inlayHints": {
+          //  "callArgumentNames": false,
+          //},
+        },
+        "diagnostics": false,
+      },
+    },
+    "ty": {
+      "binary": {
+        "path": "/home/magnus/.local/bin/ty",
+        "arguments": ["server"],
+      },
     },
     "gopls": {
       "initialization_options": {
-        "gofumpt": true
-      }
+        "gofumpt": true,
+      },
     },
     "typos": {
       "initialization_options": {
-        "diagnosticSeverity": "Warning"
-      }
+        "diagnosticSeverity": "Warning",
+      },
     },
     "rust-analyzer": {
       "initialization_options": {
@@ -287,18 +311,18 @@
           "maxLength": null,
           "lifetimeElisionHints": {
             "enable": "skip_trivial",
-            "useParameterNames": true
+            "useParameterNames": true,
           },
           "closureReturnTypeHints": {
-            "enable": "always"
-          }
-        }
-      }
-    }
+            "enable": "always",
+          },
+        },
+      },
+    },
     // "biome": {
     //   "settings": {
     //     "require_config_file": true
     //   }
     // }
-  }
+  },
 }
