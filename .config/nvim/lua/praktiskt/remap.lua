@@ -12,6 +12,7 @@ vim.keymap.set("i", "<A-BS>", "<Esc>ciw")
 vim.keymap.set("n", "<A-Right>", "e")
 vim.keymap.set("n", "<A-Left>", "b")
 vim.keymap.set("n", "<A-q>", "<Cmd>bdelete<CR>")
+vim.keymap.set("t", "<A-q>", "<Cmd>silent! bdelete!<CR>", { silent = true })
 
 -- Spelling shortcuts
 vim.keymap.set("n", "<leader>sn", "]s") -- next misspell

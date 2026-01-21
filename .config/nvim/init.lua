@@ -23,7 +23,7 @@ Plug("https://github.com/nvim-lualine/lualine.nvim")
 Plug("https://github.com/nvim-lua/plenary.nvim")
 Plug("https://github.com/folke/todo-comments.nvim")
 
-Plug("https://github.com/levouh/tint.nvim")
+Plug("https://github.com/TaDaa/vimade")
 
 Plug("https://github.com/lukas-reineke/indent-blankline.nvim")
 
@@ -53,9 +53,9 @@ Plug("https://github.com/folke/trouble.nvim")
 Plug("https://github.com/m4xshen/autoclose.nvim")
 
 -- Languages
-Plug("https://github.com/nvim-treesitter/nvim-treesitter")
+Plug("https://github.com/nvim-treesitter/nvim-treesitter", { ["do"] = ":TSUpdate", ["branch"] = "main" })
+Plug("https://github.com/nvim-treesitter/nvim-treesitter-textobjects", { ["branch"] = "main" })
 Plug("https://github.com/nvim-treesitter/nvim-treesitter-context")
-Plug("https://github.com/nvim-treesitter/nvim-treesitter-textobjects")
 
 Plug("https://github.com/neovim/nvim-lspconfig")
 
@@ -66,16 +66,8 @@ Plug("https://github.com/L3MON4D3/LuaSnip")
 Plug("https://github.com/Saghen/blink.cmp", { ["do"] = "cargo build --release" })
 
 -- AI
-Plug("https://github.com/nvim-lua/plenary.nvim")
-Plug("https://github.com/MunifTanjim/nui.nvim")
-Plug("https://github.com/MeanderingProgrammer/render-markdown.nvim")
-Plug("https://github.com/hrsh7th/nvim-cmp")
-Plug("https://github.com/nvim-tree/nvim-web-devicons")
-Plug("https://github.com/HakonHarnes/img-clip.nvim")
-Plug("https://github.com/zbirenbaum/copilot.lua")
-Plug("https://github.com/stevearc/dressing.nvim")
 Plug("https://github.com/folke/snacks.nvim")
-Plug("https://github.com/yetone/avante.nvim", { ["branch"] = "main", ["do"] = "make" })
+Plug("https://github.com/NickvanDyke/opencode.nvim")
 
 -- Formatting
 Plug("https://github.com/lewis6991/spaceless.nvim")

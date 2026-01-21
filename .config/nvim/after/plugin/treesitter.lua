@@ -1,5 +1,5 @@
 require("nvim-treesitter.install").prefer_git = true
-require("nvim-treesitter.configs").setup({
+require("nvim-treesitter.config").setup({
 	ensure_installed = {
 		"bash",
 		"c",
