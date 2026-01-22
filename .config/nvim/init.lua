@@ -80,6 +80,7 @@ vim.cmd("silent! colorscheme catppuccin-mocha")
 require("praktiskt.remap")
 require("praktiskt.autocmds")
 require("praktiskt.conf")
+require("praktiskt.neovide")
 
 -- Activate LSPs in after/plugin/lsp by their <lsp name>.lua .
 for _, file in ipairs(vim.fn.readdir(vim.fn.stdpath("config") .. "/after/plugin/lsp/")) do
