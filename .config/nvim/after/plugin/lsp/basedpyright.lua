@@ -15,6 +15,9 @@ vim.lsp.config("basedpyright", {
 		["textDocument/semanticTokens"] = function() end,
 	},
 	on_attach = function(client)
+		client.server_capabilities.definitionProvider = false
+		client.server_capabilities.typeDefinitionProvider = false
 		client.server_capabilities.referencesProvider = false
+		client.server_capabilities.implementationProvider = false
 	end,
 })

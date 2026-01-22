@@ -24,7 +24,7 @@ local function jump_and_show_diagnostic(opts)
 	end, 0)
 end
 
-vim.keymap.set("n", "gd", vim.lsp.buf.definition)
+vim.keymap.set("n", "gd", vim.lsp.buf.type_definition)
 vim.keymap.set("n", "ge", function()
 	jump_and_show_diagnostic({
 		count = 1,
