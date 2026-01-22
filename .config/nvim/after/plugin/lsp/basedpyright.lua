@@ -14,4 +14,7 @@ vim.lsp.config("basedpyright", {
 		["textDocument/inlayHint"] = function() end,
 		["textDocument/semanticTokens"] = function() end,
 	},
+	on_attach = function(client)
+		client.server_capabilities.referencesProvider = false
+	end,
 })

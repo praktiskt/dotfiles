@@ -8,7 +8,7 @@ vim.g.opencode_opts = {
 			},
 		},
 	},
-	port = 54321,
+	--port = 54321,
 }
 
 vim.keymap.set({ "n", "x", "v" }, "<leader>ae", function()
