@@ -19,5 +19,9 @@ vim.lsp.config("basedpyright", {
 		client.server_capabilities.typeDefinitionProvider = false
 		client.server_capabilities.referencesProvider = false
 		client.server_capabilities.implementationProvider = false
+		client.server_capabilities.renameProvider = false
+		client.server_capabilities.codeActionProvider = false
+		client.server_capabilities.documentSymbolProvider = false
+		client.server_capabilities.signatureHelpProvider = false
 	end,
 })
