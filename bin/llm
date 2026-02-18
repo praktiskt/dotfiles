@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import os
 import sys
-from typing import Any
+from html.parser import HTMLParser
 
 import requests
 
@@ -18,79 +18,388 @@ def stderr(msg, **kwargs) -> None:
 
 
 def _response_format():
-    return os.environ.get("LLM_RESPONSE_FORMAT", "text")
+    return os.environ.get("LLM_RESPONSE_FORMAT", None)
 
 
 def _is_stream():
-    if _response_format() != "text":
+    if _response_format() is not None:
         return False
     return os.environ.get("LLM_STREAM", "True").lower() == "true"
 
 
-def body(prompt: list[str] | None = None) -> str:
+def _tools_enabled():
+    return os.environ.get("LLM_ENABLE_TOOLS", "True").lower() == "true"
+
+
+_TOOLS_SCHEMA = [
+    {
+        "type": "function",
+        "function": {
+            "name": "fetch",
+            "description": "Fetch content from a URL and return it as markdown",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "The URL to fetch",
+                    }
+                },
+                "required": ["url"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "search",
+            "description": "Search DuckDuckGo and return results",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query"},
+                    "max_results": {
+                        "type": "integer",
+                        "description": "Max results (default 5)",
+                    },
+                },
+                "required": ["query"],
+            },
+        },
+    },
+]
+
+
+class HTMLToMarkdown(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.result = []
+        self.tag_stack = []
+        self.list_stack = []
+        self.ignore_tags = {"script", "style", "noscript", "head"}
+        self.in_pre = False
+        self.in_code = False
+        self.in_blockquote = False
+
+    def handle_starttag(self, tag, attrs):
+        tag = tag.lower()
+        attrs_dict = dict(attrs)
+        self.tag_stack.append(tag)
+
+        if tag in self.ignore_tags:
+            return
+
+        if tag == "h1":
+            self.result.append("\n# ")
+        elif tag == "h2":
+            self.result.append("\n## ")
+        elif tag == "h3":
+            self.result.append("\n### ")
+        elif tag == "h4":
+            self.result.append("\n#### ")
+        elif tag == "h5":
+            self.result.append("\n##### ")
+        elif tag == "h6":
+            self.result.append("\n###### ")
+        elif tag == "p":
+            self.result.append("\n\n")
+        elif tag == "br":
+            self.result.append("\n")
+        elif tag == "hr":
+            self.result.append("\n---\n")
+        elif tag == "a":
+            self.href = attrs_dict.get("href", "")
+            self.result.append("[")
+        elif tag == "strong" or tag == "b":
+            self.result.append("**")
+        elif tag == "em" or tag == "i":
+            self.result.append("*")
+        elif tag == "code":
+            self.in_code = True
+            if not self.in_pre:
+                self.result.append("`")
+        elif tag == "pre":
+            self.in_pre = True
+            self.result.append("\n```\n")
+        elif tag == "blockquote":
+            self.in_blockquote = True
+            self.result.append("\n> ")
+        elif tag == "ul":
+            self.list_stack.append("ul")
+            self.result.append("\n")
+        elif tag == "ol":
+            self.list_stack.append(("ol", 1))
+            self.result.append("\n")
+        elif tag == "li":
+            if self.list_stack:
+                lst = self.list_stack[-1]
+                if lst == "ul":
+                    self.result.append("- ")
+                else:
+                    num = lst[1]
+                    self.result.append(f"{num}. ")
+                    self.list_stack[-1] = ("ol", num + 1)
+        elif tag == "img":
+            alt = attrs_dict.get("alt", "")
+            src = attrs_dict.get("src", "")
+            self.result.append(f"![{alt}]({src})")
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+        if self.tag_stack and self.tag_stack[-1] == tag:
+            self.tag_stack.pop()
+
+        if tag in self.ignore_tags:
+            return
+
+        if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
+            self.result.append("\n")
+        elif tag == "a":
+            self.result.append(f"]({getattr(self, 'href', '')})")
+        elif tag == "strong" or tag == "b":
+            self.result.append("**")
+        elif tag == "em" or tag == "i":
+            self.result.append("*")
+        elif tag == "code":
+            self.in_code = False
+            if not self.in_pre:
+                self.result.append("`")
+        elif tag == "pre":
+            self.in_pre = False
+            self.result.append("\n```\n")
+        elif tag == "blockquote":
+            self.in_blockquote = False
+            self.result.append("\n")
+        elif tag == "li":
+            self.result.append("\n")
+        elif tag in ("ul", "ol"):
+            if self.list_stack:
+                self.list_stack.pop()
+
+    def handle_data(self, data):
+        for tag in self.tag_stack:
+            if tag in self.ignore_tags:
+                return
+        if self.in_pre:
+            self.result.append(data)
+        elif self.in_blockquote:
+            for line in data.split("\n"):
+                if line.strip():
+                    self.result.append(line)
+        else:
+            text = " ".join(data.split())
+            if text:
+                self.result.append(text)
+
+    def get_markdown(self):
+        return "".join(self.result).strip()
+
+
+def html_to_markdown(html: str) -> str:
+    parser = HTMLToMarkdown()
+    parser.feed(html)
+    return parser.get_markdown()
+
+
+def fetch_url(url: str) -> str:
+    try:
+        response = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
+        response.raise_for_status()
+        content_type = response.headers.get("Content-Type", "").lower()
+
+        if "text/html" in content_type or url.endswith((".html", ".htm")):
+            return html_to_markdown(response.text)
+        else:
+            return response.text
+    except Exception as e:
+        return f"Error fetching URL: {str(e)}"
+
+
+class DuckDuckGoSearch(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.results = []
+        self.current_result = None
+        self.in_result_link = False
+        self.in_snippet = False
+        self.current_text = []
+
+    def handle_starttag(self, tag, attrs):
+        attrs_dict = dict(attrs)
+        class_attr = attrs_dict.get("class", "")
+
+        if tag == "a" and "result__a" in class_attr:
+            self.in_result_link = True
+            self.current_result = {
+                "url": attrs_dict.get("href", ""),
+                "title": "",
+                "snippet": "",
+            }
+            self.current_text = []
+        elif tag == "a" and "result__snippet" in class_attr:
+            self.in_snippet = True
+            self.current_text = []
+
+    def handle_endtag(self, tag):
+        if tag == "a":
+            if self.in_result_link and self.current_result:
+                self.current_result["title"] = " ".join(
+                    "".join(self.current_text).split()
+                )
+                self.results.append(self.current_result)
+                self.current_result = None
+            elif self.in_snippet and self.results:
+                self.results[-1]["snippet"] = " ".join(
+                    "".join(self.current_text).split()
+                )
+            self.in_result_link = False
+            self.in_snippet = False
+            self.current_text = []
+
+    def handle_data(self, data):
+        if self.in_result_link or self.in_snippet:
+            self.current_text.append(data)
+
+    def get_results(self, max_results=5):
+        return self.results[:max_results]
+
+
+def duckduckgo_search(query: str, max_results: int = 5) -> str:
+    try:
+        url = f"https://html.duckduckgo.com/html/?q={query}"
+        response = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
+        response.raise_for_status()
+        parser = DuckDuckGoSearch()
+        parser.feed(response.text)
+        results = parser.get_results(max_results)
+        if not results:
+            return "No results found."
+        lines = []
+        for i, r in enumerate(results, 1):
+            lines.append(f"{i}. [{r['title']}]({r['url']})")
+            if r["snippet"]:
+                lines.append(f"   {r['snippet']}")
+            lines.append("")
+        return "\n".join(lines).strip()
+    except Exception as e:
+        return f"Search error: {str(e)}"
+
+
+def execute_tool_call(tool_name: str, tool_args: dict) -> str:
+    if tool_name == "fetch":
+        return fetch_url(tool_args.get("url", ""))
+    if tool_name == "search":
+        return duckduckgo_search(
+            tool_args.get("query", ""), tool_args.get("max_results", 5)
+        )
+    return f"Unknown tool: {tool_name}"
+
+
+def body(prompt: list[str] | None = None, messages: list | None = None) -> str:
     if prompt is None:
         prompt = []
-    return json.dumps(
-        {
-            "messages": [
-                {
-                    "role": "system",
-                    "content": os.environ.get(
-                        "LLM_SYSTEM_PROMPT",
-                        "Briefly respond to the user, being crystal clear and helpful. Never lie.",
-                    ),
-                },
-                {"role": "user", "content": " ".join(prompt)},
-            ],
-            "model": os.environ["LLM_MODEL"],
-            "temperature": float(os.environ.get("LLM_TEMPERATURE", 0.1)),
-            "stream": _is_stream(),
-            "response_format": {"type": _response_format()},
-        },
-    )
+    if messages is None:
+        messages = [
+            {
+                "role": "system",
+                "content": os.environ.get(
+                    "LLM_SYSTEM_PROMPT",
+                    "Briefly respond to the user, being crystal clear and helpful. Never lie.",
+                ),
+            },
+            {"role": "user", "content": " ".join(prompt)},
+        ]
+
+    d = {
+        "messages": messages,
+        "model": os.environ["LLM_MODEL"],
+        "temperature": float(os.environ.get("LLM_TEMPERATURE", 0.1)),
+        "stream": False,
+    }
+
+    if _response_format() is not None:
+        d["response_format"] = _response_format()
+
+    if _tools_enabled():
+        d["tools"] = _TOOLS_SCHEMA
+
+    return json.dumps(d)
 
 
 def stream(prompt: list[str]) -> None:
-    msg: dict[str, Any] = json.loads(body(prompt=prompt))
+    messages = [
+        {
+            "role": "system",
+            "content": os.environ.get(
+                "LLM_SYSTEM_PROMPT",
+                "Briefly respond to the user, being crystal clear and helpful. Never lie.",
+            ),
+        },
+        {"role": "user", "content": " ".join(prompt)},
+    ]
 
     headers = {
-        "Authorization": f'Bearer {os.environ["LLM_API_KEY"]}',
+        "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
 
-    response = requests.post(
-        os.environ["LLM_HOST"],
-        headers=headers,
-        data=json.dumps(msg),
-        stream=_is_stream(),
-    )
+    while True:
+        msg = json.loads(body(messages=messages))
 
-    if response.status_code != 200:
-        stderr(f"{response.status_code}: {response.content.decode()}")
-        sys.exit(1)
+        response = requests.post(
+            os.environ["LLM_HOST"],
+            headers=headers,
+            data=json.dumps(msg),
+            stream=False,
+        )
 
-    if not _is_stream():
-        stdout(response.json().get("choices")[0].get("message").get("content"))
-        return
+        if response.status_code != 200:
+            stderr(f"{response.status_code}: {response.content.decode()}")
+            sys.exit(1)
 
-    for line in response.iter_lines():
-        tok: str = line.decode("utf-8").lstrip("data: ")
-        if tok == "[DONE]":
-            stdout("")
+        data = response.json()
+        choice = data.get("choices", [{}])[0]
+        message = choice.get("message", {})
+
+        tool_calls = message.get("tool_calls", [])
+        if tool_calls and _tools_enabled():
+            messages.append(message)
+
+            for tool_call in tool_calls:
+                func = tool_call.get("function", {})
+                args_str = func.get("arguments", "{}")
+                try:
+                    args = json.loads(args_str)
+                except json.JSONDecodeError:
+                    args = {}
+                stderr(
+                    f"[tool] {func.get('name', 'unknown')}({', '.join(f'{k}={repr(v)}' for k, v in args.items())})"
+                )
+                tool_id = tool_call.get("id")
+                tool_func = tool_call.get("function", {})
+                tool_name = tool_func.get("name")
+                tool_args_str = tool_func.get("arguments", "{}")
+
+                try:
+                    tool_args = json.loads(tool_args_str)
+                except json.JSONDecodeError:
+                    tool_args = {}
+
+                result = execute_tool_call(tool_name, tool_args)
+
+                messages.append(
+                    {
+                        "role": "tool",
+                        "tool_call_id": tool_id,
+                        "content": result,
+                    }
+                )
+        else:
+            content = message.get("content", "")
+            if content:
+                stdout(content)
             return
-
-        try:
-            data: dict[str, Any] = json.loads(tok)
-        except json.JSONDecodeError:
-            continue
-
-        if "error" in data:
-            stderr(json.dumps(data, indent=2))
-            return
-
-        if data.get("choices", [{}])[0].get("delta", {}).get("content"):
-            stdout(data["choices"][0]["delta"]["content"], end="", flush=True)
 
 
 def main() -> None:
