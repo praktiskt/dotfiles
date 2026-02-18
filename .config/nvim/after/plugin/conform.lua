@@ -3,7 +3,7 @@ require("conform").setup({
 		go = { "goimports" },
 		javascript = { "prettierd", "prettier", stop_after_first = true },
 		lua = { "stylua" },
-		python = { "ruff_organize_imports", "ruff_format" },
+		python = { "ruff_organize_imports", "ruff_fix", "ruff_format" },
 		rust = { "rustfmt" },
 		sh = { "shfmt" },
 		sql = { "sqlfluff" },

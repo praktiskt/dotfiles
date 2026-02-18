@@ -8,9 +8,8 @@ require("blink.cmp").setup({
 			require("luasnip").lsp_expand(snippet)
 		end,
 	},
-
 	sources = {
-		default = { "lsp", "path", "snippets", "buffer" },
+		default = { "lsp", "buffer", "snippets", "path" },
 	},
 	keymap = {
 		preset = "default",
@@ -18,6 +17,7 @@ require("blink.cmp").setup({
 		["<CR>"] = { "accept", "fallback" },
 	},
 	completion = {
+		menu = { auto_show = true },
 		ghost_text = { enabled = true },
 		documentation = {
 			auto_show = true,
