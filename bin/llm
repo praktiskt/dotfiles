@@ -26,14 +26,26 @@ def stderr(msg, **kwargs) -> None:
 
 
 class Color:
-    DIM = "\033[2m"
     RESET = "\033[0m"
+    TOOL_COLORS = {
+        "fetch": "\033[2;36m",
+        "search": "\033[2;32m",
+        "read_file": "\033[2;34m",
+        "summarize": "\033[2;33m",
+        "grep_file": "\033[2;35m",
+    }
+    DEFAULT = "\033[2m"
+
+    @staticmethod
+    def tool(name: str, text: str) -> str:
+        if Config.color_output_enabled():
+            color = Color.TOOL_COLORS.get(name, Color.DEFAULT)
+            return f"{color}{text}{Color.RESET}"
+        return text
 
     @staticmethod
     def dim(text: str) -> str:
-        if Config.color_output_enabled():
-            return f"{Color.DIM}{text}{Color.RESET}"
-        return text
+        return Color.tool("default", text)
 
 
 class Config:
@@ -58,6 +70,8 @@ class Config:
 
     @staticmethod
     def color_output_enabled():
+        if os.environ.get("NO_COLOR"):
+            return False
         return os.environ.get("LLM_DISABLE_COLOR_OUTPUT", "False").lower() != "true"
 
     @staticmethod
@@ -737,8 +751,12 @@ class LLMClient:
                         args = json.loads(args_str)
                     except json.JSONDecodeError:
                         args = {}
+                    tool_name = func.get("name", "unknown")
                     stderr(
-                        Color.dim(f"[tool] {func.get('name', 'unknown')}({', '.join(f'{k}={repr(v)}' for k, v in args.items())})")
+                        Color.tool(
+                            tool_name,
+                            f"[tool] {tool_name}({', '.join(f'{k}={repr(v)}' for k, v in args.items())})",
+                        )
                     )
 
                 results = {}
