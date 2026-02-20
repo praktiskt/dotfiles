@@ -16,29 +16,6 @@ from pathlib import Path
 
 import requests
 
-TEMP_DIR = Path(tempfile.gettempdir()) / "llm_cache"
-CONTENT_THRESHOLD = 5000
-MAX_TOOL_RESULT_CHARS = 10000
-
-
-def _get_system_prompt() -> str:
-    today = date.today().isoformat()
-    return f"Today: {today}. Briefly respond to the user, being crystal clear and helpful. Never lie. When making multiple independent tool calls, batch them in a single response for efficiency."
-
-
-def _generate_file_id() -> str:
-    return "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
-
-
-def _cleanup_temp_files() -> None:
-    if TEMP_DIR.exists():
-        for f in TEMP_DIR.iterdir():
-            f.unlink()
-
-
-TEMP_DIR.mkdir(exist_ok=True)
-atexit.register(_cleanup_temp_files)
-
 
 def stdout(msg, **kwargs) -> None:
     print(msg, file=sys.stdout, **kwargs)
@@ -48,140 +25,59 @@ def stderr(msg, **kwargs) -> None:
     print(msg, file=sys.stderr, **kwargs)
 
 
-def _response_format():
-    return os.environ.get("LLM_RESPONSE_FORMAT", None)
+class Color:
+    DIM = "\033[2m"
+    RESET = "\033[0m"
+
+    @staticmethod
+    def dim(text: str) -> str:
+        if Config.color_output_enabled():
+            return f"{Color.DIM}{text}{Color.RESET}"
+        return text
 
 
-def _is_stream():
-    if _response_format() is not None:
-        return False
-    return os.environ.get("LLM_STREAM", "True").lower() == "true"
+class Config:
+    TEMP_DIR = Path(tempfile.gettempdir()) / "llm_cache"
+    CONTENT_THRESHOLD = 5000
+    MAX_TOOL_RESULT_CHARS = 10000
+    GREP_MAX_MATCHES = 50
+
+    @staticmethod
+    def response_format():
+        return os.environ.get("LLM_RESPONSE_FORMAT", None)
+
+    @staticmethod
+    def is_stream():
+        if Config.response_format() is not None:
+            return False
+        return os.environ.get("LLM_STREAM", "True").lower() == "true"
+
+    @staticmethod
+    def tools_enabled():
+        return os.environ.get("LLM_ENABLE_TOOLS", "True").lower() == "true"
+
+    @staticmethod
+    def color_output_enabled():
+        return os.environ.get("LLM_DISABLE_COLOR_OUTPUT", "False").lower() != "true"
+
+    @staticmethod
+    def get_system_prompt() -> str:
+        today = date.today().isoformat()
+        return f"Today: {today}. Briefly respond to the user, being crystal clear and helpful. Never lie. When making multiple independent tool calls, batch them in a single response for efficiency."
+
+    @staticmethod
+    def generate_file_id() -> str:
+        return "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
+
+    @staticmethod
+    def cleanup_temp_files() -> None:
+        if Config.TEMP_DIR.exists():
+            for f in Config.TEMP_DIR.iterdir():
+                f.unlink()
 
 
-def _tools_enabled():
-    return os.environ.get("LLM_ENABLE_TOOLS", "True").lower() == "true"
-
-
-_TOOLS_SCHEMA = [
-    {
-        "type": "function",
-        "function": {
-            "name": "fetch",
-            "description": "Fetch content from a URL and return it as markdown",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "url": {
-                        "type": "string",
-                        "description": "The URL to fetch",
-                    }
-                },
-                "required": ["url"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "search",
-            "description": "Search DuckDuckGo and return results",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "query": {"type": "string", "description": "Search query"},
-                    "max_results": {
-                        "type": "integer",
-                        "description": "Max results (default 5)",
-                    },
-                },
-                "required": ["query"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "read_file",
-            "description": "Read content from a cached file (file_id from fetch)",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "file_id": {
-                        "type": "string",
-                        "description": "6-character file identifier",
-                    },
-                    "offset": {
-                        "type": "integer",
-                        "description": "Start line (1-indexed, optional)",
-                    },
-                    "limit": {
-                        "type": "integer",
-                        "description": "Max lines to return (optional)",
-                    },
-                },
-                "required": ["file_id"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "summarize",
-            "description": "Summarize a cached file (file_id from fetch). Use when content is too large to read in full.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "file_id": {
-                        "type": "string",
-                        "description": "6-character file identifier",
-                    },
-                    "directive": {
-                        "type": "string",
-                        "description": "Instructions for what/how to summarize",
-                    },
-                    "max_length": {
-                        "type": "integer",
-                        "description": "Max characters in summary (default 1000)",
-                    },
-                },
-                "required": ["file_id", "directive"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "grep_file",
-            "description": "Search for a pattern in a cached file (file_id from fetch)",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "file_id": {
-                        "type": "string",
-                        "description": "6-character file identifier",
-                    },
-                    "pattern": {
-                        "type": "string",
-                        "description": "Search pattern",
-                    },
-                    "is_regex": {
-                        "type": "boolean",
-                        "description": "Treat pattern as regex (default false, literal search)",
-                    },
-                    "ignore_case": {
-                        "type": "boolean",
-                        "description": "Case-insensitive search (default false)",
-                    },
-                    "context": {
-                        "type": "integer",
-                        "description": "Lines of context before/after match (default 0)",
-                    },
-                },
-                "required": ["file_id", "pattern"],
-            },
-        },
-    },
-]
+Config.TEMP_DIR.mkdir(exist_ok=True)
+atexit.register(Config.cleanup_temp_files)
 
 
 class HTMLToMarkdown(HTMLParser):
@@ -327,199 +223,6 @@ class HTMLToMarkdown(HTMLParser):
         return "".join(self.result).strip()
 
 
-def html_to_markdown(html: str) -> str:
-    parser = HTMLToMarkdown()
-    parser.feed(html)
-    return parser.get_markdown()
-
-
-def fetch_url(url: str) -> str:
-    try:
-        response = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
-        response.raise_for_status()
-        content_type = response.headers.get("Content-Type", "").lower()
-
-        if "text/html" in content_type or url.endswith((".html", ".htm")):
-            content = html_to_markdown(response.text)
-        else:
-            content = response.text
-
-        if len(content) > CONTENT_THRESHOLD:
-            file_id = _generate_file_id()
-            file_path = TEMP_DIR / f"{file_id}.md"
-            file_path.write_text(content)
-            return f'Stored as {file_id} ({len(content)} chars). Tools: read_file, grep_file, summarize (file_id="{file_id}")'
-        return content
-    except Exception as e:
-        return f"Error fetching URL: {str(e)}"
-
-
-def read_cached_file(
-    file_id: str, offset: int | None = None, limit: int | None = None
-) -> str:
-    try:
-        file_path = TEMP_DIR / f"{file_id}.md"
-        if not file_path.exists():
-            return f"Error: file {file_id} not found"
-
-        lines = file_path.read_text().splitlines()
-        total_lines = len(lines)
-
-        if offset is None:
-            offset = 1
-        if offset < 1:
-            offset = 1
-
-        start = offset - 1
-        end = total_lines if limit is None else start + limit
-
-        selected = lines[start:end]
-        result = "\n".join(f"{i + offset}: {line}" for i, line in enumerate(selected))
-
-        header = f"File {file_id} (lines {offset}-{min(end, total_lines)} of {total_lines})\n"
-        return header + result
-    except Exception as e:
-        return f"Error reading file: {str(e)}"
-
-
-def summarize_file(file_id: str, directive: str, max_length: int = 1000) -> str:
-    file_path = TEMP_DIR / f"{file_id}.md"
-    if not file_path.exists():
-        return f"Error: file {file_id} not found"
-
-    content = file_path.read_text()
-
-    messages = [
-        {
-            "role": "system",
-            "content": f"Summarize content concisely. Aim for ~{max_length} characters max.",
-        },
-        {"role": "user", "content": f"{directive}\n\n---\n\n{content}"},
-    ]
-
-    payload = {
-        "messages": messages,
-        "model": os.environ["LLM_MODEL"],
-        "temperature": 0.1,
-        "stream": False,
-    }
-
-    headers = {
-        "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
-        "Content-Type": "application/json",
-    }
-
-    try:
-        response = requests.post(
-            os.environ["LLM_HOST"], headers=headers, json=payload, timeout=60
-        )
-        if response.status_code != 200:
-            return f"Error: {response.status_code}"
-
-        summary = response.json()["choices"][0]["message"]["content"]
-
-        if len(summary) > max_length:
-            summary = summary[: max_length - 3] + "..."
-
-        return summary
-    except Exception as e:
-        return f"Error summarizing: {str(e)}"
-
-
-GREP_MAX_MATCHES = 50
-
-
-def grep_file(
-    file_id: str,
-    pattern: str,
-    is_regex: bool = False,
-    ignore_case: bool = False,
-    context: int = 0,
-) -> str:
-    try:
-        file_path = TEMP_DIR / f"{file_id}.md"
-        if not file_path.exists():
-            return f"Error: file {file_id} not found"
-
-        lines = file_path.read_text().splitlines()
-        total_lines = len(lines)
-
-        flags = re.IGNORECASE if ignore_case else 0
-        if is_regex:
-            try:
-                regex = re.compile(pattern, flags)
-            except re.error as e:
-                return f"Error: invalid regex: {e}"
-            matcher = lambda line: regex.search(line) is not None
-        else:
-            if ignore_case:
-                pattern_lower = pattern.lower()
-                matcher = lambda line: pattern_lower in line.lower()
-            else:
-                matcher = lambda line: pattern in line
-
-        matched_indices = set()
-        for i, line in enumerate(lines):
-            if matcher(line):
-                matched_indices.add(i)
-
-        if not matched_indices:
-            return f'File {file_id}: no matches for "{pattern}"'
-
-        all_matched_indices = matched_indices.copy()
-
-        if context > 0:
-            context_indices = set()
-            for idx in matched_indices:
-                for j in range(
-                    max(0, idx - context), min(total_lines, idx + context + 1)
-                ):
-                    context_indices.add(j)
-            matched_indices = context_indices
-
-        sorted_indices = sorted(matched_indices)
-
-        groups = []
-        current_group = []
-        for i, idx in enumerate(sorted_indices):
-            if not current_group or idx == sorted_indices[i - 1] + 1:
-                current_group.append(idx)
-            else:
-                groups.append(current_group)
-                current_group = [idx]
-        if current_group:
-            groups.append(current_group)
-
-        output_lines = [
-            f'File {file_id}: {len(all_matched_indices)} matches for "{pattern}"'
-        ]
-        match_count = 0
-        truncated = False
-
-        for group in groups:
-            if truncated:
-                break
-            output_lines.append("--")
-            for idx in group:
-                if match_count >= GREP_MAX_MATCHES:
-                    truncated = True
-                    break
-                line_num = idx + 1
-                prefix = ">" if idx in all_matched_indices else " "
-                output_lines.append(f"{prefix}{line_num}: {lines[idx]}")
-                match_count += 1
-
-        if len(all_matched_indices) > GREP_MAX_MATCHES:
-            output_lines.append("--")
-            output_lines.append(
-                f"... {len(all_matched_indices) - GREP_MAX_MATCHES} more matches not shown"
-            )
-
-        return "\n".join(output_lines)
-    except Exception as e:
-        return f"Error grepping file: {str(e)}"
-
-
 class DuckDuckGoSearch(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -569,188 +272,506 @@ class DuckDuckGoSearch(HTMLParser):
         return self.results[:max_results]
 
 
-def duckduckgo_search(query: str, max_results: int = 5) -> str:
-    try:
-        url = f"https://html.duckduckgo.com/html/?q={query}"
-        response = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
-        response.raise_for_status()
-        parser = DuckDuckGoSearch()
-        parser.feed(response.text)
-        results = parser.get_results(max_results)
-        if not results:
-            return "No results found."
-        lines = []
-        for i, r in enumerate(results, 1):
-            lines.append(f"{i}. [{r['title']}]({r['url']})")
-            if r["snippet"]:
-                lines.append(f"   {r['snippet']}")
-            lines.append("")
-        return "\n".join(lines).strip()
-    except Exception as e:
-        return f"Search error: {str(e)}"
+class Cache:
+    @staticmethod
+    def read(file_id: str, offset: int | None = None, limit: int | None = None) -> str:
+        try:
+            file_path = Config.TEMP_DIR / f"{file_id}.md"
+            if not file_path.exists():
+                return f"Error: file {file_id} not found"
+
+            lines = file_path.read_text().splitlines()
+            total_lines = len(lines)
+
+            if offset is None:
+                offset = 1
+            if offset < 1:
+                offset = 1
+
+            start = offset - 1
+            end = total_lines if limit is None else start + limit
+
+            selected = lines[start:end]
+            result = "\n".join(
+                f"{i + offset}: {line}" for i, line in enumerate(selected)
+            )
+
+            header = f"File {file_id} (lines {offset}-{min(end, total_lines)} of {total_lines})\n"
+            return header + result
+        except Exception as e:
+            return f"Error reading file: {str(e)}"
+
+    @staticmethod
+    def grep(
+        file_id: str,
+        pattern: str,
+        is_regex: bool = False,
+        ignore_case: bool = False,
+        context: int = 0,
+    ) -> str:
+        try:
+            file_path = Config.TEMP_DIR / f"{file_id}.md"
+            if not file_path.exists():
+                return f"Error: file {file_id} not found"
+
+            lines = file_path.read_text().splitlines()
+            total_lines = len(lines)
+
+            flags = re.IGNORECASE if ignore_case else 0
+            if is_regex:
+                try:
+                    regex = re.compile(pattern, flags)
+                except re.error as e:
+                    return f"Error: invalid regex: {e}"
+                matcher = lambda line: regex.search(line) is not None
+            else:
+                if ignore_case:
+                    pattern_lower = pattern.lower()
+                    matcher = lambda line: pattern_lower in line.lower()
+                else:
+                    matcher = lambda line: pattern in line
+
+            matched_indices = set()
+            for i, line in enumerate(lines):
+                if matcher(line):
+                    matched_indices.add(i)
+
+            if not matched_indices:
+                return f'File {file_id}: no matches for "{pattern}"'
+
+            all_matched_indices = matched_indices.copy()
+
+            if context > 0:
+                context_indices = set()
+                for idx in matched_indices:
+                    for j in range(
+                        max(0, idx - context), min(total_lines, idx + context + 1)
+                    ):
+                        context_indices.add(j)
+                matched_indices = context_indices
+
+            sorted_indices = sorted(matched_indices)
+
+            groups = []
+            current_group = []
+            for i, idx in enumerate(sorted_indices):
+                if not current_group or idx == sorted_indices[i - 1] + 1:
+                    current_group.append(idx)
+                else:
+                    groups.append(current_group)
+                    current_group = [idx]
+            if current_group:
+                groups.append(current_group)
+
+            output_lines = [
+                f'File {file_id}: {len(all_matched_indices)} matches for "{pattern}"'
+            ]
+            match_count = 0
+            truncated = False
+
+            for group in groups:
+                if truncated:
+                    break
+                output_lines.append("--")
+                for idx in group:
+                    if match_count >= Config.GREP_MAX_MATCHES:
+                        truncated = True
+                        break
+                    line_num = idx + 1
+                    prefix = ">" if idx in all_matched_indices else " "
+                    output_lines.append(f"{prefix}{line_num}: {lines[idx]}")
+                    match_count += 1
+
+            if len(all_matched_indices) > Config.GREP_MAX_MATCHES:
+                output_lines.append("--")
+                output_lines.append(
+                    f"... {len(all_matched_indices) - Config.GREP_MAX_MATCHES} more matches not shown"
+                )
+
+            return "\n".join(output_lines)
+        except Exception as e:
+            return f"Error grepping file: {str(e)}"
 
 
-def execute_tool_call(tool_name: str, tool_args: dict) -> str:
-    if tool_name == "fetch":
-        return fetch_url(tool_args.get("url", ""))
-    if tool_name == "search":
-        return duckduckgo_search(
-            tool_args.get("query", ""), tool_args.get("max_results", 5)
-        )
-    if tool_name == "read_file":
-        return read_cached_file(
-            tool_args.get("file_id"),
-            tool_args.get("offset"),
-            tool_args.get("limit"),
-        )
-    if tool_name == "summarize":
-        return summarize_file(
-            tool_args.get("file_id"),
-            tool_args.get("directive"),
-            tool_args.get("max_length", 1000),
-        )
-    if tool_name == "grep_file":
-        return grep_file(
-            tool_args.get("file_id"),
-            tool_args.get("pattern"),
-            tool_args.get("is_regex", False),
-            tool_args.get("ignore_case", False),
-            tool_args.get("context", 0),
-        )
-    return f"Unknown tool: {tool_name}"
+class Tools:
+    SCHEMA = [
+        {
+            "type": "function",
+            "function": {
+                "name": "fetch",
+                "description": "Fetch content from a URL and return it as markdown",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "type": "string",
+                            "description": "The URL to fetch",
+                        }
+                    },
+                    "required": ["url"],
+                },
+            },
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "search",
+                "description": "Search DuckDuckGo and return results",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "query": {"type": "string", "description": "Search query"},
+                        "max_results": {
+                            "type": "integer",
+                            "description": "Max results (default 5)",
+                        },
+                    },
+                    "required": ["query"],
+                },
+            },
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "read_file",
+                "description": "Read content from a cached file (file_id from fetch)",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "file_id": {
+                            "type": "string",
+                            "description": "6-character file identifier",
+                        },
+                        "offset": {
+                            "type": "integer",
+                            "description": "Start line (1-indexed, optional)",
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Max lines to return (optional)",
+                        },
+                    },
+                    "required": ["file_id"],
+                },
+            },
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "summarize",
+                "description": "Summarize a cached file (file_id from fetch). Use when content is too large to read in full.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "file_id": {
+                            "type": "string",
+                            "description": "6-character file identifier",
+                        },
+                        "directive": {
+                            "type": "string",
+                            "description": "Instructions for what/how to summarize",
+                        },
+                        "max_length": {
+                            "type": "integer",
+                            "description": "Max characters in summary (default 1000)",
+                        },
+                    },
+                    "required": ["file_id", "directive"],
+                },
+            },
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "grep_file",
+                "description": "Search for a pattern in a cached file (file_id from fetch)",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "file_id": {
+                            "type": "string",
+                            "description": "6-character file identifier",
+                        },
+                        "pattern": {
+                            "type": "string",
+                            "description": "Search pattern",
+                        },
+                        "is_regex": {
+                            "type": "boolean",
+                            "description": "Treat pattern as regex (default false, literal search)",
+                        },
+                        "ignore_case": {
+                            "type": "boolean",
+                            "description": "Case-insensitive search (default false)",
+                        },
+                        "context": {
+                            "type": "integer",
+                            "description": "Lines of context before/after match (default 0)",
+                        },
+                    },
+                    "required": ["file_id", "pattern"],
+                },
+            },
+        },
+    ]
 
+    @staticmethod
+    def fetch(url: str) -> str:
+        try:
+            response = requests.get(
+                url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}
+            )
+            response.raise_for_status()
+            content_type = response.headers.get("Content-Type", "").lower()
 
-def _execute_tool_call_wrapper(tool_call: dict) -> tuple[str, str]:
-    tool_id = tool_call.get("id")
-    func = tool_call.get("function", {})
-    tool_name = func.get("name")
-    args_str = func.get("arguments", "{}")
-    try:
-        args = json.loads(args_str)
-    except json.JSONDecodeError:
-        args = {}
-    result = execute_tool_call(tool_name, args)
+            if "text/html" in content_type or url.endswith((".html", ".htm")):
+                parser = HTMLToMarkdown()
+                parser.feed(response.text)
+                content = parser.get_markdown()
+            else:
+                content = response.text
 
-    if len(result) > MAX_TOOL_RESULT_CHARS:
-        file_id = args.get("file_id")
-        if file_id:
-            result = f'Result too large ({len(result)} chars). Use summarize(file_id="{file_id}", directive="...") to extract what you need.'
-        else:
-            result = f"Result too large ({len(result)} chars). Use summarize to extract what you need."
+            if len(content) > Config.CONTENT_THRESHOLD:
+                file_id = Config.generate_file_id()
+                file_path = Config.TEMP_DIR / f"{file_id}.md"
+                file_path.write_text(content)
+                return f'Stored as {file_id} ({len(content)} chars). Tools: read_file, grep_file, summarize (file_id="{file_id}")'
+            return content
+        except Exception as e:
+            return f"Error fetching URL: {str(e)}"
 
-    return (tool_id, result)
+    @staticmethod
+    def search(query: str, max_results: int = 5) -> str:
+        try:
+            url = f"https://html.duckduckgo.com/html/?q={query}"
+            response = requests.get(
+                url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}
+            )
+            response.raise_for_status()
+            parser = DuckDuckGoSearch()
+            parser.feed(response.text)
+            results = parser.get_results(max_results)
+            if not results:
+                return "No results found."
+            lines = []
+            for i, r in enumerate(results, 1):
+                lines.append(f"{i}. [{r['title']}]({r['url']})")
+                if r["snippet"]:
+                    lines.append(f"   {r['snippet']}")
+                lines.append("")
+            return "\n".join(lines).strip()
+        except Exception as e:
+            return f"Search error: {str(e)}"
 
+    @staticmethod
+    def summarize(file_id: str, directive: str, max_length: int = 1000) -> str:
+        file_path = Config.TEMP_DIR / f"{file_id}.md"
+        if not file_path.exists():
+            return f"Error: file {file_id} not found"
 
-def body(prompt: list[str] | None = None, messages: list | None = None) -> str:
-    if prompt is None:
-        prompt = []
-    if messages is None:
+        content = file_path.read_text()
+
         messages = [
             {
                 "role": "system",
-                "content": os.environ.get("LLM_SYSTEM_PROMPT", _get_system_prompt()),
+                "content": f"Summarize content concisely. Aim for ~{max_length} characters max.",
+            },
+            {"role": "user", "content": f"{directive}\n\n---\n\n{content}"},
+        ]
+
+        payload = {
+            "messages": messages,
+            "model": os.environ["LLM_MODEL"],
+            "temperature": 0.1,
+            "stream": False,
+        }
+
+        headers = {
+            "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
+            "Content-Type": "application/json",
+        }
+
+        try:
+            response = requests.post(
+                os.environ["LLM_HOST"], headers=headers, json=payload, timeout=60
+            )
+            if response.status_code != 200:
+                return f"Error: {response.status_code}"
+
+            summary = response.json()["choices"][0]["message"]["content"]
+
+            if len(summary) > max_length:
+                summary = summary[: max_length - 3] + "..."
+
+            return summary
+        except Exception as e:
+            return f"Error summarizing: {str(e)}"
+
+    @staticmethod
+    def execute(tool_name: str, tool_args: dict) -> str:
+        if tool_name == "fetch":
+            return Tools.fetch(tool_args.get("url", ""))
+        if tool_name == "search":
+            return Tools.search(
+                tool_args.get("query", ""), tool_args.get("max_results", 5)
+            )
+        if tool_name == "read_file":
+            return Cache.read(
+                tool_args.get("file_id", ""),
+                tool_args.get("offset"),
+                tool_args.get("limit"),
+            )
+        if tool_name == "summarize":
+            return Tools.summarize(
+                tool_args.get("file_id", ""),
+                tool_args.get("directive", ""),
+                tool_args.get("max_length", 1000),
+            )
+        if tool_name == "grep_file":
+            return Cache.grep(
+                tool_args.get("file_id", ""),
+                tool_args.get("pattern", ""),
+                tool_args.get("is_regex", False),
+                tool_args.get("ignore_case", False),
+                tool_args.get("context", 0),
+            )
+        return f"Unknown tool: {tool_name}"
+
+    @staticmethod
+    def execute_wrapper(tool_call: dict) -> tuple[str, str]:
+        tool_id = tool_call.get("id", "")
+        func = tool_call.get("function", {})
+        tool_name = func.get("name", "")
+        args_str = func.get("arguments", "{}")
+        try:
+            args = json.loads(args_str)
+        except json.JSONDecodeError:
+            args = {}
+        result = Tools.execute(tool_name, args)
+
+        if len(result) > Config.MAX_TOOL_RESULT_CHARS:
+            file_id = args.get("file_id")
+            if file_id:
+                result = f'Result too large ({len(result)} chars). Use summarize(file_id="{file_id}", directive="...") to extract what you need.'
+            else:
+                result = f"Result too large ({len(result)} chars). Use summarize to extract what you need."
+
+        return (tool_id, result)
+
+
+class LLMClient:
+    @staticmethod
+    def body(prompt: list[str] | None = None, messages: list | None = None) -> str:
+        if prompt is None:
+            prompt = []
+        if messages is None:
+            messages = [
+                {
+                    "role": "system",
+                    "content": os.environ.get(
+                        "LLM_SYSTEM_PROMPT", Config.get_system_prompt()
+                    ),
+                },
+                {"role": "user", "content": " ".join(prompt)},
+            ]
+
+        d = {
+            "messages": messages,
+            "model": os.environ["LLM_MODEL"],
+            "temperature": float(os.environ.get("LLM_TEMPERATURE", 0.1)),
+            "stream": False,
+        }
+
+        if Config.response_format() is not None:
+            d["response_format"] = Config.response_format()
+
+        if Config.tools_enabled():
+            d["tools"] = Tools.SCHEMA
+
+        return json.dumps(d)
+
+    @staticmethod
+    def stream(prompt: list[str]) -> None:
+        messages = [
+            {
+                "role": "system",
+                "content": os.environ.get(
+                    "LLM_SYSTEM_PROMPT", Config.get_system_prompt()
+                ),
             },
             {"role": "user", "content": " ".join(prompt)},
         ]
 
-    d = {
-        "messages": messages,
-        "model": os.environ["LLM_MODEL"],
-        "temperature": float(os.environ.get("LLM_TEMPERATURE", 0.1)),
-        "stream": False,
-    }
+        headers = {
+            "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
 
-    if _response_format() is not None:
-        d["response_format"] = _response_format()
+        while True:
+            msg = json.loads(LLMClient.body(messages=messages))
 
-    if _tools_enabled():
-        d["tools"] = _TOOLS_SCHEMA
+            response = requests.post(
+                os.environ["LLM_HOST"],
+                headers=headers,
+                data=json.dumps(msg),
+                stream=False,
+            )
 
-    return json.dumps(d)
+            if response.status_code != 200:
+                stderr(f"{response.status_code}: {response.content.decode()}")
+                sys.exit(1)
 
+            data = response.json()
+            choice = data.get("choices", [{}])[0]
+            message = choice.get("message", {})
 
-def stream(prompt: list[str]) -> None:
-    messages = [
-        {
-            "role": "system",
-            "content": os.environ.get(
-                "LLM_SYSTEM_PROMPT",
-                "Briefly respond to the user, being crystal clear and helpful. Never lie.",
-            ),
-        },
-        {"role": "user", "content": " ".join(prompt)},
-    ]
+            tool_calls = message.get("tool_calls", [])
+            if tool_calls and Config.tools_enabled():
+                messages.append(message)
 
-    headers = {
-        "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    }
+                for tool_call in tool_calls:
+                    func = tool_call.get("function", {})
+                    args_str = func.get("arguments", "{}")
+                    try:
+                        args = json.loads(args_str)
+                    except json.JSONDecodeError:
+                        args = {}
+                    stderr(
+                        Color.dim(f"[tool] {func.get('name', 'unknown')}({', '.join(f'{k}={repr(v)}' for k, v in args.items())})")
+                    )
 
-    while True:
-        msg = json.loads(body(messages=messages))
-
-        response = requests.post(
-            os.environ["LLM_HOST"],
-            headers=headers,
-            data=json.dumps(msg),
-            stream=False,
-        )
-
-        if response.status_code != 200:
-            stderr(f"{response.status_code}: {response.content.decode()}")
-            sys.exit(1)
-
-        data = response.json()
-        choice = data.get("choices", [{}])[0]
-        message = choice.get("message", {})
-
-        tool_calls = message.get("tool_calls", [])
-        if tool_calls and _tools_enabled():
-            messages.append(message)
-
-            for tool_call in tool_calls:
-                func = tool_call.get("function", {})
-                args_str = func.get("arguments", "{}")
-                try:
-                    args = json.loads(args_str)
-                except json.JSONDecodeError:
-                    args = {}
-                stderr(
-                    f"[tool] {func.get('name', 'unknown')}({', '.join(f'{k}={repr(v)}' for k, v in args.items())})"
-                )
-
-            results = {}
-            with ThreadPoolExecutor(max_workers=5) as executor:
-                futures = {
-                    executor.submit(_execute_tool_call_wrapper, tc): tc
-                    for tc in tool_calls
-                }
-                for future in as_completed(futures):
-                    tool_id, result = future.result()
-                    results[tool_id] = result
-
-            for tool_call in tool_calls:
-                tool_id = tool_call.get("id")
-                messages.append(
-                    {
-                        "role": "tool",
-                        "tool_call_id": tool_id,
-                        "content": results[tool_id],
+                results = {}
+                with ThreadPoolExecutor(max_workers=5) as executor:
+                    futures = {
+                        executor.submit(Tools.execute_wrapper, tc): tc
+                        for tc in tool_calls
                     }
-                )
-        else:
-            content = message.get("content", "")
-            if content:
-                stdout(content)
-            return
+                    for future in as_completed(futures):
+                        tool_id, result = future.result()
+                        results[tool_id] = result
+
+                for tool_call in tool_calls:
+                    tool_id = tool_call.get("id")
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tool_id,
+                            "content": results[tool_id],
+                        }
+                    )
+            else:
+                content = message.get("content", "")
+                if content:
+                    stdout(content)
+                return
 
 
 def main() -> None:
     if sys.stdin.isatty():
-        stream([*sys.argv[1:]])
+        LLMClient.stream([*sys.argv[1:]])
     else:
-        stream([*sys.argv[1:], "\n\n", *sys.stdin.read().splitlines()])
+        LLMClient.stream([*sys.argv[1:], "\n\n", *sys.stdin.read().splitlines()])
 
 
 if __name__ == "__main__":
