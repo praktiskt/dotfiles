@@ -77,11 +77,26 @@ class Config:
     @staticmethod
     def get_system_prompt() -> str:
         today = date.today().isoformat()
-        return f"Today: {today}. Briefly respond to the user, being crystal clear and helpful. Never lie. When making multiple independent tool calls, batch them in a single response for efficiency."
+        return (
+            f"Today: {today}. "
+            "Briefly respond to the user, being crystal clear and helpful. Never lie. "
+            "When making multiple independent tool calls, batch them in a single response for efficiency. "
+            "IMPORTANT: Use fetch() to get content. If content is large, it returns a file_id (6 lowercase alphanumeric chars). "
+            "Only use read_file, grep_file, or summarize with that exact file_id returned by fetch. "
+            "NEVER invent or guess file_ids - only use IDs explicitly returned by fetch."
+        )
 
     @staticmethod
     def generate_file_id() -> str:
         return "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
+
+    @staticmethod
+    def validate_file_id(file_id: str) -> str | None:
+        if not file_id:
+            return "file_id is required"
+        if not re.match(r"^[a-z0-9]{6}$", file_id):
+            return f"invalid file_id '{file_id}'. Must be 6 lowercase alphanumeric characters (e.g., 'abc123'). Do NOT invent file_ids - only use IDs returned by fetch."
+        return None
 
     @staticmethod
     def cleanup_temp_files() -> None:
@@ -289,6 +304,10 @@ class DuckDuckGoSearch(HTMLParser):
 class Cache:
     @staticmethod
     def read(file_id: str, offset: int | None = None, limit: int | None = None) -> str:
+        validation_error = Config.validate_file_id(file_id)
+        if validation_error:
+            return f"Error: {validation_error}"
+
         try:
             file_path = Config.TEMP_DIR / f"{file_id}.md"
             if not file_path.exists():
@@ -323,6 +342,10 @@ class Cache:
         ignore_case: bool = False,
         context: int = 0,
     ) -> str:
+        validation_error = Config.validate_file_id(file_id)
+        if validation_error:
+            return f"Error: {validation_error}"
+
         try:
             file_path = Config.TEMP_DIR / f"{file_id}.md"
             if not file_path.exists():
@@ -413,16 +436,17 @@ class Tools:
             "type": "function",
             "function": {
                 "name": "fetch",
-                "description": "Fetch content from a URL and return it as markdown",
+                "description": "Fetch content from URLs and return as markdown",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "url": {
-                            "type": "string",
-                            "description": "The URL to fetch",
+                        "urls": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "List of URLs to fetch (at least one)",
                         }
                     },
-                    "required": ["url"],
+                    "required": ["urls"],
                 },
             },
         },
@@ -454,7 +478,7 @@ class Tools:
                     "properties": {
                         "file_id": {
                             "type": "string",
-                            "description": "6-character file identifier",
+                            "description": "6-character lowercase alphanumeric ID returned by fetch (e.g., 'abc123'). Do NOT invent file_ids.",
                         },
                         "offset": {
                             "type": "integer",
@@ -473,24 +497,25 @@ class Tools:
             "type": "function",
             "function": {
                 "name": "summarize",
-                "description": "Summarize a cached file (file_id from fetch). Use when content is too large to read in full.",
+                "description": "Summarize a cached file according to multiple directives",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "file_id": {
                             "type": "string",
-                            "description": "6-character file identifier",
+                            "description": "6-character lowercase alphanumeric ID returned by fetch (e.g., 'abc123'). Do NOT invent file_ids.",
                         },
-                        "directive": {
-                            "type": "string",
-                            "description": "Instructions for what/how to summarize",
+                        "directives": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "List of summary instructions (at least one)",
                         },
                         "max_length": {
                             "type": "integer",
-                            "description": "Max characters in summary (default 1000)",
+                            "description": "Max characters per summary (default 1000)",
                         },
                     },
-                    "required": ["file_id", "directive"],
+                    "required": ["file_id", "directives"],
                 },
             },
         },
@@ -504,7 +529,7 @@ class Tools:
                     "properties": {
                         "file_id": {
                             "type": "string",
-                            "description": "6-character file identifier",
+                            "description": "6-character lowercase alphanumeric ID returned by fetch (e.g., 'abc123'). Do NOT invent file_ids.",
                         },
                         "pattern": {
                             "type": "string",
@@ -530,7 +555,7 @@ class Tools:
     ]
 
     @staticmethod
-    def fetch(url: str) -> str:
+    def _fetch_single(url: str) -> str:
         try:
             response = requests.get(
                 url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}
@@ -553,6 +578,14 @@ class Tools:
             return content
         except Exception as e:
             return f"Error fetching URL: {str(e)}"
+
+    @staticmethod
+    def fetch(urls: list[str]) -> str:
+        results = []
+        for url in urls:
+            result = Tools._fetch_single(url)
+            results.append(f"{url}: {result}")
+        return "\n\n---\n\n".join(results)
 
     @staticmethod
     def search(query: str, max_results: int = 5) -> str:
@@ -578,53 +611,72 @@ class Tools:
             return f"Search error: {str(e)}"
 
     @staticmethod
-    def summarize(file_id: str, directive: str, max_length: int = 1000) -> str:
+    def summarize(file_id: str, directives: list[str], max_length: int = 1000) -> str:
+        validation_error = Config.validate_file_id(file_id)
+        if validation_error:
+            return f"Error: {validation_error}"
+
         file_path = Config.TEMP_DIR / f"{file_id}.md"
         if not file_path.exists():
             return f"Error: file {file_id} not found"
 
         content = file_path.read_text()
 
-        messages = [
-            {
-                "role": "system",
-                "content": f"Summarize content concisely. Aim for ~{max_length} characters max.",
-            },
-            {"role": "user", "content": f"{directive}\n\n---\n\n{content}"},
-        ]
+        def summarize_one(directive: str) -> str:
+            messages = [
+                {
+                    "role": "system",
+                    "content": f"Summarize content concisely. Aim for ~{max_length} characters max.",
+                },
+                {"role": "user", "content": f"{directive}\n\n---\n\n{content}"},
+            ]
 
-        payload = {
-            "messages": messages,
-            "model": os.environ["LLM_MODEL"],
-            "temperature": 0.1,
-            "stream": False,
-        }
+            payload = {
+                "messages": messages,
+                "model": os.environ["LLM_MODEL"],
+                "temperature": 0.1,
+                "stream": False,
+            }
 
-        headers = {
-            "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
-            "Content-Type": "application/json",
-        }
+            headers = {
+                "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
+                "Content-Type": "application/json",
+            }
 
-        try:
-            response = requests.post(
-                os.environ["LLM_HOST"], headers=headers, json=payload, timeout=60
-            )
-            if response.status_code != 200:
-                return f"Error: {response.status_code}"
+            try:
+                response = requests.post(
+                    os.environ["LLM_HOST"], headers=headers, json=payload, timeout=60
+                )
+                if response.status_code != 200:
+                    return f"Error: {response.status_code}"
 
-            summary = response.json()["choices"][0]["message"]["content"]
+                summary = response.json()["choices"][0]["message"]["content"]
 
-            if len(summary) > max_length:
-                summary = summary[: max_length - 3] + "..."
+                if len(summary) > max_length:
+                    summary = summary[: max_length - 3] + "..."
 
-            return summary
-        except Exception as e:
-            return f"Error summarizing: {str(e)}"
+                return summary
+            except Exception as e:
+                return f"Error summarizing: {str(e)}"
+
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = {
+                executor.submit(summarize_one, d): i for i, d in enumerate(directives)
+            }
+            summaries = [None] * len(directives)
+            for future in as_completed(futures):
+                idx = futures[future]
+                summaries[idx] = future.result()
+
+        lines = []
+        for i, summary in enumerate(summaries, 1):
+            lines.append(f"{i}. {summary}")
+        return "\n\n".join(lines)
 
     @staticmethod
     def execute(tool_name: str, tool_args: dict) -> str:
         if tool_name == "fetch":
-            return Tools.fetch(tool_args.get("url", ""))
+            return Tools.fetch(tool_args.get("urls", []))
         if tool_name == "search":
             return Tools.search(
                 tool_args.get("query", ""), tool_args.get("max_results", 5)
@@ -638,7 +690,7 @@ class Tools:
         if tool_name == "summarize":
             return Tools.summarize(
                 tool_args.get("file_id", ""),
-                tool_args.get("directive", ""),
+                tool_args.get("directives", []),
                 tool_args.get("max_length", 1000),
             )
         if tool_name == "grep_file":
@@ -666,7 +718,7 @@ class Tools:
         if len(result) > Config.MAX_TOOL_RESULT_CHARS:
             file_id = args.get("file_id")
             if file_id:
-                result = f'Result too large ({len(result)} chars). Use summarize(file_id="{file_id}", directive="...") to extract what you need.'
+                result = f'Result too large ({len(result)} chars). Use summarize(file_id="{file_id}", directives=["..."]) to extract what you need.'
             else:
                 result = f"Result too large ({len(result)} chars). Use summarize to extract what you need."
 
