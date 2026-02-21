@@ -51,7 +51,7 @@ class Color:
 class Config:
     TEMP_DIR = Path(tempfile.gettempdir()) / "llm_cache"
     CONTENT_THRESHOLD = 5000
-    MAX_TOOL_RESULT_CHARS = 10000
+    MAX_TOOL_RESULT_CHARS = 5000
     GREP_MAX_MATCHES = 50
 
     @staticmethod
