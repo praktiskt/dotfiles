@@ -239,14 +239,15 @@ class HTMLToMarkdown(HTMLParser):
                 return
         if self.in_pre:
             self.result.append(data)
-        elif self.in_blockquote:
+            return
+        if self.in_blockquote:
             for line in data.split("\n"):
                 if line.strip():
                     self.result.append(line)
-        else:
-            text = " ".join(data.split())
-            if text:
-                self.result.append(text)
+            return
+        text = " ".join(data.split())
+        if text:
+            self.result.append(text)
 
     def get_markdown(self):
         return "".join(self.result).strip()
@@ -273,7 +274,8 @@ class DuckDuckGoSearch(HTMLParser):
                 "snippet": "",
             }
             self.current_text = []
-        elif tag == "a" and "result__snippet" in class_attr:
+            return
+        if tag == "a" and "result__snippet" in class_attr:
             self.in_snippet = True
             self.current_text = []
 
@@ -793,8 +795,8 @@ class Tools:
                 file_ids = [file_ids]
             if file_ids:
                 result = f'Result too large ({len(result)} chars). Use summarize(file_ids={file_ids}, directives=["..."]) to extract what you need.'
-            else:
-                result = f"Result too large ({len(result)} chars). Use summarize to extract what you need."
+                return (tool_id, result)
+            result = f"Result too large ({len(result)} chars). Use summarize to extract what you need."
 
         return (tool_id, result)
 
@@ -874,56 +876,55 @@ class LLMClient:
                     stderr(f"{Color.dim('[thinking]')} {Color.thinking(reasoning)}")
 
             tool_calls = message.get("tool_calls", [])
-            if tool_calls and Config.tools_enabled():
-                messages.append(message)
-
-                for tool_call in tool_calls:
-                    func = tool_call.get("function", {})
-                    args_str = func.get("arguments", "{}")
-                    try:
-                        args = json.loads(args_str)
-                    except json.JSONDecodeError:
-                        args = {}
-                    tool_name = func.get("name", "unknown")
-                    stderr(
-                        Color.tool(
-                            tool_name,
-                            f"[tool] {tool_name}({', '.join(f'{k}={repr(v)}' for k, v in args.items())})",
-                        )
-                    )
-
-                results = {}
-                with ThreadPoolExecutor(max_workers=5) as executor:
-                    futures = {
-                        executor.submit(Tools.execute_wrapper, tc): tc
-                        for tc in tool_calls
-                    }
-                    for future in as_completed(futures):
-                        tool_id, result = future.result()
-                        results[tool_id] = result
-
-                for tool_call in tool_calls:
-                    tool_id = tool_call.get("id")
-                    messages.append(
-                        {
-                            "role": "tool",
-                            "tool_call_id": tool_id,
-                            "content": results[tool_id],
-                        }
-                    )
-            else:
+            if not tool_calls or not Config.tools_enabled():
                 content = message.get("content", "")
                 if content:
                     stdout(content)
                 return
 
+            messages.append(message)
+
+            for tool_call in tool_calls:
+                func = tool_call.get("function", {})
+                args_str = func.get("arguments", "{}")
+                try:
+                    args = json.loads(args_str)
+                except json.JSONDecodeError:
+                    args = {}
+                tool_name = func.get("name", "unknown")
+                stderr(
+                    Color.tool(
+                        tool_name,
+                        f"[tool] {tool_name}({', '.join(f'{k}={repr(v)}' for k, v in args.items())})",
+                    )
+                )
+
+            results = {}
+            with ThreadPoolExecutor(max_workers=5) as executor:
+                futures = {
+                    executor.submit(Tools.execute_wrapper, tc): tc for tc in tool_calls
+                }
+                for future in as_completed(futures):
+                    tool_id, result = future.result()
+                    results[tool_id] = result
+
+            for tool_call in tool_calls:
+                tool_id = tool_call.get("id")
+                messages.append(
+                    {
+                        "role": "tool",
+                        "tool_call_id": tool_id,
+                        "content": results[tool_id],
+                    }
+                )
+
 
 def main() -> None:
     with suppress(KeyboardInterrupt):
-        if sys.stdin.isatty():
-            LLMClient.stream([*sys.argv[1:]])
-        else:
-            LLMClient.stream([*sys.argv[1:], "\n\n", *sys.stdin.read().splitlines()])
+        prompt = [*sys.argv[1:]]
+        if not sys.stdin.isatty():
+            prompt.extend(["\n\n", *sys.stdin.read().splitlines()])
+        LLMClient.stream(prompt)
 
 
 if __name__ == "__main__":
