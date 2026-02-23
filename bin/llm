@@ -505,6 +505,14 @@ class Tools:
                             "type": "integer",
                             "description": "Max characters per summary (default 1000)",
                         },
+                        "offset": {
+                            "type": "integer",
+                            "description": "Start line for summarization (1-indexed, optional)",
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Max lines to summarize (optional)",
+                        },
                     },
                     "required": ["file_id", "directives"],
                 },
@@ -608,7 +616,13 @@ class Tools:
             return f"Search error: {str(e)}"
 
     @staticmethod
-    def summarize(file_id: str, directives: list[str], max_length: int = 1000) -> str:
+    def summarize(
+        file_id: str,
+        directives: list[str],
+        max_length: int = 1000,
+        offset: int | None = None,
+        limit: int | None = None,
+    ) -> str:
         validation_error = Config.validate_file_id(file_id)
         if validation_error:
             return f"Error: {validation_error}"
@@ -616,6 +630,14 @@ class Tools:
         content = FileCache.get(file_id)
         if content is None:
             return f"Error: file {file_id} not found"
+
+        if offset is not None or limit is not None:
+            lines = content.splitlines()
+            if offset is not None and offset > 0:
+                lines = lines[offset - 1 :]
+            if limit is not None and limit > 0:
+                lines = lines[:limit]
+            content = "\n".join(lines)
 
         def summarize_one(directive: str) -> str:
             messages = [
@@ -687,6 +709,8 @@ class Tools:
                 tool_args.get("file_id", ""),
                 tool_args.get("directives", []),
                 tool_args.get("max_length", 1000),
+                tool_args.get("offset"),
+                tool_args.get("limit"),
             )
         if tool_name == "grep_file":
             return Cache.grep(
