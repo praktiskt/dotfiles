@@ -53,6 +53,7 @@ class Config:
     CONTENT_THRESHOLD = 5000
     MAX_TOOL_RESULT_CHARS = 5000
     GREP_MAX_MATCHES = 50
+    BINARY_EXTENSIONS = {".pdf", ".docx", ".pptx", ".xlsx", ".epub", ".doc"}
 
     @staticmethod
     def response_format():
@@ -557,13 +558,20 @@ class Tools:
     @staticmethod
     def _fetch_single(url: str) -> str:
         try:
+            fetch_url = url
+            url_lower = url.lower()
+            if any(url_lower.endswith(ext) for ext in Config.BINARY_EXTENSIONS):
+                fetch_url = f"https://r.jina.ai/{url}"
+
             response = requests.get(
-                url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}
+                fetch_url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}
             )
             response.raise_for_status()
             content_type = response.headers.get("Content-Type", "").lower()
 
-            if "text/html" in content_type or url.endswith((".html", ".htm")):
+            if fetch_url.startswith("https://r.jina.ai/"):
+                content = response.text
+            elif "text/html" in content_type or url.endswith((".html", ".htm")):
                 parser = HTMLToMarkdown()
                 parser.feed(response.text)
                 content = parser.get_markdown()
