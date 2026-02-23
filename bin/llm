@@ -8,6 +8,7 @@ import re
 import string
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import suppress
 from datetime import date
 from html.parser import HTMLParser
 
@@ -875,10 +876,11 @@ class LLMClient:
 
 
 def main() -> None:
-    if sys.stdin.isatty():
-        LLMClient.stream([*sys.argv[1:]])
-    else:
-        LLMClient.stream([*sys.argv[1:], "\n\n", *sys.stdin.read().splitlines()])
+    with suppress(KeyboardInterrupt):
+        if sys.stdin.isatty():
+            LLMClient.stream([*sys.argv[1:]])
+        else:
+            LLMClient.stream([*sys.argv[1:], "\n\n", *sys.stdin.read().splitlines()])
 
 
 if __name__ == "__main__":
