@@ -32,6 +32,7 @@ class Color:
         "grep_file": "\033[2;35m",
     }
     DEFAULT = "\033[2m"
+    THINKING = "\033[2;3m"
 
     @staticmethod
     def tool(name: str, text: str) -> str:
@@ -43,6 +44,12 @@ class Color:
     @staticmethod
     def dim(text: str) -> str:
         return Color.tool("default", text)
+
+    @staticmethod
+    def thinking(text: str) -> str:
+        if Config.color_output_enabled():
+            return f"{Color.THINKING}{text}{Color.RESET}"
+        return text
 
 
 class Config:
@@ -70,6 +77,10 @@ class Config:
         if os.environ.get("NO_COLOR"):
             return False
         return os.environ.get("LLM_DISABLE_COLOR_OUTPUT", "False").lower() != "true"
+
+    @staticmethod
+    def thinking_enabled():
+        return os.environ.get("LLM_SHOW_THINKING", "True").lower() == "true"
 
     @staticmethod
     def get_system_prompt() -> str:
@@ -810,6 +821,13 @@ class LLMClient:
             data = response.json()
             choice = data.get("choices", [{}])[0]
             message = choice.get("message", {})
+
+            if Config.thinking_enabled():
+                reasoning = (
+                    message.get("reasoning_content") or message.get("reasoning") or ""
+                )
+                if reasoning:
+                    stderr(f"{Color.dim('[thinking]')} {Color.thinking(reasoning)}")
 
             tool_calls = message.get("tool_calls", [])
             if tool_calls and Config.tools_enabled():
