@@ -111,6 +111,18 @@ class Config:
 
 
 class HTMLToMarkdown(HTMLParser):
+    HEADERS = {
+        "h1": "\n# ",
+        "h2": "\n## ",
+        "h3": "\n### ",
+        "h4": "\n#### ",
+        "h5": "\n##### ",
+        "h6": "\n###### ",
+    }
+    INLINE = {"strong": "**", "b": "**", "em": "*", "i": "*"}
+    SELF_CLOSING = {"br": "\n", "hr": "\n---\n"}
+    BLOCKS = {"p", "h1", "h2", "h3", "h4", "h5", "h6", "li", "blockquote", "pre"}
+
     def __init__(self):
         super().__init__()
         self.result = []
@@ -135,104 +147,81 @@ class HTMLToMarkdown(HTMLParser):
             "area",
             "portal",
         }
-        self.in_pre = False
-        self.in_code = False
-        self.in_blockquote = False
+        self.in_pre = self.in_code = self.in_blockquote = False
 
     def handle_starttag(self, tag, attrs):
-        tag = tag.lower()
+        t = tag.lower()
         attrs_dict = dict(attrs)
-        self.tag_stack.append(tag)
+        self.tag_stack.append(t)
 
-        if tag in self.ignore_tags:
+        if t in self.ignore_tags:
             return
 
-        if tag == "h1":
-            self.result.append("\n# ")
-        elif tag == "h2":
-            self.result.append("\n## ")
-        elif tag == "h3":
-            self.result.append("\n### ")
-        elif tag == "h4":
-            self.result.append("\n#### ")
-        elif tag == "h5":
-            self.result.append("\n##### ")
-        elif tag == "h6":
-            self.result.append("\n###### ")
-        elif tag == "p":
+        if t in self.HEADERS:
+            self.result.append(self.HEADERS[t])
+        elif t in self.SELF_CLOSING:
+            self.result.append(self.SELF_CLOSING[t])
+        elif t in self.INLINE:
+            self.result.append(self.INLINE[t])
+        elif t == "p":
             self.result.append("\n\n")
-        elif tag == "br":
-            self.result.append("\n")
-        elif tag == "hr":
-            self.result.append("\n---\n")
-        elif tag == "a":
+        elif t == "a":
             self.href = attrs_dict.get("href", "")
             self.result.append("[")
-        elif tag == "strong" or tag == "b":
-            self.result.append("**")
-        elif tag == "em" or tag == "i":
-            self.result.append("*")
-        elif tag == "code":
+        elif t == "code":
             self.in_code = True
-            if not self.in_pre:
-                self.result.append("`")
-        elif tag == "pre":
+            self.result.append("`" if not self.in_pre else "")
+        elif t == "pre":
             self.in_pre = True
             self.result.append("\n```\n")
-        elif tag == "blockquote":
+        elif t == "blockquote":
             self.in_blockquote = True
             self.result.append("\n> ")
-        elif tag == "ul":
+        elif t == "ul":
             self.list_stack.append("ul")
             self.result.append("\n")
-        elif tag == "ol":
+        elif t == "ol":
             self.list_stack.append(("ol", 1))
             self.result.append("\n")
-        elif tag == "li":
-            if self.list_stack:
-                lst = self.list_stack[-1]
-                if lst == "ul":
-                    self.result.append("- ")
-                else:
-                    num = lst[1]
-                    self.result.append(f"{num}. ")
-                    self.list_stack[-1] = ("ol", num + 1)
-        elif tag == "img":
-            alt = attrs_dict.get("alt", "")
-            src = attrs_dict.get("src", "")
-            self.result.append(f"![{alt}]({src})")
+        elif t == "li" and self.list_stack:
+            lst = self.list_stack[-1]
+            if lst == "ul":
+                self.result.append("- ")
+            else:
+                self.result.append(f"{lst[1]}. ")
+                self.list_stack[-1] = ("ol", lst[1] + 1)
+        elif t == "img":
+            self.result.append(
+                f"![{attrs_dict.get('alt', '')}]({attrs_dict.get('src', '')})"
+            )
 
     def handle_endtag(self, tag):
-        tag = tag.lower()
-        if self.tag_stack and self.tag_stack[-1] == tag:
+        t = tag.lower()
+        if self.tag_stack and self.tag_stack[-1] == t:
             self.tag_stack.pop()
 
-        if tag in self.ignore_tags:
+        if t in self.ignore_tags:
             return
 
-        if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
+        if t in self.HEADERS:
             self.result.append("\n")
-        elif tag == "a":
+        elif t in self.INLINE:
+            self.result.append(self.INLINE[t])
+        elif t == "a":
             self.result.append(f"]({getattr(self, 'href', '')})")
-        elif tag == "strong" or tag == "b":
-            self.result.append("**")
-        elif tag == "em" or tag == "i":
-            self.result.append("*")
-        elif tag == "code":
+        elif t == "code":
             self.in_code = False
-            if not self.in_pre:
-                self.result.append("`")
-        elif tag == "pre":
+            self.result.append("`" if not self.in_pre else "")
+        elif t == "pre":
             self.in_pre = False
             self.result.append("\n```\n")
-        elif tag == "blockquote":
+        elif t == "blockquote":
             self.in_blockquote = False
             self.result.append("\n")
-        elif tag == "li":
+        elif t == "li":
             self.result.append("\n")
-        elif tag in ("ul", "ol"):
-            if self.list_stack:
-                self.list_stack.pop()
+        elif t in ("ul", "ol") and self.list_stack:
+            self.list_stack.pop()
 
     def handle_data(self, data):
         for tag in self.tag_stack:
@@ -246,9 +235,18 @@ class HTMLToMarkdown(HTMLParser):
                 if line.strip():
                     self.result.append(line)
             return
-        text = " ".join(data.split())
-        if text:
-            self.result.append(text)
+
+        in_inline_only = any(t in self.INLINE for t in self.tag_stack)
+        in_block = any(t in self.BLOCKS for t in self.tag_stack)
+
+        if in_inline_only and not in_block:
+            self.result.append(data)
+        elif in_block:
+            self.result.append(data)
+        else:
+            text = " ".join(data.split())
+            if text:
+                self.result.append(text)
 
     def get_markdown(self):
         return "".join(self.result).strip()
