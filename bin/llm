@@ -7,6 +7,7 @@ import random
 import re
 import string
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import suppress
 from datetime import date
@@ -630,26 +631,41 @@ class Tools:
 
     @staticmethod
     def search(query: str, max_results: int = 5) -> str:
-        try:
-            url = f"https://html.duckduckgo.com/html/?q={query}"
-            response = requests.get(
-                url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}
-            )
-            response.raise_for_status()
-            parser = DuckDuckGoSearch()
-            parser.feed(response.text)
-            results = parser.get_results(max_results)
-            if not results:
-                return "No results found."
-            lines = []
-            for i, r in enumerate(results, 1):
-                lines.append(f"{i}. [{r['title']}]({r['url']})")
-                if r["snippet"]:
-                    lines.append(f"   {r['snippet']}")
-                lines.append("")
-            return "\n".join(lines).strip()
-        except Exception as e:
-            return f"Search error: {str(e)}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            "DNT": "1",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+        }
+
+        delays = [0.2, 0.3, 0.4]
+        url = f"https://html.duckduckgo.com/html/?q={query}"
+
+        for attempt, delay in enumerate(delays):
+            try:
+                response = requests.get(url, timeout=30, headers=headers)
+                response.raise_for_status()
+                parser = DuckDuckGoSearch()
+                parser.feed(response.text)
+                results = parser.get_results(max_results)
+                if results:
+                    lines = []
+                    for i, r in enumerate(results, 1):
+                        lines.append(f"{i}. [{r['title']}]({r['url']})")
+                        if r["snippet"]:
+                            lines.append(f"   {r['snippet']}")
+                        lines.append("")
+                    return "\n".join(lines).strip()
+            except Exception as e:
+                if attempt < len(delays) - 1:
+                    time.sleep(delay)
+                    continue
+                return f"Search error: {str(e)}"
+
+        return "Search failed after retries."
 
     @staticmethod
     def summarize(
@@ -659,16 +675,57 @@ class Tools:
         offset: int | None = None,
         limit: int | None = None,
     ) -> str:
-        results = []
+        def summarize_task(task: tuple) -> tuple:
+            file_id, directive, content = task
+            messages = [
+                {
+                    "role": "system",
+                    "content": f"Summarize content concisely. Aim for ~{max_length} characters max.",
+                },
+                {"role": "user", "content": f"{directive}\n\n---\n\n{content}"},
+            ]
+
+            payload = {
+                "messages": messages,
+                "model": os.environ["LLM_MODEL"],
+                "temperature": 0.1,
+                "stream": False,
+            }
+
+            headers = {
+                "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
+                "Content-Type": "application/json",
+            }
+
+            try:
+                response = requests.post(
+                    os.environ["LLM_HOST"],
+                    headers=headers,
+                    json=payload,
+                    timeout=60,
+                )
+                if response.status_code != 200:
+                    return (file_id, directive, f"Error: {response.status_code}")
+
+                summary = response.json()["choices"][0]["message"]["content"]
+
+                if len(summary) > max_length:
+                    summary = summary[: max_length - 3] + "..."
+
+                return (file_id, directive, summary)
+            except Exception as e:
+                return (file_id, directive, f"Error summarizing: {str(e)}")
+
+        tasks = []
         for file_id in file_ids:
             validation_error = Config.validate_file_id(file_id)
             if validation_error:
-                results.append(f"Error: {validation_error}")
+                tasks.append((file_id, "", f"Error: {validation_error}"))
                 continue
 
             content = FileCache.get(file_id)
             if content is None:
-                results.append(f"Error: file {file_id} not found")
+                tasks.append((file_id, "", f"Error: file {file_id} not found"))
                 continue
 
             if offset is not None or limit is not None:
@@ -679,59 +736,24 @@ class Tools:
                     lines = lines[:limit]
                 content = "\n".join(lines)
 
-            def summarize_one(directive: str) -> str:
-                messages = [
-                    {
-                        "role": "system",
-                        "content": f"Summarize content concisely. Aim for ~{max_length} characters max.",
-                    },
-                    {"role": "user", "content": f"{directive}\n\n---\n\n{content}"},
-                ]
+            for directive in directives:
+                tasks.append((file_id, directive, content))
 
-                payload = {
-                    "messages": messages,
-                    "model": os.environ["LLM_MODEL"],
-                    "temperature": 0.1,
-                    "stream": False,
-                }
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = {executor.submit(summarize_task, task): task[0] for task in tasks}
+            results_map = {}
+            for future in as_completed(futures):
+                file_id, directive, result = future.result()
+                if file_id not in results_map:
+                    results_map[file_id] = []
+                results_map[file_id].append(result)
 
-                headers = {
-                    "Authorization": f"Bearer {os.environ['LLM_API_KEY']}",
-                    "Content-Type": "application/json",
-                }
-
-                try:
-                    response = requests.post(
-                        os.environ["LLM_HOST"],
-                        headers=headers,
-                        json=payload,
-                        timeout=60,
-                    )
-                    if response.status_code != 200:
-                        return f"Error: {response.status_code}"
-
-                    summary = response.json()["choices"][0]["message"]["content"]
-
-                    if len(summary) > max_length:
-                        summary = summary[: max_length - 3] + "..."
-
-                    return summary
-                except Exception as e:
-                    return f"Error summarizing: {str(e)}"
-
-            with ThreadPoolExecutor(max_workers=5) as executor:
-                futures = {
-                    executor.submit(summarize_one, d): i
-                    for i, d in enumerate(directives)
-                }
-                summaries = [None] * len(directives)
-                for future in as_completed(futures):
-                    idx = futures[future]
-                    summaries[idx] = future.result()
-
-            file_summaries = []
-            for i, summary in enumerate(summaries, 1):
-                file_summaries.append(f"{i}. {summary}")
+        results = []
+        for file_id in file_ids:
+            if file_id not in results_map:
+                continue
+            summaries = results_map[file_id]
+            file_summaries = [f"{i}. {s}" for i, s in enumerate(summaries, 1)]
             results.append(f"File {file_id}:\n" + "\n\n".join(file_summaries))
 
         return "\n\n---\n\n".join(results)
