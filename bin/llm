@@ -252,51 +252,45 @@ class HTMLToMarkdown(HTMLParser):
         return "".join(self.result).strip()
 
 
-class DuckDuckGoSearch(HTMLParser):
+class DuckDuckGoLiteSearch(HTMLParser):
     def __init__(self):
         super().__init__()
         self.results = []
-        self.current_result = None
-        self.in_result_link = False
+        self.current_url = ""
+        self.current_title = ""
+        self.in_link = False
         self.in_snippet = False
-        self.current_text = []
 
     def handle_starttag(self, tag, attrs):
         attrs_dict = dict(attrs)
-        class_attr = attrs_dict.get("class", "")
-
-        if tag == "a" and "result__a" in class_attr:
-            self.in_result_link = True
-            self.current_result = {
-                "url": attrs_dict.get("href", ""),
-                "title": "",
-                "snippet": "",
-            }
-            self.current_text = []
-            return
-        if tag == "a" and "result__snippet" in class_attr:
+        if tag == "a" and "result-link" in attrs_dict.get("class", ""):
+            self.in_link = True
+            self.current_url = attrs_dict.get("href", "")
+            self.current_title = ""
+        if tag == "td" and "result-snippet" in attrs_dict.get("class", ""):
             self.in_snippet = True
-            self.current_text = []
 
     def handle_endtag(self, tag):
-        if tag == "a":
-            if self.in_result_link and self.current_result:
-                self.current_result["title"] = " ".join(
-                    "".join(self.current_text).split()
+        if tag == "a" and self.in_link:
+            self.in_link = False
+            if self.current_url and self.current_title:
+                self.results.append(
+                    {
+                        "url": self.current_url,
+                        "title": self.current_title.strip(),
+                        "snippet": "",
+                    }
                 )
-                self.results.append(self.current_result)
-                self.current_result = None
-            elif self.in_snippet and self.results:
-                self.results[-1]["snippet"] = " ".join(
-                    "".join(self.current_text).split()
-                )
-            self.in_result_link = False
+        if tag == "td" and self.in_snippet:
             self.in_snippet = False
-            self.current_text = []
+            if self.results:
+                self.results[-1]["snippet"] = self.results[-1]["snippet"].strip()
 
     def handle_data(self, data):
-        if self.in_result_link or self.in_snippet:
-            self.current_text.append(data)
+        if self.in_link:
+            self.current_title += data
+        if self.in_snippet and self.results:
+            self.results[-1]["snippet"] += data
 
     def get_results(self, max_results=5):
         return self.results[:max_results]
@@ -640,28 +634,35 @@ class Tools:
         }
 
         delays = [0.2, 0.3, 0.4]
-        url = f"https://html.duckduckgo.com/html/?q={query}"
+        endpoints = [
+            ("https://lite.duckduckgo.com/lite/?q=", DuckDuckGoLiteSearch),
+            (
+                "https://r.jina.ai/http://lite.duckduckgo.com/lite/?q=",
+                DuckDuckGoLiteSearch,
+            ),
+        ]
 
-        for attempt, delay in enumerate(delays):
-            try:
-                response = requests.get(url, timeout=30, headers=headers)
-                response.raise_for_status()
-                parser = DuckDuckGoSearch()
-                parser.feed(response.text)
-                results = parser.get_results(max_results)
-                if results:
-                    lines = []
-                    for i, r in enumerate(results, 1):
-                        lines.append(f"{i}. [{r['title']}]({r['url']})")
-                        if r["snippet"]:
-                            lines.append(f"   {r['snippet']}")
-                        lines.append("")
-                    return "\n".join(lines).strip()
-            except Exception as e:
-                if attempt < len(delays) - 1:
-                    time.sleep(delay)
-                    continue
-                return f"Search error: {str(e)}"
+        for url_prefix, parser_class in endpoints:
+            url = f"{url_prefix}{query}"
+            for attempt, delay in enumerate(delays):
+                try:
+                    response = requests.get(url, timeout=30, headers=headers)
+                    response.raise_for_status()
+                    parser = parser_class()
+                    parser.feed(response.text)
+                    results = parser.get_results(max_results)
+                    if results:
+                        lines = []
+                        for i, r in enumerate(results, 1):
+                            lines.append(f"{i}. [{r['title']}]({r['url']})")
+                            if r["snippet"]:
+                                lines.append(f"   {r['snippet']}")
+                            lines.append("")
+                        return "\n".join(lines).strip()
+                except Exception:
+                    if attempt < len(delays) - 1:
+                        time.sleep(delay)
+                        continue
 
         return "Search failed after retries."
 
