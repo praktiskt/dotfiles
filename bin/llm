@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import suppress
 from datetime import date
 from html.parser import HTMLParser
+from urllib.parse import parse_qs, unquote, urlparse
 
 import requests
 
@@ -259,38 +260,34 @@ class DuckDuckGoLiteSearch(HTMLParser):
         self.current_url = ""
         self.current_title = ""
         self.in_link = False
-        self.in_snippet = False
 
     def handle_starttag(self, tag, attrs):
         attrs_dict = dict(attrs)
-        if tag == "a" and "result-link" in attrs_dict.get("class", ""):
+        if tag == "a" and attrs_dict.get("href", "").startswith(
+            "//duckduckgo.com/l/?uddg="
+        ):
             self.in_link = True
             self.current_url = attrs_dict.get("href", "")
             self.current_title = ""
-        if tag == "td" and "result-snippet" in attrs_dict.get("class", ""):
-            self.in_snippet = True
 
     def handle_endtag(self, tag):
         if tag == "a" and self.in_link:
             self.in_link = False
             if self.current_url and self.current_title:
+                parsed = urlparse(self.current_url)
+                params = parse_qs(parsed.query)
+                actual_url = params.get("uddg", [self.current_url])[0]
                 self.results.append(
                     {
-                        "url": self.current_url,
+                        "url": unquote(actual_url),
                         "title": self.current_title.strip(),
                         "snippet": "",
                     }
                 )
-        if tag == "td" and self.in_snippet:
-            self.in_snippet = False
-            if self.results:
-                self.results[-1]["snippet"] = self.results[-1]["snippet"].strip()
 
     def handle_data(self, data):
         if self.in_link:
             self.current_title += data
-        if self.in_snippet and self.results:
-            self.results[-1]["snippet"] += data
 
     def get_results(self, max_results=5):
         return self.results[:max_results]
@@ -633,31 +630,43 @@ class Tools:
     @staticmethod
     def search(query: str, max_results: int = 5) -> str:
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Accept-Encoding": "gzip, deflate, br",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "Accept-Language": "sv-SE,sv;q=0.9",
+            "Cache-Control": "max-age=0",
+            "Priority": "u=0, i",
+            "Sec-Ch-Ua": '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"',
+            "Sec-Ch-Ua-Mobile": "?0",
+            "Sec-Ch-Ua-Platform": '"Linux"',
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
+            "Upgrade-Insecure-Requests": "1",
             "DNT": "1",
             "Connection": "keep-alive",
-            "Upgrade-Insecure-Requests": "1",
         }
 
         delays = [0.2, 0.3, 0.4]
         endpoints = [
-            ("https://lite.duckduckgo.com/lite/?q=", DuckDuckGoLiteSearch),
+            ("https://lite.duckduckgo.com/lite/?q=", None),
             (
-                "https://r.jina.ai/http://lite.duckduckgo.com/lite/?q=",
-                DuckDuckGoLiteSearch,
+                "https://r.jina.ai/https://lite.duckduckgo.com/lite/?q=",
+                "jina",
             ),
         ]
 
-        for url_prefix, parser_class in endpoints:
+        for url_prefix, endpoint_type in endpoints:
             url = f"{url_prefix}{query}"
             for attempt, delay in enumerate(delays):
                 try:
                     response = requests.get(url, timeout=30, headers=headers)
                     response.raise_for_status()
-                    parser = parser_class()
+
+                    if endpoint_type == "jina":
+                        return response.text.strip()
+
+                    parser = DuckDuckGoLiteSearch()
                     parser.feed(response.text)
                     results = parser.get_results(max_results)
                     if results:
