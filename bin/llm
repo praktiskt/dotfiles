@@ -17,12 +17,14 @@ from urllib.parse import parse_qs, unquote, urlparse
 import requests
 
 
-def stdout(msg, **kwargs) -> None:
-    print(msg, file=sys.stdout, **kwargs)
+class Log:
+    @staticmethod
+    def stdout(msg, **kwargs) -> None:
+        print(msg, file=sys.stdout, **kwargs)
 
-
-def stderr(msg, **kwargs) -> None:
-    print(msg, file=sys.stderr, **kwargs)
+    @staticmethod
+    def stderr(msg, **kwargs) -> None:
+        print(msg, file=sys.stderr, **kwargs)
 
 
 class Color:
@@ -900,7 +902,7 @@ class LLMClient:
             )
 
             if response.status_code != 200:
-                stderr(f"{response.status_code}: {response.content.decode()}")
+                Log.stderr(f"{response.status_code}: {response.content.decode()}")
                 sys.exit(1)
 
             data = response.json()
@@ -912,13 +914,13 @@ class LLMClient:
                     message.get("reasoning_content") or message.get("reasoning") or ""
                 )
                 if reasoning:
-                    stderr(f"{Color.dim('[thinking]')} {Color.thinking(reasoning)}")
+                    Log.stderr(f"{Color.dim('[thinking]')} {Color.thinking(reasoning)}")
 
             tool_calls = message.get("tool_calls", [])
             if not tool_calls or not Config.tools_enabled():
                 content = message.get("content", "")
                 if content:
-                    stdout(content)
+                    Log.stdout(content)
                 return
 
             messages.append(message)
@@ -931,7 +933,7 @@ class LLMClient:
                 except json.JSONDecodeError:
                     args = {}
                 tool_name = func.get("name", "unknown")
-                stderr(
+                Log.stderr(
                     Color.tool(
                         tool_name,
                         f"[tool] {tool_name}({', '.join(f'{k}={repr(v)}' for k, v in args.items())})",
