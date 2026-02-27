@@ -583,7 +583,7 @@ class Tools:
 
     @staticmethod
     def _fetch_single(url: str) -> str:
-        def fetch_and_process(fetch_url: str) -> str:
+        def fetch_and_process(fetch_url: str) -> str | None:
             response = requests.get(
                 fetch_url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}
             )
@@ -599,27 +599,39 @@ class Tools:
             else:
                 content = response.text
 
-            if len(content) > Config.CONTENT_THRESHOLD:
-                file_id = Config.generate_file_id()
-                FileCache.store(file_id, content)
-                return f'Stored as {file_id} ({len(content)} chars). Tools: read_file, grep_file, summarize (file_id="{file_id}")'
-            return content
+            return content if content else None
 
+        content = None
         try:
             fetch_url = url
             url_lower = url.lower()
             if any(url_lower.endswith(ext) for ext in Config.BINARY_EXTENSIONS):
                 fetch_url = f"https://r.jina.ai/{url}"
-
-            return fetch_and_process(fetch_url)
+                content = fetch_and_process(fetch_url)
+            else:
+                content = fetch_and_process(fetch_url)
+                if not content:
+                    fallback_url = f"https://r.jina.ai/{url}"
+                    content = fetch_and_process(fallback_url)
         except requests.HTTPError:
             try:
                 fallback_url = f"https://r.jina.ai/{url}"
-                return fetch_and_process(fallback_url)
-            except Exception as e:
-                return f"Error fetching URL: {str(e)}"
-        except Exception as e:
-            return f"Error fetching URL: {str(e)}"
+                content = fetch_and_process(fallback_url)
+            except Exception:
+                pass
+        except Exception:
+            try:
+                fallback_url = f"https://r.jina.ai/{url}"
+                content = fetch_and_process(fallback_url)
+            except Exception:
+                pass
+
+        if not content:
+            content = "fetch failed"
+
+        file_id = Config.generate_file_id()
+        FileCache.store(file_id, content)
+        return f'Stored as {file_id} ({len(content)} chars). Tools: read_file, grep_file, summarize (file_id="{file_id}")'
 
     @staticmethod
     def fetch(urls: list[str]) -> str:
